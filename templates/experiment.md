@@ -100,4 +100,3 @@ appear validated.
 
 The packet is complete when another qualified person can reproduce the analysis,
 understand its limits, and determine which uses of the artifacts are authorized.
-

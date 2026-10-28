@@ -54,4 +54,3 @@ The laboratory must preserve rejected trials with reason flags when lawful and
 practical. Do not use a failed acquisition as calibration evidence, but do retain
 its diagnostic value. A safe instrument and an honest stop report are better
 outcomes than a complete-looking dataset obtained outside authorization.
-

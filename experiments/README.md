@@ -93,4 +93,3 @@ validate an experiment's physics.
 An accepted packet states which claim passed, which failed, and what remains
 unknown. Its next action addresses the dominant uncertainty or failure mechanism,
 not simply a larger dataset or a more attractive plot.
-

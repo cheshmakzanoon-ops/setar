@@ -74,4 +74,3 @@ limits, and failure states. Frequencies without residues, damping conventions,
 mode shapes, and excitation geometry do not constitute a bridge model. Pitch
 tables without fret positions, string state, and player context do not constitute
 a performance specification. Incomplete handoffs should fail visibly.
-

@@ -82,4 +82,3 @@ balance, a new calibration, a required gesture outside the model domain, or a
 demonstrated host incompatibility. Avoid vague promises to revisit the choice.
 Name the next useful experiment or implementation test and what outcome would
 change the decision.
-

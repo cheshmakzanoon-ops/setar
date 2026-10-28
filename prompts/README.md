@@ -36,4 +36,3 @@ remaining assumptions, unrun checks, and the next gate. The default runnable
 baseline is documented in [CONTRIBUTING.md](../CONTRIBUTING.md); a prompt does
 not replace it. Preserve failed attempts when they explain the decision and keep
 cross-platform configuration distinct from observed platform success.
-

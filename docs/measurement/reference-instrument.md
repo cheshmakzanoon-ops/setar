@@ -178,4 +178,3 @@ proposed measurement is authorized. It fails when important state lives only in
 memory, when a maker attribution is asserted without evidence, or when the
 reference claim exceeds the selected population. The next action is a small
 non-destructive repeatability pilot, not immediate dense acquisition.
-

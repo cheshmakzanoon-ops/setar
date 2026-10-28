@@ -176,4 +176,3 @@ when quotations are detached from context, when one participant is treated as
 the universal authority, or when a leading demonstration is presented as an
 independent evaluation. The next action is a small reviewed task pilot before
 large-scale acquisition or product labeling.
-

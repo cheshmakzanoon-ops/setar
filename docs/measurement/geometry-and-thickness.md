@@ -176,4 +176,3 @@ Record the missing region, its likely influence, and the least invasive experime
 that could reduce the uncertainty. The next action may be a witness component,
 an authorized imaging service, or a model sensitivity study rather than a more
 aggressive measurement on the reference instrument.
-

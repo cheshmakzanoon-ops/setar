@@ -54,4 +54,3 @@ body:
           required: true
         - label: The request distinguishes synthetic verification, implemented capability, and measured validation.
           required: true
-

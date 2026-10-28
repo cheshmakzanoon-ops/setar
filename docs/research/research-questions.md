@@ -205,4 +205,3 @@ preferred model, when no possible result would change a decision, or when missin
 data are to be replaced by listening preference without disclosure. It passes
 when the next team can perform the experiment, understand a negative result, and
 know whether the model should be retained, extended, or rejected.
-

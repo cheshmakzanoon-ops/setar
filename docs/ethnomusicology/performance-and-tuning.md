@@ -176,4 +176,3 @@ presented as the tradition itself, when unknown targets are filled with a fixed
 quarter-tone assumption, or when continuous gestures are hidden inside recorded
 note playback. The next action is a player-reviewed task matrix that connects
 each important behavior to a measurable and implementable mechanism.
-

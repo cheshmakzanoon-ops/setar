@@ -84,4 +84,3 @@ publication, dependency licensing, participant contact, or unrelated refactoring
 > failures and blockers that affect the requested claim. Acceptance is an
 > honest reproducible integration state, not a universal green label. Next:
 > assign the smallest bounded task that removes the most consequential gap.
-

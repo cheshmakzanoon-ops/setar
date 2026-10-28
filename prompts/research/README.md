@@ -259,4 +259,3 @@ fill missing scientific inputs with plausible values to make a pipeline run.
 > files, actual commands, and next actions. Do not manufacture a favorable
 > result to complete the report. Next: repair the packet itself so the next
 > reviewer needs fewer private explanations.
-

@@ -193,4 +193,3 @@ measurements. It passes for a scoped claim when the data constrain the required
 prediction and unresolved parameter ambiguity is honestly represented. A usable
 physical synthesizer can have uncertain microscopic parameters; it cannot have
 an unexamined evidence chain.
-

@@ -194,4 +194,3 @@ predicts withheld directions or conditions within its scope. Stop absolute
 claims when calibration is missing, spatial integration when coverage is
 inadequate, and phase claims when clocks are not aligned. A carefully labeled
 relative acoustic dataset remains valuable without pretending to be more complete.
-

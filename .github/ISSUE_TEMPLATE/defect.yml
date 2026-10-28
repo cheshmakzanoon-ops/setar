@@ -40,4 +40,3 @@ body:
     attributes:
       label: Proposed regression and remaining unknowns
       description: What independent test would expose this defect? Note workarounds without hiding instability through clipping, normalization, or disabled checks.
-

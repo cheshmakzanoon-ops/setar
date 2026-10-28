@@ -182,4 +182,3 @@ position, clearance, or finger state is unobserved at the required resolution.
 Continue with a restricted open-string experiment if appropriate. The next action
 should reduce the dominant uncertainty, not add more nominal note labels to an
 already ambiguous setup.
-

@@ -243,4 +243,3 @@ an operator checklist that matches the schema so mandatory fields are captured
 at acquisition rather than reconstructed from memory. The gate passes when a
 new analyst can interpret, validate, and reproduce the data without private
 explanations. The next action is to implement validators before scaling acquisition.
-

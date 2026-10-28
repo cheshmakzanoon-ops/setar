@@ -85,6 +85,17 @@ captures of actual rendered interfaces/reports; design mockups are labeled as
 mockups. CI artifacts and review evidence are described in the engineering and
 validation volumes. No promotional image is evidence of acoustic fidelity.
 
+[View the reproducible diagnostic graphs and visual-capture instructions](docs/assets/README.md).
+These visualize a **synthetic string reference**, not a validated setar model.
+
+![Actual synthetic modal-string displacement graph, millimeters against milliseconds](docs/assets/waveform.png)
+
+The [finite-mode energy graph](docs/assets/energy.svg),
+[stiffness-dispersion graph](docs/assets/dispersion.svg), and
+[proposed musician-interface wireframe](docs/ux/assets/musician-wireframe.svg)
+are also included. The wireframe is a design proposal, **not** an implemented
+plugin editor or a screenshot from a running VST.
+
 ## Contributing
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md) and [AGENTS.md](AGENTS.md). Contributions

@@ -227,4 +227,3 @@ unknown, timing invalidates phase, or attachment perturbation exceeds the claim'
 uncertainty. A narrower valid band is preferable to a broad unreliable one.
 Next actions should target the dominant limitation: a better calibration, another
 port, safer excitation, improved support, or an independent loading control.
-

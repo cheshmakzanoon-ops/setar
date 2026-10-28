@@ -52,4 +52,3 @@ body:
       description: Link rights-cleared manifests and artifacts; report failures and unrun checks. For a proposal, say what has not been acquired.
     validations:
       required: true
-

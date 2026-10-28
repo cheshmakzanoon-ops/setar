@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 360" role="img" aria-labelledby="title description">
+<title id="title">Deviation from tension-only harmonics</title>
+<desc id="description">Computed from exported natural frequencies.</desc>
+<rect width="840" height="360" fill="#fffefa"/>
+<g font-family="system-ui,sans-serif" font-size="12" fill="#4a535b">
+<path d="M 82.000 42 V 294" stroke="#e2e6e4"/>
+<path d="M 82 294.000 H 812" stroke="#e2e6e4"/>
+<text x="82.000" y="319" text-anchor="middle">1</text>
+<text x="72" y="298.000" text-anchor="end">-0.1504</text>
+<path d="M 264.500 42 V 294" stroke="#e2e6e4"/>
+<path d="M 82 231.000 H 812" stroke="#e2e6e4"/>
+<text x="264.500" y="319" text-anchor="middle">4.75</text>
+<text x="72" y="235.000" text-anchor="end">0.4621</text>
+<path d="M 447.000 42 V 294" stroke="#e2e6e4"/>
+<path d="M 82 168.000 H 812" stroke="#e2e6e4"/>
+<text x="447.000" y="319" text-anchor="middle">8.5</text>
+<text x="72" y="172.000" text-anchor="end">1.075</text>
+<path d="M 629.500 42 V 294" stroke="#e2e6e4"/>
+<path d="M 82 105.000 H 812" stroke="#e2e6e4"/>
+<text x="629.500" y="319" text-anchor="middle">12.25</text>
+<text x="72" y="109.000" text-anchor="end">1.687</text>
+<path d="M 812.000 42 V 294" stroke="#e2e6e4"/>
+<path d="M 82 42.000 H 812" stroke="#e2e6e4"/>
+<text x="812.000" y="319" text-anchor="middle">16</text>
+<text x="72" y="46.000" text-anchor="end">2.3</text>
+<polyline points="82.000,277.662 130.667,275.068 179.333,270.746 228.000,264.694 276.667,256.915 325.333,247.408 374.000,236.173 422.667,223.212 471.333,208.525 520.000,192.112 568.667,173.976 617.333,154.117 666.000,132.535 714.667,109.234 763.333,84.213 812.000,57.474" fill="none" stroke="#66549c" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="82" y="24" font-weight="650" fill="#14212b">Deviation from tension-only harmonics</text>
+<text x="447.0" y="345" text-anchor="middle">Mode number</text>
+<text transform="translate(19,168.0) rotate(-90)" text-anchor="middle">Frequency excess (cents)</text>
+</g></svg>

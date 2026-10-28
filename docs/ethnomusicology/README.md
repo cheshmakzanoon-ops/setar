@@ -54,4 +54,3 @@ The gate is a clear statement of what the instrument supports, whose input shape
 it, what remains unrepresented, and what permissions apply. This is a practical
 engineering requirement: it prevents misleading controls, unusable datasets,
 and evaluation criteria that reward the wrong musical behavior.
-

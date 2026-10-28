@@ -202,4 +202,3 @@ next calibration or acquisition improvement. The gate passes when a reviewer can
 recompute the interval and understand what it excludes. It fails when error bars
 are chosen after seeing the desired result or when missing knowledge is hidden
 inside an unexplained percentage.
-

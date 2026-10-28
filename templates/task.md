@@ -94,4 +94,3 @@ requires an explicit decision record.
 
 The handoff must be understandable without private chat history. A future
 developer should know both how to continue and what not to claim.
-

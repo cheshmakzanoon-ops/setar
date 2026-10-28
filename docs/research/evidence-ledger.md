@@ -233,4 +233,3 @@ masquerade as experiments, access failures disappear, or unknown rights become
 assumed permission. Deliver a source-to-claim graph and the smallest useful next
 experiment for each unresolved decision. Literature justifies an investigation;
 it does not validate the finished synthesizer.
-

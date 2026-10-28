@@ -1,0 +1,55 @@
+name: Experiment proposal or result
+description: Record a discriminating numerical or physical experiment with provenance.
+title: "[Experiment] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use templates/experiment.md for the complete packet. A proposal is not an executed result. Instrument interventions and participant recording require their own authorization; this issue grants neither.
+  - type: dropdown
+    id: status
+    attributes:
+      label: Evidence status
+      options:
+        - Proposed experiment
+        - Executed synthetic verification
+        - Executed authorized measurement
+        - Reanalysis or independent reproduction
+    validations:
+      required: true
+  - type: textarea
+    id: hypothesis
+    attributes:
+      label: Hypothesis and competing explanations
+      description: What observation distinguishes the alternatives, and what decision follows from each outcome?
+    validations:
+      required: true
+  - type: textarea
+    id: object
+    attributes:
+      label: Object, state, and permissions
+      description: Name model/specimen/configuration, parameters, units, participant scope if relevant, and unresolved authorization.
+    validations:
+      required: true
+  - type: textarea
+    id: method
+    attributes:
+      label: Procedure and controls
+      description: Provide commands or protocol, calibration, timing, loading controls, repetitions, exclusions, and stop conditions.
+    validations:
+      required: true
+  - type: textarea
+    id: analysis
+    attributes:
+      label: Analysis and acceptance rule
+      description: Define observables, uncertainty, independent partitions, tolerances, and normalization before the final test.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Actual results or remaining prerequisites
+      description: Link rights-cleared manifests and artifacts; report failures and unrun checks. For a proposal, say what has not been acquired.
+    validations:
+      required: true
+

@@ -1,0 +1,43 @@
+name: Reproducible defect
+description: Report an observed failure without overstating its cause or scope.
+title: "[Defect] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Include a minimal safe reproducer and actual evidence. Do not post secrets, private recordings, or identifying participant data. Sensitive findings need an owner-approved private disclosure route rather than confidential content in a public issue.
+  - type: textarea
+    id: expected_actual
+    attributes:
+      label: Expected and observed behavior
+      description: Identify the contract violated, actual result, and consequence. Separate observed failure from a suspected cause.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Revision and environment
+      description: Include dirty-worktree status, compiler, build preset, platform, and host/audio settings only when relevant. Do not dump environment variables.
+    validations:
+      required: true
+  - type: textarea
+    id: reproducer
+    attributes:
+      label: Minimal reproduction
+      description: Give exact reviewed commands, input parameters and units, event order, and expected exit behavior. Link only permitted assets.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics and scope
+      description: Supply relevant logs, test names, repeatability, sanitizer output, and known unaffected cases. Do not include unrelated private paths or credentials.
+    validations:
+      required: true
+  - type: textarea
+    id: regression
+    attributes:
+      label: Proposed regression and remaining unknowns
+      description: What independent test would expose this defect? Note workarounds without hiding instability through clipping, normalization, or disabled checks.
+

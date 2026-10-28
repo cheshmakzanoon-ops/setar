@@ -17,7 +17,9 @@ function(setar_project_options target)
         endif()
         target_compile_options(${target} PRIVATE
             -fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=all)
-        target_link_options(${target} PRIVATE
+        # An instrumented static library requires the sanitizer runtime in every
+        # final consumer, including an optional JUCE target in the same build.
+        target_link_options(${target} PUBLIC
             -fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=all)
     endif()
 endfunction()

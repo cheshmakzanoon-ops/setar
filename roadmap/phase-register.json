@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "purpose": "Evidence-gated work packages; the register is not a feature-completion claim or calendar",
+  "phases": [
+    {"id":"P00","document":"docs/phases/P00-charter.md","requires":[],"gate":"target and claim boundary reviewed","status":"specified"},
+    {"id":"P01","document":"docs/phases/P01-evidence.md","requires":["P00"],"gate":"source and specimen evidence admitted with provenance","status":"specified"},
+    {"id":"P02","document":"docs/phases/P02-laboratory.md","requires":["P01"],"gate":"reference laboratory and independent portable tests","status":"partial_synthetic_bootstrap"},
+    {"id":"P03","document":"docs/phases/P03-linear-string.md","requires":["P02"],"gate":"numerical string convergence, energy, and boundary verification","status":"partial_modal_synthetic_fixture"},
+    {"id":"P04","document":"docs/phases/P04-real-string.md","requires":["P03"],"gate":"stiffness, damping, polarization, and nonlinear scope verified","status":"partial_modal_stiffness_and_loss"},
+    {"id":"P05","document":"docs/phases/P05-excitation.md","requires":["P04"],"gate":"nail contact, release, and physical work verified","status":"specified"},
+    {"id":"P06","document":"docs/phases/P06-frets-damping.md","requires":["P05"],"gate":"fret and finger contact and moving constraint verified","status":"specified"},
+    {"id":"P07","document":"docs/phases/P07-geometry-materials.md","requires":["P01"],"gate":"specimen geometry, material admissibility, and uncertainties recorded","status":"specified"},
+    {"id":"P08","document":"docs/phases/P08-body-model.md","requires":["P07"],"gate":"structural FEM, modal reduction, and bridge ports verified","status":"specified"},
+    {"id":"P09","document":"docs/phases/P09-bridge-coupling.md","requires":["P04","P08"],"gate":"coupled string and bridge/body work and response verified","status":"specified"},
+    {"id":"P10","document":"docs/phases/P10-acoustic-radiation.md","requires":["P08"],"gate":"cavity, radiation, and microphone observation modeled and tested","status":"specified"},
+    {"id":"P11","document":"docs/phases/P11-instrument-performance.md","requires":["P06","P09","P10"],"gate":"four-string persistent state and performer gesture coverage","status":"specified"},
+    {"id":"P12","document":"docs/phases/P12-identification.md","requires":["P11"],"gate":"identifiable calibration and held-out predictions","status":"specified"},
+    {"id":"P13","document":"docs/phases/P13-realtime.md","requires":["P12"],"gate":"reference error and callback limits established","status":"specified"},
+    {"id":"P14","document":"docs/phases/P14-plugin.md","requires":["P13"],"gate":"JUCE and VST3 host qualification and state migrations","status":"specified_optional_diagnostic_only"},
+    {"id":"P15","document":"docs/phases/P15-interfaces.md","requires":["P14"],"gate":"musician and engineering interfaces usable and visually verified","status":"specified_wireframe_only"},
+    {"id":"P16","document":"docs/phases/P16-qualification.md","requires":["P15"],"gate":"complete supported-platform, solver, and host evidence matrix","status":"specified"},
+    {"id":"P17","document":"docs/phases/P17-fidelity.md","requires":["P16"],"gate":"held-out acoustic, perceptual, and expressive validity evidence","status":"specified"},
+    {"id":"P18","document":"docs/phases/P18-release.md","requires":["P17"],"gate":"rights and artifact provenance with release approval","status":"specified"},
+    {"id":"P19","document":"docs/phases/P19-maintenance.md","requires":["P18"],"gate":"regression, migration, and evidence stewardship","status":"specified"}
+  ]
+}

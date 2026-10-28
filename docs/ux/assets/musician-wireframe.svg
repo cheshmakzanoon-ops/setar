@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="820" viewBox="0 0 1200 820" role="img" aria-labelledby="title desc">
+  <title id="title">Proposed musician-view wireframe</title>
+  <desc id="desc">A labeled design wireframe for a setar physical-modeling interface. This is not an implemented application screenshot. It contains setup, gesture, tuning, output, and status regions without fabricated measured values.</desc>
+  <rect width="1200" height="820" fill="#111c2a"/>
+  <rect x="28" y="26" width="1144" height="768" rx="18" fill="#18283a" stroke="#667b91" stroke-width="2"/>
+  <text x="56" y="70" fill="#f3f6fb" font-family="sans-serif" font-size="26" font-weight="700">SETAR · Physical Modeling Laboratory</text>
+  <text x="56" y="101" fill="#bfcddd" font-family="sans-serif" font-size="16">Proposed musician view — design wireframe, not an implemented screenshot</text>
+  <rect x="56" y="125" width="1088" height="50" rx="8" fill="#35422e" stroke="#b7ca83"/>
+  <text x="74" y="156" fill="#edf3d9" font-family="sans-serif" font-size="17">Evidence status: synthetic reference · no measured-setar validation claimed</text>
+  <rect x="56" y="198" width="118" height="42" rx="7" fill="#c7d9e9"/>
+  <text x="86" y="225" fill="#14283b" font-family="sans-serif" font-size="17" font-weight="700">PLAY</text>
+  <text x="212" y="225" fill="#e1eaf4" font-family="sans-serif" font-size="17">TUNING</text>
+  <text x="352" y="225" fill="#e1eaf4" font-family="sans-serif" font-size="17">INSTRUMENT</text>
+  <text x="536" y="225" fill="#e1eaf4" font-family="sans-serif" font-size="17">DIAGNOSTICS</text>
+  <rect x="56" y="265" width="280" height="380" rx="10" fill="#203449" stroke="#617b94"/>
+  <text x="76" y="302" fill="#f3f6fb" font-family="sans-serif" font-size="20" font-weight="700">Active setup</text>
+  <text x="76" y="338" fill="#cedbe8" font-family="sans-serif" font-size="16">Setup identity / provenance</text>
+  <rect x="76" y="356" width="240" height="46" rx="6" fill="#14283b" stroke="#8ba6c0"/>
+  <text x="92" y="385" fill="#edf3fb" font-family="sans-serif" font-size="16">Selected setup</text>
+  <text x="76" y="439" fill="#e0eaf4" font-family="sans-serif" font-size="16">String / course assignments</text>
+  <text x="76" y="469" fill="#bacbdd" font-family="sans-serif" font-size="15">Defined by selected specimen</text>
+  <text x="76" y="514" fill="#e0eaf4" font-family="sans-serif" font-size="16">Tuning / keyboard mapping</text>
+  <text x="76" y="544" fill="#bacbdd" font-family="sans-serif" font-size="15">Reference and active map</text>
+  <text x="76" y="596" fill="#bacbdd" font-family="sans-serif" font-size="15">Pending and active states</text>
+  <text x="76" y="619" fill="#bacbdd" font-family="sans-serif" font-size="15">are shown separately</text>
+  <rect x="356" y="265" width="504" height="380" rx="10" fill="#203449" stroke="#617b94"/>
+  <text x="378" y="302" fill="#f3f6fb" font-family="sans-serif" font-size="20" font-weight="700">Gesture mapping</text>
+  <text x="378" y="340" fill="#cedbe8" font-family="sans-serif" font-size="16">Controls appear only for implemented capabilities</text>
+  <text x="378" y="389" fill="#edf3fb" font-family="sans-serif" font-size="17">Excitation strength</text>
+  <rect x="378" y="405" width="454" height="10" rx="5" fill="#728fa8"/>
+  <text x="378" y="450" fill="#edf3fb" font-family="sans-serif" font-size="17">Pluck position · reference endpoints required</text>
+  <rect x="378" y="466" width="454" height="10" rx="5" fill="#728fa8"/>
+  <text x="378" y="520" fill="#edf3fb" font-family="sans-serif" font-size="17">Per-note expression / physical target</text>
+  <rect x="378" y="540" width="454" height="72" rx="6" fill="#14283b" stroke="#8ba6c0"/>
+  <text x="394" y="570" fill="#c8d8e7" font-family="sans-serif" font-size="15">Mapping description, units, and active-note policy</text>
+  <text x="394" y="594" fill="#c8d8e7" font-family="sans-serif" font-size="15">No invented force calibration or live event data</text>
+  <rect x="880" y="265" width="264" height="380" rx="10" fill="#203449" stroke="#617b94"/>
+  <text x="900" y="302" fill="#f3f6fb" font-family="sans-serif" font-size="18" font-weight="700">Output and recovery</text>
+  <text x="900" y="344" fill="#cedbe8" font-family="sans-serif" font-size="16">Output gain</text>
+  <rect x="900" y="365" width="222" height="10" rx="5" fill="#728fa8"/>
+  <rect x="900" y="408" width="222" height="92" rx="6" fill="#14283b" stroke="#8ba6c0"/>
+  <text x="918" y="445" fill="#c8d8e7" font-family="sans-serif" font-size="15">Meter region</text>
+  <text x="918" y="472" fill="#c8d8e7" font-family="sans-serif" font-size="15">No captured audio data</text>
+  <rect x="900" y="544" width="222" height="48" rx="7" fill="#634039" stroke="#e7b3a3"/>
+  <text x="944" y="574" fill="#fff2ed" font-family="sans-serif" font-size="17" font-weight="700">Panic / release</text>
+  <text x="900" y="622" fill="#c8d8e7" font-family="sans-serif" font-size="14">Keyboard access required</text>
+  <rect x="56" y="667" width="1088" height="94" rx="8" fill="#14283b" stroke="#617b94"/>
+  <text x="76" y="700" fill="#edf3fb" font-family="sans-serif" font-size="17">Status: active configuration, pending requests, and recovery messages</text>
+  <text x="76" y="731" fill="#bfcddd" font-family="sans-serif" font-size="16">Engineering details open separately; no fake CPU figures, waveforms, or validation badges</text>
+</svg>

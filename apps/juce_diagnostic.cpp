@@ -30,8 +30,16 @@ class DiagnosticProcessor final : public juce::AudioProcessor {
         }
     }
 
-    void releaseResources() override {
+    void reset() override {
+        // The host serializes lifecycle and processing calls. The UI may only
+        // touch this atomic request: pre-clear requests are discarded, while a
+        // later request is a new trigger for the next prepared audio block.
+        trigger_requested_.store(false, std::memory_order_relaxed);
         model_.reset();
+    }
+
+    void releaseResources() override {
+        reset();
         ready_ = false;
     }
 
@@ -52,7 +60,13 @@ class DiagnosticProcessor final : public juce::AudioProcessor {
             model_.retrigger();
         }
         int offset = 0;
+        constexpr int maximum_events_per_block = 4096;
+        int inspected_events = 0;
         for (const auto event : midi) {
+            if (inspected_events == maximum_events_per_block) {
+                break; // Diagnostic overflow policy: ignore the remaining events.
+            }
+            ++inspected_events;
             // Inspect short MIDI bytes directly. Creating an owning MidiMessage
             // from arbitrary SysEx input could allocate in the audio callback.
             const bool note_on = event.numBytes == 3 && (event.data[0] & 0xf0U) == 0x90U &&

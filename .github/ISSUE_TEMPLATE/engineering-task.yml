@@ -1,0 +1,57 @@
+name: Engineering task
+description: Define a bounded implementation, diagnosis, or review with evidence gates.
+title: "[Task] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Read AGENTS.md and CONTRIBUTING.md. Keep this request scoped. Do not include credentials, private participant material, or unlicensed assets. A successful build is not acoustic validation.
+  - type: dropdown
+    id: work_kind
+    attributes:
+      label: Requested work
+      options:
+        - Inspect or diagnose
+        - Design a bounded interface or experiment
+        - Implement a specified change
+        - Independently review existing work
+    validations:
+      required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: Question and phase gate
+      description: State the falsifiable outcome, relevant phase, and why it changes a decision.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope, ownership, and authority
+      description: Name files, shared interfaces, exclusions, and any action requiring separate approval.
+    validations:
+      required: true
+  - type: textarea
+    id: inputs
+    attributes:
+      label: Inputs and prerequisites
+      description: Link code, source sections, data identifiers, units, calibration, and permissions. Mark missing evidence explicitly.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Independent acceptance evidence
+      description: Give the reference result, exact tests or protocol, tolerance rationale, failure cases, and required handoff.
+    validations:
+      required: true
+  - type: checkboxes
+    id: boundaries
+    attributes:
+      label: Request boundaries
+      options:
+        - label: Missing measurements and permissions are identified rather than filled with assumptions presented as facts.
+          required: true
+        - label: The request distinguishes synthetic verification, implemented capability, and measured validation.
+          required: true
+

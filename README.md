@@ -20,6 +20,8 @@ inspect outputs, and progressively replace assumptions with evidence.
    [41 requirements](roadmap/requirements.json) and
    [44 detailed work orders](roadmap/engineering-tasks.json) with dependencies,
    source/test locations, implementation instructions, and evidence handoffs.
+   The [phase-task crosswalk](roadmap/phase-task-crosswalk.json) connects all
+   **119 original scientific phase tasks** to those granular work orders.
 5. [Read the relevant technical volume](docs/INDEX.md), not the whole handbook at once.
 6. [Select a bounded implementation or review prompt](prompts/README.md).
 7. Build the reference scaffold, reproduce its tests, and attach evidence to changes.

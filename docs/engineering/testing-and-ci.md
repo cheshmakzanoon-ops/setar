@@ -60,7 +60,7 @@ and document that dependency.
 | `core.endpoints` | Silent fixed endpoints, zero-height silence, and sign symmetry | Observation can be silent while internal energy is nonzero |
 | `integration.report` | Actual executable output, PCM16, independent observation, file identity, SVG/HTML, and malformed-input rejection | Standard-library report, not a browser screenshot test |
 | `documentation.audit_self_tests` | Auditor behavior on controlled valid and invalid temporary fixtures | Tests the auditor, not every actual handbook claim |
-| `documentation.implementation_traceability` | 41 requirements, 44 work orders, unique IDs, reading paths, coverage, DAG and future-test ownership | Planning consistency, **not** executed future physics tests |
+| `documentation.implementation_traceability` | 41 requirements, 44 work orders, 119 original phase tasks mapped, unique IDs, reading paths, coverage, DAG and future-test ownership | Planning consistency, **not** executed future physics tests |
 | `documentation.implementation_mutations` | Controlled duplicate, orphan, path, cycle, schema and status/coverage defects are rejected | Mutation tests of the planning auditor, not physical fidelity |
 
 The numerical cases carry `core` and `numerical` labels. The report case carries

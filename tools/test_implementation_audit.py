@@ -7,7 +7,8 @@ from pathlib import Path
 import sys
 import unittest
 
-from audit_implementation import audit, load_registries, validate_blank_specimen_template
+from audit_implementation import (audit, load_registries, validate_blank_specimen_template,
+                                  validate_phase_crosswalk)
 import json
 
 
@@ -92,6 +93,31 @@ class ImplementationAuditorTests(unittest.TestCase):
         template["validation_status"] = "fully_validated"
         self.assertTrue(any("validation has occurred" in x for x in
                             validate_blank_specimen_template(template)))
+
+    def inspect_crosswalk(self, change=None) -> list[str]:
+        crosswalk = json.loads((ROOT / "roadmap/phase-task-crosswalk.json").read_text(encoding="utf-8"))
+        if change is not None:
+            change(crosswalk)
+        return validate_phase_crosswalk(ROOT, self.phases, self.tasks, crosswalk)["errors"]
+
+    def test_original_phase_tasks_all_mapped(self) -> None:
+        self.assertEqual([], self.inspect_crosswalk())
+
+    def test_crosswalk_detects_missing_original_task(self) -> None:
+        self.assertTrue(any("no engineering work order" in x for x in self.inspect_crosswalk(
+            lambda c: c["coverage"].pop("P05-T04"))))
+
+    def test_crosswalk_detects_stale_original_heading(self) -> None:
+        self.assertTrue(any("stale/nonexistent heading" in x for x in self.inspect_crosswalk(
+            lambda c: c["coverage"].update({"P05-T99":["ENG-P05-T01"]}))))
+
+    def test_crosswalk_detects_unknown_engineering_task(self) -> None:
+        self.assertTrue(any("unknown engineering work order" in x for x in self.inspect_crosswalk(
+            lambda c: c["coverage"]["P01-T01"].append("ENG-P01-T99"))))
+
+    def test_crosswalk_detects_wrong_phase_only(self) -> None:
+        self.assertTrue(any("no work order in its own phase" in x for x in self.inspect_crosswalk(
+            lambda c: c["coverage"].update({"P05-T02":["ENG-P06-T01"]}))))
 
 
 if __name__ == "__main__":

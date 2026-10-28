@@ -16,7 +16,9 @@ falsifiable question that the work will resolve.
 > actual existing interfaces; do not assume proposed classes are implemented.
 > Read `AGENTS.md`, the selected work order `ENG-Pxx-Tyy`, its `read` list,
 > dependent work orders, linked requirements, current source, and relevant
-> mathematical derivations. State the physical question, SI units, signs,
+> mathematical derivations. Consult the phase-task crosswalk if the source
+> phase uses a `Pxx-Tyy` heading; preserve these distinct task identities.
+> State the physical question, SI units, signs,
 > coordinate frame, time levels and implementation/validation status. Identify
 > facts actually measured, literature priors, synthetic assumptions and
 > unresolved inputs separately. Do not transform Iranian setar into tar,

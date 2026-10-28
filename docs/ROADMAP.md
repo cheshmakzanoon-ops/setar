@@ -39,6 +39,11 @@ existing individual phase chapters already use `Pxx-Tyy` for their broader
 phase-level tasks. The two series intentionally do not share identifiers or
 pretend to be identical subtasks; each engineering work order links to its
 own phase and required reading.
+The [machine-checked phase-task crosswalk](../roadmap/phase-task-crosswalk.json)
+explicitly routes **all 119** original phase headings to one or more
+engineering work orders, including cross-phase handoffs when a task spans a
+measurement, numerical and host boundary. The audit detects missing/orphan
+entries; the mapping itself remains a plan, not verified implementation.
 Their consistency is checked by `python3 tools/audit_implementation.py`,
 including task dependency cycles, coverage, reading links and status vocabulary.
 The [open decision-gate ledger](governance/engineering-decision-gates.md)

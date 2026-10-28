@@ -60,6 +60,52 @@ def validate_blank_specimen_template(doc: dict) -> list[str]:
     return errors
 
 
+def validate_phase_crosswalk(root: Path, phase_doc: dict, tasks: dict, crosswalk: dict) -> dict:
+    """Require every original phase task heading to have a real ENG work-order route."""
+    errors: list[str] = []
+    if crosswalk.get("schema_version") != 1 or not isinstance(crosswalk.get("coverage"), dict):
+        return {"mapped_phase_tasks": 0, "errors": ["phase crosswalk: invalid schema or coverage"]}
+    coverage = crosswalk["coverage"]
+    discovered: set[str] = set()
+    for phase in phase_doc.get("phases", []):
+        doc_path = root / phase["document"]
+        try:
+            source = doc_path.read_text(encoding="utf-8")
+        except OSError as exc:
+            errors.append(f"phase crosswalk: cannot read {doc_path}: {exc}")
+            continue
+        headings = re.findall(r"^##\s+(P\d{2}-T\d{2})\b", source, flags=re.M)
+        if not headings:
+            errors.append(f"phase crosswalk: {phase['id']} has no task headings")
+        for heading in headings:
+            if not heading.startswith(phase["id"] + "-"):
+                errors.append(f"phase crosswalk: wrong-phase heading {heading} in {phase['id']}")
+            if heading in discovered:
+                errors.append(f"phase crosswalk: duplicate legacy task heading {heading}")
+            discovered.add(heading)
+    task_ids = {t["id"] for t in tasks.get("tasks", []) if isinstance(t, dict) and "id" in t}
+    used: set[str] = set()
+    for heading in sorted(discovered):
+        assigned = coverage.get(heading)
+        if not isinstance(assigned, list) or not assigned or not all(isinstance(x, str) for x in assigned):
+            errors.append(f"phase crosswalk: no engineering work order for {heading}")
+            continue
+        if len(assigned) != len(set(assigned)):
+            errors.append(f"phase crosswalk: duplicate route for {heading}")
+        for implementation in assigned:
+            if implementation not in task_ids:
+                errors.append(f"phase crosswalk: unknown engineering work order {implementation} for {heading}")
+            used.add(implementation)
+        if not any(x.startswith("ENG-" + heading[:3] + "-") for x in assigned):
+            errors.append(f"phase crosswalk: {heading} has no work order in its own phase")
+    for stale_heading in sorted(set(coverage) - discovered):
+        errors.append(f"phase crosswalk: stale/nonexistent heading {stale_heading}")
+    for orphan in sorted(task_ids - used):
+        errors.append(f"phase crosswalk: engineering task {orphan} has no parent phase task")
+    _record_errors(crosswalk, "phase crosswalk", errors)
+    return {"mapped_phase_tasks": len(discovered), "errors": errors}
+
+
 def _record_errors(record: object, at: str, errors: list[str]) -> None:
     if isinstance(record, dict):
         for key, value in record.items():
@@ -223,7 +269,11 @@ def main() -> int:
         phase_doc, requirement_doc, task_doc = load_registries(args.root)
         report = audit(args.root, phase_doc, requirement_doc, task_doc)
         specimen = json.loads((args.root / "data/specimen-template.json").read_text(encoding="utf-8"))
-        report["errors"] = sorted(set(report["errors"] + validate_blank_specimen_template(specimen)))
+        crosswalk = json.loads((args.root / "roadmap/phase-task-crosswalk.json").read_text(encoding="utf-8"))
+        mapping = validate_phase_crosswalk(args.root, phase_doc, task_doc, crosswalk)
+        report["mapped_phase_tasks"] = mapping["mapped_phase_tasks"]
+        report["errors"] = sorted(set(report["errors"] + validate_blank_specimen_template(specimen)
+                                     + mapping["errors"]))
     except (OSError, json.JSONDecodeError) as exc:
         print(f"Failed to load implementation registers: {exc}", file=sys.stderr)
         return 1
@@ -231,7 +281,8 @@ def main() -> int:
         args.json.parent.mkdir(parents=True, exist_ok=True)
         args.json.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(f"Engineering plan: {report['requirements']} requirements; {report['tasks']} work orders; "
-          f"{report['planned_test_cases']} planned test cases")
+          f"{report['planned_test_cases']} planned test cases; "
+          f"{report['mapped_phase_tasks']} original phase tasks mapped")
     print("The audit checks traceability and file structure, not implementation or scientific correctness.")
     for error in report["errors"]:
         print(f"ERROR: {error}", file=sys.stderr)

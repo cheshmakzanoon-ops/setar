@@ -27,7 +27,8 @@ setar. Read `README.md`, `docs/START_HERE.md`, and the relevant phase before edi
   workflow is not the same thing as a successful Linux/Windows/macOS run.
 - Link new scientific work to stable `REQ-AAA-NNN` requirements and `ENG-Pxx-Tyy`
   work orders. Keep `roadmap/requirements.json` and
-  `roadmap/engineering-tasks.json` consistent and run
+  `roadmap/engineering-tasks.json` and the 119-task
+  `roadmap/phase-task-crosswalk.json` consistent and run
   `python3 tools/audit_implementation.py`. Planned tests are not present CTests.
 - Preserve unrelated changes. No force pushes, history rewriting, or automatic
   changes to repository protection, secrets, billing, or publishing settings.

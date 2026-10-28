@@ -46,6 +46,7 @@ reading-order index. Chapter order within a volume is not a project deadline.
 - [Live graphs and actual screenshot contract](ux/05-live-engineering-graphs-and-screenshot-contract.md)
 - [Machine-readable requirements](../roadmap/requirements.json)
 - [Dependency-ordered engineering work orders](../roadmap/engineering-tasks.json)
+- [All 119 original phase tasks mapped to engineering work](../roadmap/phase-task-crosswalk.json)
 - [Risk register](governance/risk-register.md)
 - [Rights and dependency policy](governance/rights-and-dependencies.md)
 - [Decision records](decisions/README.md)

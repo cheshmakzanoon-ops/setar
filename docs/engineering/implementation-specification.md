@@ -11,7 +11,7 @@ depends on measured contact stiffness, bridge mobility, required gesture
 bandwidth, or selected hardware, this specification defines the experiment that
 must decide it.
 
-There are three complementary indexes:
+There are four complementary indexes:
 
 1. [The phase register](../../roadmap/phase-register.json) states scientific
    dependency and present capability. Its status is *not* release readiness.
@@ -23,9 +23,13 @@ There are three complementary indexes:
    intended files to create/change, implementation steps, falsifiable checks and
    the artifact to hand to the next engineer. A proposed file path is not an
    existing file; `<specimen-id>` placeholders are deliberate.
+4. [The phase-task crosswalk](../../roadmap/phase-task-crosswalk.json)
+   associates all 119 older `Pxx-Tyy` headings with one or more `ENG-Pxx-Tyy`
+   work orders. This closes navigation gaps without overwriting phase-task
+   identity or implying that two different tasks are semantically identical.
 
-`python3 tools/audit_implementation.py` tests these references, DAGs and
-existing reading paths. It cannot certify that a C++ class is implemented, an
+`python3 tools/audit_implementation.py` tests these references, DAGs, original
+phase heading coverage, and existing reading paths. It cannot certify that a C++ class is implemented, an
 equation is correct, or a setar sounds like a real one. Its mutation-tested
 consistency rules are necessary housekeeping, not a substitute for physics.
 

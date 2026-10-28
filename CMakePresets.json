@@ -1,0 +1,64 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": { "major": 3, "minor": 25, "patch": 0 },
+  "configurePresets": [
+    {
+      "name": "headless-base",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "SETAR_BUILD_TESTS": "ON",
+        "SETAR_BUILD_RENDERER": "ON",
+        "SETAR_BUILD_REPORT_TESTS": "ON",
+        "SETAR_WARNINGS_AS_ERRORS": "ON",
+        "SETAR_ENABLE_JUCE": "OFF"
+      }
+    },
+    {
+      "name": "headless-debug",
+      "displayName": "Headless synthetic reference: Debug",
+      "inherits": "headless-base",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
+    },
+    {
+      "name": "headless-release",
+      "displayName": "Headless synthetic reference: Release",
+      "inherits": "headless-base",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
+    },
+    {
+      "name": "asan-ubsan",
+      "displayName": "GCC/Clang address + undefined behavior checks",
+      "inherits": "headless-debug",
+      "cacheVariables": { "SETAR_ENABLE_SANITIZERS": "ON" },
+      "condition": { "type": "notEquals", "lhs": "${hostSystemName}", "rhs": "Windows" }
+    }
+  ],
+  "buildPresets": [
+    { "name": "headless-debug", "configurePreset": "headless-debug" },
+    { "name": "headless-release", "configurePreset": "headless-release" },
+    { "name": "asan-ubsan", "configurePreset": "asan-ubsan" }
+  ],
+  "testPresets": [
+    {
+      "name": "headless-debug",
+      "configurePreset": "headless-debug",
+      "output": { "outputOnFailure": true },
+      "execution": { "noTestsAction": "error", "stopOnFailure": false }
+    },
+    {
+      "name": "headless-release",
+      "configurePreset": "headless-release",
+      "output": { "outputOnFailure": true },
+      "execution": { "noTestsAction": "error" }
+    },
+    {
+      "name": "asan-ubsan",
+      "configurePreset": "asan-ubsan",
+      "output": { "outputOnFailure": true },
+      "execution": { "noTestsAction": "error" }
+    }
+  ]
+}
+

@@ -1,0 +1,93 @@
+name: Engineering verification
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: engineering-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  headless:
+    name: Headless / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            executable: ./build/setar_render
+          - os: windows-2022
+            executable: ./build/Debug/setar_render.exe
+          - os: macos-14
+            executable: ./build/setar_render
+    steps:
+      - name: Check out the exact event revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Record available toolchain versions
+        shell: bash
+        run: |
+          cmake --version
+          python --version
+      - name: Configure dependency-free numerical reference
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DSETAR_BUILD_TESTS=ON -DSETAR_BUILD_REPORT_TESTS=ON -DSETAR_ENABLE_JUCE=OFF -DSETAR_WARNINGS_AS_ERRORS=ON
+      - name: Build C++20 targets
+        run: cmake --build build --config Debug --parallel 2
+      - name: Run independent numerical and integration tests
+        run: ctest --test-dir build -C Debug --output-on-failure --output-junit test-results.xml
+      - name: Audit handbook structure, prose count, and local links
+        run: python tools/audit_docs.py
+      - name: Render actual synthetic reference data
+        shell: bash
+        run: ${{ matrix.executable }} --output-dir artifacts/reference --duration 2 --sample-rate 48000
+      - name: Generate real graphs and a self-contained offline report
+        shell: bash
+        run: python tools/generate_report.py --input artifacts/reference --output artifacts/report --source-revision "${{ github.sha }}"
+      - name: Preserve numerical evidence and test logs
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: reference-evidence-${{ matrix.os }}
+          path: |
+            artifacts/
+            build/test-results.xml
+            build/Testing/Temporary/LastTest.log
+          if-no-files-found: error
+          retention-days: 14
+
+  sanitizers:
+    name: Linux / address + undefined behavior sanitizers
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      ASAN_OPTIONS: detect_leaks=1:halt_on_error=1
+      UBSAN_OPTIONS: print_stacktrace=1:halt_on_error=1
+    steps:
+      - name: Check out the exact event revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Configure instrumented headless reference
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DSETAR_ENABLE_SANITIZERS=ON -DSETAR_ENABLE_JUCE=OFF
+      - name: Build instrumented targets
+        run: cmake --build build --parallel 2
+      - name: Execute numerical and integration tests under sanitizers
+        run: ctest --test-dir build --output-on-failure --output-junit sanitizer-results.xml
+      - name: Preserve sanitizer test evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: sanitizer-evidence-linux
+          path: |
+            build/sanitizer-results.xml
+            build/Testing/Temporary/LastTest.log
+          if-no-files-found: error
+          retention-days: 14

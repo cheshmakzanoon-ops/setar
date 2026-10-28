@@ -33,10 +33,14 @@ diagnostic and the substantial host work still required.
 To begin a **new** subsystem rather than reproduce the current bootstrap,
 read the [implementation-level specification](implementation-specification.md),
 [independent verification matrix](verification-matrix.md), and
-[performance/accuracy budget derivation](performance-budget.md). The
+[performance/accuracy budget derivation](performance-budget.md). Newly
+executable prototype contracts and their explicitly partial acceptance
+status are documented in
+[the numerical handoff](10-prototype-contracts-and-test-expansion.md).
+The
 [requirements](../../roadmap/requirements.json) and
 [work-order register](../../roadmap/engineering-tasks.json) are machine-checked
-plans; their proposed source files and tests do not yet exist.
+plans; only the named executable subset has been implemented.
 
 ## Prerequisites
 
@@ -81,9 +85,12 @@ python3 tools/audit_implementation.py
 ```
 
 The configure preset writes into `build/headless-debug`. The build produces the
-`setar_reference` library, `setar_render`, and `setar_core_tests`. CTest invokes
+`setar_reference` library, `setar_render`, and `setar_core_tests`, plus the
+`setar_numerical_prototype` library, `setar_compare_solvers` and
+`setar_numerical_tests` when numerical experiments are enabled. CTest invokes
 named numerical cases separately, the renderer/report integration test, and the
-documentation-audit self-tests. The handbook audit is an additional repository
+documentation-audit self-tests, numerical prototype cases, evidence validator
+mutation tests and the solver-plot integration test. The handbook audit is an additional repository
 check: the audit's self-tests show that the auditor detects its intended defects,
 whereas running the auditor on this tree checks the actual handbook.
 

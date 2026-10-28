@@ -23,10 +23,13 @@ jobs:
         include:
           - os: ubuntu-24.04
             executable: ./build/setar_render
+            solver_executable: ./build/setar_compare_solvers
           - os: windows-2022
             executable: ./build/Debug/setar_render.exe
+            solver_executable: ./build/Debug/setar_compare_solvers.exe
           - os: macos-14
             executable: ./build/setar_render
+            solver_executable: ./build/setar_compare_solvers
     steps:
       - name: Check out the exact event revision
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -48,12 +51,21 @@ jobs:
         run: |
           python tools/audit_docs.py
           python tools/audit_implementation.py
+          python tools/audit_executable_coverage.py
+          python tools/validate_measurement_campaign.py data/measurement-campaign-template.json
+          python tools/validate_product_qualification.py data/product-qualification-template.json
       - name: Render actual synthetic reference data
         shell: bash
         run: ${{ matrix.executable }} --output-dir artifacts/reference --duration 2 --sample-rate 48000
       - name: Generate real graphs and a self-contained offline report
         shell: bash
         run: python tools/generate_report.py --input artifacts/reference --output artifacts/report --source-revision "${{ github.sha }}"
+      - name: Generate reproducible synthetic numerical comparison graphs
+        shell: bash
+        run: |
+          mkdir -p artifacts/solver
+          ${{ matrix.solver_executable }} > artifacts/solver/sweep.csv
+          python tools/generate_solver_report.py --input artifacts/solver/sweep.csv --output artifacts/solver/report --source-revision "${{ github.sha }}"
       - name: Preserve numerical evidence and test logs
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2

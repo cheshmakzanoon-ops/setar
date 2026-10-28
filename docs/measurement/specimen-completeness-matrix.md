@@ -117,8 +117,11 @@ independent standard-deviation labels that destroy physical admissibility.
 
 The [JSON template](../../data/specimen-template.json) is safe to distribute
 because it contains no actual recordings, private owner details or measured
-values. Its missing values are `null` and status `unmeasured`. A future schema
-validator should enforce the shape; a **separate** physical admissibility test
+values. Its missing values are `null` and status `unmeasured`. A distinct
+[17-channel acquisition campaign schema and hash validator](13-acquisition-campaign-execution.md)
+is now executable; it checks measurement *packet completeness*, not every
+field or physical admissibility of the separate specimen-parameter template.
+A future canonical specimen-asset validator and **separate** physical admissibility test
 must reject a logically complete but non-SPD material tensor or inconsistent
 port units. Even a correct schema cannot certify a sensor calibration or
 consent document.

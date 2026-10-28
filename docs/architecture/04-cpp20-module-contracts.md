@@ -1,6 +1,8 @@
 # Proposed C++20 module contracts: types, lifetime and exact boundaries
 
-**Status: proposed, unimplemented beyond the existing synthetic reference.**
+**Status: product interfaces proposed, with separate verified synthetic
+spatial-solver and two-mass prototypes.** See
+[the executable C++ contract report](../engineering/10-prototype-contracts-and-test-expansion.md).
 The declarations here are a reviewable target shape, not a header guaranteed to
 compile unchanged. Freeze a public signature only after the associated analytical
 fixtures pass. In particular, the port response shape and causal ordering cannot

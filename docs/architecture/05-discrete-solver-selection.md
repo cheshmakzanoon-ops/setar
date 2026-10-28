@@ -1,6 +1,9 @@
 # Solver selection and discrete string–contact–bridge work contract
 
-**Status: a decision protocol, not a selected production algorithm.** Physical
+**Status: a decision protocol, not a selected production algorithm.** The
+[actual explicit/implicit C++ comparison experiments](07-experimental-solver-evidence-and-choice.md)
+now exercise synthetic fixed-end strings, energy ledgers and CFL rejection;
+they do not establish which solver fits the real setar. Physical
 fidelity depends on the selected setar, measured contact/bridge impedance,
 required gesture bandwidth, source quality and available CPU. Choosing a single
 solver in prose before those inputs and independent comparisons would create a

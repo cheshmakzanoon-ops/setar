@@ -1,9 +1,12 @@
 # Requirements-to-tests verification matrix and portable execution contract
 
-**Status:** specification for future C++ components, with an already executable
-synthetic numerical baseline. The current baseline is listed in
-[testing and CI](testing-and-ci.md); none of the proposed names below should be
-confused with currently registered CTests. Their exact planned identifiers live
+**Status:** full acceptance specifications, with a synthetic numerical baseline
+and **nine explicitly partial executable mappings**. The implemented subset
+is audited in [executable-test-coverage.json](../../roadmap/executable-test-coverage.json),
+and its remaining gaps are recorded in
+[prototype contracts and test expansion](10-prototype-contracts-and-test-expansion.md).
+Do not confuse a CTest with completion of the full acceptance specification.
+The exact planned identifiers live
 in [requirements.json](../../roadmap/requirements.json), and work ownership
 lives in [engineering-tasks.json](../../roadmap/engineering-tasks.json).
 

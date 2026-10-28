@@ -29,8 +29,16 @@ inspect outputs, and progressively replace assumptions with evidence.
 The [open decision-gate ledger](docs/governance/engineering-decision-gates.md)
 identifies measurements, method choices, permissions, and host qualifications
 that cannot be resolved by writing more prose. **Planned tests and proposed
-C++ interfaces are not implemented features.** All 41 new engineering
-requirements begin at specification-only status.
+C++ interfaces are not necessarily implemented features.** The new
+[executed-prototype coverage registry](roadmap/executable-test-coverage.json)
+maps **9 of 79 planned acceptance names to *partial* executable checks**;
+70 are not yet mapped, and the full 41 engineering requirements are not
+claimed as completely verified. The
+[solver comparison and decision dossier](docs/architecture/07-experimental-solver-evidence-and-choice.md),
+[real specimen acquisition instructions](docs/measurement/13-acquisition-campaign-execution.md),
+[C++ contract and executable test handoff](docs/engineering/10-prototype-contracts-and-test-expansion.md)
+and [real VST3/product qualification gates](docs/plugin/07-product-qualification-evidence-gates.md)
+identify the exact current evidence and outstanding work.
 
 There are **no project deadlines or calendar estimates** in this roadmap. Phases
 advance when their evidence gates are met. Activities such as data acquisition,
@@ -66,6 +74,9 @@ cmake --build --preset headless-debug
 ctest --preset headless-debug
 python3 tools/audit_docs.py
 python3 tools/audit_implementation.py
+python3 tools/audit_executable_coverage.py
+python3 tools/validate_measurement_campaign.py data/measurement-campaign-template.json
+python3 tools/validate_product_qualification.py data/product-qualification-template.json
 ```
 
 The headless path must not download JUCE or require an audio device. The optional
@@ -110,6 +121,12 @@ The [finite-mode energy graph](docs/assets/energy.svg),
 [proposed musician-interface wireframe](docs/ux/assets/musician-wireframe.svg)
 are also included. The wireframe is a design proposal, **not** an implemented
 plugin editor or a screenshot from a running VST.
+
+CI additionally generates three actual synthetic numerical solver error
+graphs and a 60-row explicit-versus-implicit CSV in the `solver/report`
+artifact. The explicit finite-difference scheme rejects configurations
+outside its calculated CFL domain. These are real executable experiments,
+**not measured setar audio, live UI captures or finished VST3 host tests**.
 
 ## Contributing
 

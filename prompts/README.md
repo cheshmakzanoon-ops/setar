@@ -16,6 +16,7 @@ instrument interventions, participant contact, publication, or licensing choices
 | [Plugin and real time](plugin/README.md) | Host lifecycle, events, state, bounded processing, host failures | Reproducible host and execution evidence |
 | [Integration](integration.md) | Connecting accepted work across boundaries | Verified interfaces and an honest capability report |
 | [Engineering work-order prompts](engineering-implementation.md) | Implement or adversarially review specific `ENG-Pxx-Tyy` tasks with exact prerequisites and independent tests | Source, falsifiable result, raw evidence and next gate |
+| [Five evidence-gate handoffs](five-gate-evidence-handoffs.md) | Numerical solver choice, real specimen, verified APIs, 79-case expansion and true VST3/product qualification | Copyable detailed prompts with proofs, blockers and honest status |
 
 ## Starting a work request
 

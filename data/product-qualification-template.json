@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "evidence_class": "blank_qualification_plan_not_executed",
+  "revision": null,
+  "product_identifier": null,
+  "plugin_binary_sha256": null,
+  "supported_claim_scope": "none",
+  "required_matrix": [
+    {"id":"linux.validator","platform":"linux","kind":"vst3_validator"},
+    {"id":"linux.real_host","platform":"linux","kind":"real_host"},
+    {"id":"linux.realtime","platform":"linux","kind":"realtime_profile"},
+    {"id":"linux.ui","platform":"linux","kind":"live_ui_capture"},
+    {"id":"windows.validator","platform":"windows","kind":"vst3_validator"},
+    {"id":"windows.real_host","platform":"windows","kind":"real_host"},
+    {"id":"windows.realtime","platform":"windows","kind":"realtime_profile"},
+    {"id":"windows.ui","platform":"windows","kind":"live_ui_capture"},
+    {"id":"macos.validator","platform":"macos","kind":"vst3_validator"},
+    {"id":"macos.real_host","platform":"macos","kind":"real_host"},
+    {"id":"macos.realtime","platform":"macos","kind":"realtime_profile"},
+    {"id":"macos.ui","platform":"macos","kind":"live_ui_capture"},
+    {"id":"global.perceptual","platform":"cross_platform","kind":"blind_perceptual_study"}
+  ],
+  "executions": [],
+  "notes": "No real plugin, host, UI screenshot, performance profile or listener study evidence has been attached. This is a gate map, not a qualification result."
+}

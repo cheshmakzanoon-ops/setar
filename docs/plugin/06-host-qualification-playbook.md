@@ -5,6 +5,9 @@ is only a synthetic diagnostic. It has not been established as a complete
 four-string setar engine, production editor, tested VST3 binary, or
 host-qualified product. The headless reference build currently has no JUCE
 dependency. Keep that independent build working after the full adapter exists.
+The [13-gate executable metadata contract](07-product-qualification-evidence-gates.md)
+now verifies that blank qualification templates and certain false pass
+records are rejected; **no actual plugin host or human study has been run**.
 
 ## Primary interface authority
 

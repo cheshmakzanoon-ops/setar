@@ -60,11 +60,21 @@ and document that dependency.
 | `core.endpoints` | Silent fixed endpoints, zero-height silence, and sign symmetry | Observation can be silent while internal energy is nonzero |
 | `integration.report` | Actual executable output, PCM16, independent observation, file identity, SVG/HTML, and malformed-input rejection | Standard-library report, not a browser screenshot test |
 | `documentation.audit_self_tests` | Auditor behavior on controlled valid and invalid temporary fixtures | Tests the auditor, not every actual handbook claim |
+| `documentation.implementation_traceability` | 41 requirements, 44 work orders, unique IDs, reading paths, coverage, DAG and future-test ownership | Planning consistency, **not** executed future physics tests |
+| `documentation.implementation_mutations` | Controlled duplicate, orphan, path, cycle, schema and status/coverage defects are rejected | Mutation tests of the planning auditor, not physical fidelity |
 
 The numerical cases carry `core` and `numerical` labels. The report case carries
 `integration` and `report`. Audit self-tests carry `documentation`. Use these
 labels to select a diagnostic subset, but run the complete applicable baseline
 before proposing an accepted change.
+
+The implementation traceability auditor is also invoked directly by the
+portable GitHub Actions headless jobs. Every one of its **79 planned test
+identifiers** is a specification for future independent C++/host/measurement
+tests; those 79 cases are **not** registered CTests in the present scaffold.
+Its test suite checks only that the plan's dependency graph and files remain
+internally consistent. Developers must implement each named physical test and
+then expand the cross-platform CTest matrix before claiming a new capability.
 
 ```sh
 ctest --preset headless-debug -L numerical --output-on-failure

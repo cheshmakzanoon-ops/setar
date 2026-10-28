@@ -37,6 +37,7 @@ cmake --preset headless-debug
 cmake --build --preset headless-debug
 ctest --preset headless-debug
 python3 tools/audit_docs.py
+python3 tools/audit_implementation.py
 ```
 
 Use `python` instead of `python3` in manual commands if that is the installed

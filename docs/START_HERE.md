@@ -31,6 +31,16 @@ serialization should read the plugin and real-time volumes rather than modifying
 equations. A measurement researcher should begin with specimen identifiers,
 calibration, consent, and uncertainty before collecting impressive-looking audio.
 
+For implementation, the additional
+[engineering specification](engineering/implementation-specification.md),
+[41 requirements](../roadmap/requirements.json), and
+[44 dependency-ordered `ENG-Pxx-Tyy` work orders](../roadmap/engineering-tasks.json)
+turn these phases into concrete proposed source locations, procedures, independent
+tests and evidence packets. The [engineering decision ledger](governance/engineering-decision-gates.md)
+marks unresolved physical/host/license choices that documentation cannot
+legitimately fill in. Work orders and their 79 named *planned tests* are not
+implemented runtime features; use the registers to choose the next honest gate.
+
 Each phase has entry conditions, task sequence, outputs, tests, failure rules, and
 an exit gate. The gate is not an authorization to ignore uncertainties in later
 phases. It states what has been demonstrated for the phase's explicitly limited

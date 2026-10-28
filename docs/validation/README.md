@@ -16,6 +16,7 @@ A successful synthetic reference build does not establish measured-setar fidelit
 7. [Listening experiments](06-listening-experiments.md): preregistration, ABX limits, reference matching, and playability.
 8. [Cross-platform CI](07-cross-platform-ci.md): compiler coverage, numerical reproducibility, sanitizers, and artifacts.
 9. [Release evidence and triage](08-release-evidence-and-failure-triage.md): bounded quality claims and regression review.
+10. [Final fidelity acceptance](09-final-fidelity-acceptance.md): preregistered acoustic, perceptual and performer studies with explicit failure/claim rules.
 
 The implementation, review, and debugging entry points are in
 [validation prompts](../../prompts/validation/README.md). Runtime and host claims

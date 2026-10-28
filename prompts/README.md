@@ -15,6 +15,7 @@ instrument interventions, participant contact, publication, or licensing choices
 | [Validation](validation/README.md) | Evidence pipelines, acoustic discrepancies, claim review | Scoped independent validation decision |
 | [Plugin and real time](plugin/README.md) | Host lifecycle, events, state, bounded processing, host failures | Reproducible host and execution evidence |
 | [Integration](integration.md) | Connecting accepted work across boundaries | Verified interfaces and an honest capability report |
+| [Engineering work-order prompts](engineering-implementation.md) | Implement or adversarially review specific `ENG-Pxx-Tyy` tasks with exact prerequisites and independent tests | Source, falsifiable result, raw evidence and next gate |
 
 ## Starting a work request
 

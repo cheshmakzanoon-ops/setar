@@ -25,6 +25,10 @@ setar. Read `README.md`, `docs/START_HERE.md`, and the relevant phase before edi
   repeated prose to inflate documentation word counts.
 - Update cross-platform tests and documentation with each change. A configured
   workflow is not the same thing as a successful Linux/Windows/macOS run.
+- Link new scientific work to stable `REQ-AAA-NNN` requirements and `ENG-Pxx-Tyy`
+  work orders. Keep `roadmap/requirements.json` and
+  `roadmap/engineering-tasks.json` consistent and run
+  `python3 tools/audit_implementation.py`. Planned tests are not present CTests.
 - Preserve unrelated changes. No force pushes, history rewriting, or automatic
   changes to repository protection, secrets, billing, or publishing settings.
 

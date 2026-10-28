@@ -6,6 +6,14 @@ participant consent, or reference parameter sets from the presence of this
 directory. The source ledger explicitly distinguishes public articles from
 unverified underlying assets.
 
+The [blank specimen template](specimen-template.json) contains four
+**unmeasured** physical string placeholders and explicit `null` inputs. It is
+not a validated asset and must never be relabeled as measured. Its safe blank
+state is checked by `tools/audit_implementation.py`; the
+[specimen completeness matrix](../docs/measurement/specimen-completeness-matrix.md)
+explains how real measurements, uncertainties and permissions would fill a
+*separate* admitted asset.
+
 Recordings are reference and validation data. They are not sampled-note playback
 assets for the synthesis engine. Physical parameters and justified reduced
 models may be derived from measurements when provenance, rights, uncertainty,

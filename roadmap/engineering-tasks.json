@@ -1,0 +1,359 @@
+{
+  "schema_version": 1,
+  "purpose": "Dependency-ordered proposed work orders; each must yield independently reviewable evidence before completion",
+  "status_vocabulary": ["specified_not_implemented", "in_progress", "blocked_by_evidence", "implemented_unverified", "verified_for_declared_scope", "scientifically_validated_for_declared_scope"],
+  "tasks": [
+    {
+      "id":"ENG-P00-T01","phase":"P00","title":"Freeze a reference-specimen charter, not a generic setar stereotype","requires":[],"requirements":["REQ-GOV-001"],
+      "read":["docs/phases/P00-charter.md","docs/ethnomusicology/README.md"],
+      "touch":["data/specimens/<specimen-id>/charter.json","docs/governance/claims.md"],
+      "steps":["Choose an actual instrument and document owner, maker if known, construction history, string setup, environmental conditions and lawful access.","Define a matrix of pitches, tuning, single/repeated plucks, fretting, ornaments, damping and output locations with practitioner terminology.","Write exactly which physical quantities and musical behavior the first validated claim will cover; list excluded gestures explicitly.","Choose a claim level Q0–Q4 and forbid promotion without the stated evidence packet."],
+      "verify":["Every claim names an observable and a measurable condition.","An independent reviewer can identify the reference specimen without using a generic category label."],
+      "deliver":"Versioned charter, claims table, practitioner review and unresolved-access list","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P00-T02","phase":"P00","title":"Approve test-to-claim and stopping rules","requires":["ENG-P00-T01"],"requirements":["REQ-GOV-001"],
+      "read":["docs/governance/quality-contract.md","docs/validation/00-evidence-contract.md"],
+      "touch":["docs/governance/claim-gates.md","roadmap/requirements.json"],
+      "steps":["Separate analytic verification, instrument measurement, perceptual preference and real-time qualification as different gates.","For each claimed behavior choose an effect/observable, uncertainty source, independent comparator, rejection criterion and authorized reviewer.","Preregister split policy before any calibration data become available.","Record open decisions and a path to obtain needed measurements rather than assigning invented thresholds."],
+      "verify":["A failure of any essential gate blocks only the corresponding claim and cannot be hidden by a total score.","No acceptance criterion depends on a shipping date or handbook word count."],
+      "deliver":"Traceable claim-to-evidence protocol with explicit negative-result handling","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P01-T01","phase":"P01","title":"Audit scientific input and source reproducibility","requires":["ENG-P00-T01"],"requirements":["REQ-GOV-002"],
+      "read":["docs/research/README.md","docs/measurement/README.md"],
+      "touch":["data/source-ledger.json","docs/research/uncertainty-register.md"],
+      "steps":["List every coefficient needed by the proposed strings, contact, wooden soundboard, bowl, bridge, cavity and radiation model.","For each published item verify the original DOI/page/table, geometry and boundary conditions and whether raw data are accessible.","Recalculate units, tensor reciprocity, ranges and error bars independently; quarantine inconsistent values.","Track source copyright, personal data, consent and permission to retain derivatives separately from scientific trust."],
+      "verify":["A deliberately inconsistent orthotropic matrix is rejected before runtime preparation.","Removing a source invalidates all dependent claims and calibration assets rather than silently substituting a prior."],
+      "deliver":"Signed/admitted/quarantined source ledger with durable links and admissibility results","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P01-T02","phase":"P01","title":"Prepare a measurable specimen and access plan","requires":["ENG-P01-T01"],"requirements":["REQ-GOV-002","REQ-GEO-001"],
+      "read":["docs/measurement/README.md","docs/governance/rights-and-dependencies.md"],
+      "touch":["data/specimens/<specimen-id>/measurement-plan.json","experiments/specimen-campaign.md"],
+      "steps":["Identify missing controlled variables: tuning and string tension, fret positions, shape, grain, temperature/humidity, pickup geometry, bridge mobility and pluck force.","Design independent controlled sessions for geometric scanning, impulse/FRF, guided plucks, directivity and musician performance, with repeat count and calibration controls.","Define sensor dynamic range, timing synchronization, calibration uncertainty, object coordinate frame and file formats before acquisition.","Specify access, consent, data minimization and restricted-file destinations; request participation only with explicit authority."],
+      "verify":["The acquisition protocol has a calibration procedure and repeated measurements to estimate uncertainty.","Every downstream model input is either measured, derived with uncertainty, a declared prior, or a blocking unknown."],
+      "deliver":"Specimen-specific data demand table, measurement plan, permissions and raw-storage policy","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P02-T01","phase":"P02","title":"Extend portable C++20 numerical lab with independent oracles","requires":["ENG-P01-T01"],"requirements":["REQ-LAB-001","REQ-LAB-002"],
+      "read":["docs/engineering/reference-model.md","docs/numerics/11-verification-and-benchmarks.md"],
+      "touch":["include/setar/numerics/","src/numerics/","tests/numerics/","CMakeLists.txt"],
+      "steps":["Preserve the existing synthetic ModalString test contract; introduce independent oscillator, two-mass, string-grid and passive-port fixture packages.","Separate unit-bearing physical input, solver configuration and observation mapping from output normalization.","Give every case an analytic or separately converged expected outcome and deterministic input hash.","Register new CTests with failure codes and bounded runtimes; execute on all OS jobs and under relevant sanitizers."],
+      "verify":["Purposefully invert a force sign or break a boundary stencil and demonstrate the targeted check fails.","Unforced fixtures reproduce reference displacement, velocity and energy without plugin dependencies."],
+      "deliver":"C++ fixture library, analytic notebooks/derivations, XML test output, raw errors and reports","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P02-T02","phase":"P02","title":"Make evidence packets, regression policy and code provenance executable","requires":["ENG-P02-T01"],"requirements":["REQ-LAB-001","REQ-LAB-002"],
+      "read":["docs/engineering/artifacts-and-reproducibility.md","docs/validation/02-reference-corpus-provenance.md"],
+      "touch":["tools/validate_evidence.py","data/evidence.schema.json","tests/evidence/"],
+      "steps":["Define required fields for model ID, source revision, input hashes, SI units, solver, build flags, controls, actual outcome and reviewer.","Store raw observables alongside derived metrics and plots; make every plotting transform explicit and reversible where practical.","Implement schema and semantic validation for finite numbers, monotone times, sample indices, dependencies and permissions.","Separate algorithm regression goldens from independent truth; reject an updated golden without a comparator and written rationale."],
+      "verify":["Alter a source hash, unit, expected time axis and model identity in separate negative fixtures; validator rejects each.","Two independent worktrees rebuild deterministic synthetic evidence with matching declared invariants."],
+      "deliver":"Versioned evidence schema, validator, mutation tests and portable CI artifacts","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P03-T01","phase":"P03","title":"Implement and verify tension/bending spatial operators","requires":["ENG-P02-T02"],"requirements":["REQ-STR-001"],
+      "read":["docs/numerics/01-stiff-string-fdtd.md","docs/numerics/02-boundaries-and-coupling.md"],
+      "touch":["include/setar/numerics/string_operator.hpp","src/numerics/string_operator.cpp","tests/numerics/string_operator_tests.cpp"],
+      "steps":["Write weak/strong form and SI dimensional analysis for mass per length, tension, bending stiffness and supports.","Assemble explicit matrix and fast stencil implementations sharing a declared inner product; compare their actions on nontrivial vectors.","Derive fixed/free/bridge endpoint closure and any ghost points from the chosen energy, not trial-and-error coefficients.","Implement observation interpolation and its force-injection adjoint with identical quadrature and coordinate convention.","Sweep grid size and compare frequencies, shapes, static compliance and port work with an independent eigenanalysis."],
+      "verify":["Stencil equals matrix action including first and last active degrees of freedom.","For arbitrary test vectors discrete force work matches interpolated velocity power to roundoff scaled by input magnitude."],
+      "deliver":"Operator derivation, boundary matrix tests, convergence CSV and adjoint work proof","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P03-T02","phase":"P03","title":"Select and verify a fixed-coefficient time integrator","requires":["ENG-P03-T01"],"requirements":["REQ-STR-002"],
+      "read":["docs/numerics/07-time-integration.md","docs/numerics/08-dispersion-and-dissipation.md"],
+      "touch":["include/setar/numerics/integrator.hpp","src/numerics/integrator.cpp","tests/numerics/integrator_tests.cpp"],
+      "steps":["Write exact update equation including damping discretization and initial half-step interpretation.","Derive the exact amplification matrix and stability range for this scheme including boundary closure.","Implement a separate higher-accuracy oracle and track time/space error independently.","Produce lossless, viscous-loss and intentionally unstable tests with energy ledgers and convergence orders.","Choose the initial reference method only after error-vs-cost comparison and record any alternatives not chosen."],
+      "verify":["A verified passive unforced fixture has no unexplained positive discrete work.","A parameter beyond the declared CFL or stability envelope is rejected, not repaired by hidden clipping."],
+      "deliver":"Reproducible scheme-choice ADR, amplification math, benchmark table and gate evidence","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P03-T03","phase":"P03","title":"Verify power ports on coupled analytic fixtures","requires":["ENG-P03-T02"],"requirements":["REQ-STR-001","REQ-STR-002","REQ-CPL-001"],
+      "read":["docs/mathematics/03-energy-and-passive-ports.md","docs/architecture/02-physical-ports-and-state-ownership.md"],
+      "touch":["include/setar/physics/port_contract.hpp","tests/numerics/two_mass_port_tests.cpp"],
+      "steps":["Define sign and reference frame for each translational force and velocity pair and the associated discrete power sample.","Couple two masses and a spring through the exact same interface intended for strings/body; solve their joint update.","Compare with a closed-form oscillator and a dense-matrix solution independent of the production coupling code.","Inject and recover energy through a port; verify equal/opposite work, correct time staggering and coordinate rotation."],
+      "verify":["A one-step lag or swapped force sign fails at least one energy and phase fixture.","Zero coupling reproduces the isolated component result across irregular block partitions."],
+      "deliver":"Reusable power-port contract, two-mass fixture and interface invariant report","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P04-T01","phase":"P04","title":"Verify dispersion, loss and calibrated string parameters","requires":["ENG-P03-T02"],"requirements":["REQ-STR-003"],
+      "read":["docs/strings/README.md","docs/numerics/08-dispersion-and-dissipation.md"],
+      "touch":["src/strings/stiff_loss.cpp","tests/strings/dispersion_loss_tests.cpp","experiments/dispersion-study.md"],
+      "steps":["Separate bending stiffness, tension, boundary effects and frequency-dependent damping in the eigenproblem.","Include explicit zero-EI/zero-loss/weak-loss limits and discuss the sharp-pluck regularity problem.","Test pole locations and passive damping operators over parameter envelopes; reject negative stored energy.","Compare frequency/decay predictions at multiple resolutions with a separate modal or FEM oracle and document mesh/mode cutoff."],
+      "verify":["Frequency deviations decrease with the documented resolution trend.","A materially wrong loss law cannot pass by adjusting microphone gain or body radiation."],
+      "deliver":"Frequency and decay curves, passive-loss tests and model-domain table","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P04-T02","phase":"P04","title":"Introduce transverse polarizations and optional nonlinear tension","requires":["ENG-P04-T01"],"requirements":["REQ-STR-004"],
+      "read":["docs/numerics/03-two-polarizations.md","docs/strings/README.md"],
+      "touch":["src/strings/multi_axis.cpp","tests/strings/nonlinear_string_tests.cpp"],
+      "steps":["Choose actual string coordinate axes and force projections measured at bridge and excitation positions.","Derive strain extension and potential energy before coding nonlinear tension, and identify longitudinal assumptions.","Build decoupled and exactly symmetric limits and quantify amplitude-dependent frequency and mode coupling.","Compare analytic weak-amplitude predictions with a separate converged time-domain solver; guard inadmissible strain and loss."],
+      "verify":["Removing transverse coupling recovers independently validated scalar strings.","A conservative nonlinear test conserves or correctly accounts for total mechanical energy as amplitude varies."],
+      "deliver":"Energy derivation, multi-axis tests and quantified extension domain","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P05-T01","phase":"P05","title":"Measure and classify nail/flesh contact and release","requires":["ENG-P01-T02","ENG-P04-T02"],"requirements":["REQ-EXC-001","REQ-EXC-002"],
+      "read":["docs/contacts/README.md","docs/performance/README.md"],
+      "touch":["experiments/nail-contact-campaign.md","data/gestures/<session-id>/manifest.json"],
+      "steps":["Record permissible high-speed finger/nail contact geometry, motion and synchronized acoustic or string response with calibration and consent.","Separate attack, adhered motion, slipping, detachment and any repeat/recontact; label uncertainty instead of treating one frame as truth.","Test hypotheses for finite-width compliant contact, friction and loss with repeated strokes and changed speed/angle.","Preserve raw gesture trajectories and fit only training recordings; reserve unseen executions for model validation."],
+      "verify":["Force/displacement observables and timing have recorded calibration uncertainty.","Held-out stroke velocity/angle reveals whether one contact law generalizes rather than only one timbre setting."],
+      "deliver":"Measured contact event taxonomy, priors, raw-data permissions and held-out observations","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P05-T02","phase":"P05","title":"Build finite-contact solver and release-state machine","requires":["ENG-P05-T01","ENG-P03-T03"],"requirements":["REQ-EXC-001"],
+      "read":["docs/numerics/09-nonlinear-algorithms.md","docs/contacts/README.md"],
+      "touch":["include/setar/contact/nail.hpp","src/contact/nail.cpp","tests/contact/nail_tests.cpp"],
+      "steps":["Define compression, relative velocity, friction internal state and potential/dissipation terms in SI units.","Prove admissible work signs and choose exact/discrete-gradient or bounded implicit root method for the nonlinear state.","Implement engagement, slip and release conditions with explicit event ordering and a finite iteration/failure bound.","Test stiff and soft contacts, near-grazing plucks, zero relative speed and recontact against an independent high-resolution reference.","Separate physically meaningful release sound from an arbitrary ADSR envelope or sample-trigger switch."],
+      "verify":["Repeated contact cannot inject unreported energy in a passive synthetic fixture.","An intentionally nonconverged root solve returns an error rather than a plausible audio sample."],
+      "deliver":"Contact state machine, work equations, iteration histograms and traceable release examples","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P05-T03","phase":"P05","title":"Define and replay controlled pluck trajectories","requires":["ENG-P05-T02"],"requirements":["REQ-EXC-002","REQ-PRF-002"],
+      "read":["docs/performance/README.md","docs/validation/04-gesture-and-radiation-validation.md"],
+      "touch":["include/setar/performance/gesture.hpp","tests/performance/gesture_replay_tests.cpp"],
+      "steps":["Represent contact path, direction, nail compliance control, start/end times and physical string target in an event manifest.","Develop deterministic replay with explicit interpolation and time units, independent of host buffer boundaries.","Expose repeated plucks without replacing existing string state; record force, contact work, bridge transfer and sound observation.","Compare reproducibility across block partitions and sensitivity across speed/angle while preserving a different held-out player/session."],
+      "verify":["One normalized gesture timeline produces matching physical observables across block sizes within declared arithmetic tolerances.","Replacing gesture metadata with a different physical unit fails validation."],
+      "deliver":"Event schema, deterministic gesture renderer and contact/observation report","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P06-T01","phase":"P06","title":"Implement moving fret, fingertip and afterlength contacts","requires":["ENG-P05-T02"],"requirements":["REQ-FRT-001"],
+      "read":["docs/contacts/README.md","docs/numerics/04-moving-frets-and-retuning.md"],
+      "touch":["src/contact/fret.cpp","src/contact/fingertip.cpp","tests/contact/fret_tests.cpp"],
+      "steps":["Inventory actual tied-fret geometry, tangent/normal direction, compliance and friction for the chosen specimen.","Construct contact potential/normal complementarity and damping without deleting the string state beyond the stopped point.","Derive external finger work for moving contact points and discretize with the chosen energy-consistent update.","Exercise sliding, hammer-on/pull-off, release, multiple constraints and afterlength response, including hard-contact limiting cases."],
+      "verify":["A lifted finger restores the preserved state and permitted afterlength motion.","No artificial energy gain is concealed by unilateral velocity zeroing at the fret."],
+      "deliver":"Contact implementation, independent energy ledger, penetration and convergence curves","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P06-T02","phase":"P06","title":"Implement state-preserving retuning and control movement","requires":["ENG-P06-T01"],"requirements":["REQ-FRT-002"],
+      "read":["docs/numerics/04-moving-frets-and-retuning.md","docs/realtime/02-events-capacity-and-overflow.md"],
+      "touch":["src/strings/retune_transition.cpp","tests/strings/retune_tests.cpp"],
+      "steps":["Classify controls as physical tension change, contact motion, geometry change or a disclosed nonphysical convenience transform.","Define how mass/momentum and displacement map through a coefficient/mesh change; derive work or state-projection defect.","Exercise monotone ramps, reversals, abrupt changes, simultaneous plucks and repeated same-sample controls.","Reject or transactionally defer an unsupported transition without corrupting the old live state."],
+      "verify":["The transition reports energy change and continuity error instead of silently zeroing modes.","Different render block partitions reproduce the same normalized control trajectory."],
+      "deliver":"Physical-control transition policies, numerical diagnostics and regression set","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P07-T01","phase":"P07","title":"Capture specimen geometry with uncertainty and frames","requires":["ENG-P01-T02"],"requirements":["REQ-GEO-001"],
+      "read":["docs/geometry/README.md","docs/measurement/README.md"],
+      "touch":["data/specimens/<specimen-id>/geometry.json","experiments/geometry-registration.md"],
+      "steps":["Specify stable string, bridge, fingerboard, wooden soundboard, bowl, peg, cavity and microphone coordinates and named transformations.","Capture scaled photo/scan/manual landmarks using calibrated tools and documented image/mesh processing.","Record repeatability, thermal/humidity state, tool accuracy and alignment residuals; keep original files immutable.","Create geometry validation for inverted normals, nonmanifold surfaces where forbidden, negative thickness and impossible string contact locations."],
+      "verify":["Coordinate round-trip and landmark residual stay within the preregistered measurement envelope.","An independent reviewer can recalculate scale from raw calibration references."],
+      "deliver":"Specimen geometry package, transforms, meshes and uncertainty report","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P07-T02","phase":"P07","title":"Screen material tensors and identify measurable bounds","requires":["ENG-P07-T01","ENG-P01-T01"],"requirements":["REQ-GEO-002"],
+      "read":["docs/geometry/README.md","docs/body/README.md","docs/research/README.md"],
+      "touch":["src/assets/material_validation.cpp","tests/assets/material_tests.cpp"],
+      "steps":["Document longitudinal/radial/tangential axes and how density, modulus, shear and Poisson values were obtained.","Form the compliance tensor, enforce reciprocal cross-terms and test strict positive definiteness on all accepted parameter samples.","Propagate published errors, humidity variation, grain orientation and correlated uncertainties into modal predictions.","Keep values failing symmetry or energy tests quarantined, including suspicious published tables; design targeted independent measurement."],
+      "verify":["Intentional E and nu inconsistency yields a deterministic validation failure.","Physically rotated material axes transform predicted responses consistently, not via an arbitrary gain."],
+      "deliver":"Admissible tensor parser, parameter priors and uncertainty sensitivity table","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P08-T01","phase":"P08","title":"Construct independent body FEM and mesh-convergence study","requires":["ENG-P07-T02"],"requirements":["REQ-BOD-001"],
+      "read":["docs/body/README.md","docs/numerics/06-finite-elements.md"],
+      "touch":["src/body/offline_fem/","tests/body/fem_patch_tests.cpp","experiments/mesh-convergence.md"],
+      "steps":["Choose physically justified wooden plate/shell, bowl and joint domains and boundary conditions for the measured setar specimen.","Implement consistent mass and stiffness with stable quadrature, material frames and a separate patch-test comparator.","Refine mesh through physical frequencies, bridge-mode residues and local strain energy, not only mesh element count.","Inspect rigid modes, clamping sensitivity, inverted elements, mode swapping and mesh-to-sensor registration."],
+      "verify":["Patch/manufactured tests expose element orientation and scaling bugs.","Mode/FRF errors approach a reference as mesh is refined before any listening-based fitting."],
+      "deliver":"Offline FEM matrix/mesh assets, convergence plots, solver choices and accepted domain","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P08-T02","phase":"P08","title":"Measure/calibrate multi-axis bridge impedance and reciprocity","requires":["ENG-P08-T01","ENG-P01-T02"],"requirements":["REQ-BOD-002"],
+      "read":["docs/body/03-bridge-contact-and-multiport-coupling.md","docs/measurement/README.md"],
+      "touch":["experiments/bridge-mobility.md","tests/body/impedance_tests.cpp"],
+      "steps":["Measure force and velocity in registered bridge axes, preserving sensor calibration, phase, trigger alignment and contact fixture mass.","Estimate complex mobility with coherence and noise-floor controls; test different driving points and reciprocity assumptions.","De-embed fixture/mount effects only with a separately justified model; retain both measured and corrected data.","Compare FEM/measurement FRFs on an explicitly non-fitted frequency range before retuning unknown material fields."],
+      "verify":["Positive-real/passivity and reciprocity tests report frequency-local exceptions with uncertainty.","Unit conversion and force sign changes produce detectable shifts in the energy test."],
+      "deliver":"Bridge port map, calibrated complex FRF, fitted/unfitted error and uncertainty","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P08-T03","phase":"P08","title":"Reduce physical body while retaining passive interface behavior","requires":["ENG-P08-T02"],"requirements":["REQ-BOD-003"],
+      "read":["docs/numerics/05-modal-reduction.md","docs/body/README.md"],
+      "touch":["src/body/reduction.cpp","tests/body/reduced_model_tests.cpp"],
+      "steps":["Compute and normalize retained modes or a rational passive fit using the full port matrix, not just one microphone response.","Choose bandwidth, residual treatment, damping form and reduction rank before reporting quality.","Compare retained-pole response and transient port work to independent high-order structural or measured reference.","Sweep reduction rank and quantify size, runtime, bridge mobility error and sensitivity to changed fretting or excitation positions."],
+      "verify":["Passive synthetic body cannot spontaneously create energy at the connector.","Fitted resonance peaks do not hide large held-out cross-port phase error."],
+      "deliver":"Portable immutable body asset, reduction provenance, port-response error-vs-cost figures","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P09-T01","phase":"P09","title":"Assemble bidirectional string–bridge–body step","requires":["ENG-P03-T03","ENG-P04-T02","ENG-P08-T03"],"requirements":["REQ-CPL-001"],
+      "read":["docs/architecture/02-physical-ports-and-state-ownership.md","docs/body/03-bridge-contact-and-multiport-coupling.md"],
+      "touch":["src/physics/coupled_step.cpp","tests/coupling/port_energy_tests.cpp"],
+      "steps":["Declare endpoint displacement/velocity basis, body bridge basis, force direction and discrete time level for every active port.","Derive coupled residual and solve string/body reactions in one consistent step; include contact force coupling where needed.","Verify joint energy: initial + external work - dissipation - final = numerical defect, with uncertainty/roundoff bound.","Compare monolithic and partitioned schemes on an analytic two-mass and a converged string/body fixture.","Do not introduce a transport delay, rescaled output or unphysical gain to stabilize feedback without a new approximation study."],
+      "verify":["Zero coupling, infinite-mass support and extreme passive impedance limits match independent predictions.","Exchanging order of subsystem evaluation does not alter a correctly solved simultaneous power connection."],
+      "deliver":"Joint-step equation, solver residual and energy ledger, fixture tests and chosen strategy ADR","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P09-T02","phase":"P09","title":"Verify passive sympathetic transfer among strings","requires":["ENG-P09-T01"],"requirements":["REQ-CPL-002"],
+      "read":["docs/body/README.md","docs/strings/README.md"],
+      "touch":["tests/coupling/cross_string_tests.cpp","experiments/sympathetic-transfer.md"],
+      "steps":["Drive string A with B/C/D initially silent and measure each string's state and bridge transfer independently from final sound.","Test damping, tuning detuning, contact arrest and structural mobility changes in a symmetric and asymmetric fixture.","Verify cross response is mediated by the shared physical port and disappears when that port is disconnected.","Compare transfer magnitude/phase or decay to calibrated bridge/string measurements never used in the fitting objective."],
+      "verify":["The unstruck strings contain physical vibration and proper energy accounting, not copied audio samples.","Controlled detuning changes beating and transfer in the predicted direction without arbitrary per-string gains."],
+      "deliver":"Cross-string state/FRF plots and source-to-observation causal trace","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P10-T01","phase":"P10","title":"Verify cavity and vibrating-boundary energy exchange","requires":["ENG-P08-T01"],"requirements":["REQ-ACO-001"],
+      "read":["docs/acoustics/01-cavity-and-structural-acoustic-coupling.md","docs/mathematics/03-energy-and-passive-ports.md"],
+      "touch":["src/acoustics/offline_cavity.cpp","tests/acoustics/cavity_tests.cpp"],
+      "steps":["Choose pressure/volume-flow or distributed traction/surface-velocity conjugates and write the interface integral.","Define cavity boundary impedance, aperture, soundhole/leaks and whether thermal/viscous losses are modeled or excluded.","Implement independent rigid/soft-wall cavity benchmarks, analytic rectangular modes and mesh convergence.","Map structural surface DOFs to acoustic boundary motion with quadrature-adjoint operators and paired work checks."],
+      "verify":["An unforced ideal closed cavity conserves the declared energy to the scheme's expected numerical defect.","A zero-motion boundary removes coupling without changing unrelated body dynamics."],
+      "deliver":"Coupled cavity reference, mesh and eigenmode convergence, work-pair certification","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P10-T02","phase":"P10","title":"Build calibrated exterior radiation and observation layer","requires":["ENG-P10-T01","ENG-P08-T02"],"requirements":["REQ-ACO-002"],
+      "read":["docs/acoustics/README.md","docs/validation/03-acoustic-metrics.md"],
+      "touch":["src/acoustics/radiation.cpp","tests/acoustics/observation_tests.cpp","experiments/directivity-sweep.md"],
+      "steps":["Choose an offline wave/BEM/reference radiation treatment and derive a reduced observation map from body/cavity state.","Measure microphone location, angle, calibration, room response and relative timing with controlled source and repeated placements.","Keep free-field, room convolution, listening gain and optional creative effects in separately switchable, metadata-visible layers.","Validate multipoint complex pressure and directivity against withheld observation angles or distances; expose frequency-range limits."],
+      "verify":["Microphone relocation changes observation but does not add force or energy to the body when there is no acoustic feedback.","Near/far-field limits, directivity and level falloff have independent sanity checks before subjective comparison."],
+      "deliver":"Complex pressure mapping, directivity plots, independent source/room isolation and holdout results","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P11-T01","phase":"P11","title":"Implement four persistent physical strings and shared body","requires":["ENG-P06-T02","ENG-P09-T02","ENG-P10-T02"],"requirements":["REQ-PRF-001","REQ-CPL-002"],
+      "read":["docs/architecture/02-physical-ports-and-state-ownership.md","docs/performance/02-event-schema.md"],
+      "touch":["include/setar/engine/instrument.hpp","src/engine/instrument.cpp","tests/engine/persistent_state_tests.cpp"],
+      "steps":["Allocate exactly four persistent physical string states for the selected instrument hypothesis, each with explicit tuning, frets and contact locations.","Connect strings to one shared structural response and observation; preserve individual state across new note and rest events.","Provide defined reset scopes for host transport and physical state, and distinguish sustained state from stale note-on bookkeeping.","Exercise open strings, stopped strings, sympathetic response, fast re-strikes and damping without independent sample voices."],
+      "verify":["Plucking one string perturbs the others only through allowed physical couplings.","Reset-one-contact and reset-transport leave unrelated physical vibration unchanged by the declared policy."],
+      "deliver":"Single-writer instrument state owner, event tests, physical snapshot and transfer evidence","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P11-T02","phase":"P11","title":"Formalize idiomatic playing controls and tuning grammar","requires":["ENG-P11-T01","ENG-P05-T03"],"requirements":["REQ-PRF-002"],
+      "read":["docs/ethnomusicology/README.md","docs/performance/README.md","docs/plugin/04-midi-mpe-and-microtuning.md"],
+      "touch":["data/performance/gesture-taxonomy.json","tests/performance/phrase_tests.cpp"],
+      "steps":["Interview/record authorized setar performers about pluck orientation, phrase articulation, microtonal stopping, damping, ornaments and practical input limitations.","Define a physical gesture protocol independent of MIDI 1.0 and a separate explicit host mapping policy, including ambiguous string selection.","Prepare small annotated gesture/phrase fixture sets and reserve player/session splits before tuning response.","Have practitioners test gesture semantics, timing and limitations; log disagreements instead of collapsing them to a generic synth note."],
+      "verify":["Every accepted gesture maps to deterministic physical control variables and a defined state transition.","An unexpressible host event is flagged or rejected according to a documented accessible fallback."],
+      "deliver":"Approved gesture grammar, reference phrase manifests and cross-player review notes","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P12-T01","phase":"P12","title":"Measure parameter sensitivity, degeneracy and identifiability","requires":["ENG-P11-T01","ENG-P07-T02"],"requirements":["REQ-IDN-001"],
+      "read":["docs/validation/05-identifiability-and-calibration.md","docs/geometry/README.md"],
+      "touch":["tools/calibration/sensitivity.py","experiments/identifiability.md"],
+      "steps":["Define parameter vector with physical bounds/prior provenance and observation vector with measurement covariance.","Compute scaled finite-difference/adjoint Jacobians and compare derivatives for numerical step-size sensitivity.","Perform SVD/correlation and profile-likelihood or posterior checks; identify near-null directions and parameter compensation.","Design new experiments to separate ambiguous damping, bridge mobility, excitation and microphone effects instead of unconstrained fitting."],
+      "verify":["Synthetic known-parameter recovery succeeds only for identifiable combinations and reports uncertainty elsewhere.","A redundant-parameter counterexample is recognized as non-identifiable, not as a perfect model fit."],
+      "deliver":"Parameter sensitivity atlas, ambiguity report, measurement redesign recommendations","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P12-T02","phase":"P12","title":"Calibrate with frozen training/validation separation","requires":["ENG-P12-T01","ENG-P11-T02"],"requirements":["REQ-IDN-002"],
+      "read":["docs/validation/02-reference-corpus-provenance.md","docs/validation/03-acoustic-metrics.md"],
+      "touch":["tools/calibration/fit.py","data/splits/<split-id>.json","tests/calibration/holdout_tests.cpp"],
+      "steps":["Hash and freeze training, tuning and held-out raw observations by specimen/session/gesture/position before optimization.","Choose a likelihood or weighted objective with measurement noise, parameter priors and identified nuisance variables.","Fit only training channels; log loss, initializations, regularization, gradient checks and alternate local optima.","Evaluate once on held-out conditions with uncertainty bands; inspect residual structure rather than averaging away gesture failures."],
+      "verify":["A sentinel validation datum cannot influence fit, early stopping or feature normalization.","A new material or microphone parameter cannot be introduced solely to conceal held-out failure without a decision record."],
+      "deliver":"Frozen split, optimization/recovery logs, post-fit prediction plots and limitation statement","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P13-T01","phase":"P13","title":"Derive production approximation from checked reference","requires":["ENG-P12-T02","ENG-P09-T01","ENG-P10-T02"],"requirements":["REQ-RTS-002"],
+      "read":["docs/numerics/05-modal-reduction.md","docs/realtime/03-performance-and-numerical-hygiene.md"],
+      "touch":["include/setar/engine/render.hpp","src/engine/render.cpp","tests/realtime/reference_parity_tests.cpp"],
+      "steps":["Profile the integrated offline reference on representative worst-case gestures and rank cost centers by measured time.","For each candidate modal truncation, vectorization, multirate island or semi-implicit solve, derive alias/stability/energy consequences.","Use the same prepared input and gesture timeline across reference and candidate, comparing physical port observables before audio.","Sweep sample rates, block partitions, tuning range and contact stiffness; plot accuracy and worst-case cost together.","Promote an optimization only if its error fits an independently approved budget and no essential physical mechanism disappears silently."],
+      "verify":["The reduced engine matches a verified independent reference over its declared parameter/gesture envelope.","An intentional mode truncation that breaks a contact or transient tolerance is rejected even if its audio is plausible."],
+      "deliver":"Runtime approximation ADR, frozen error budgets, parity tests and error-versus-cost traces","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P13-T02","phase":"P13","title":"Enforce bounded callback, publication and telemetry","requires":["ENG-P13-T01"],"requirements":["REQ-RTS-001","REQ-RTS-003"],
+      "read":["docs/realtime/01-callback-contract.md","docs/realtime/04-concurrency-state-and-telemetry.md"],
+      "touch":["src/engine/asset_publication.cpp","tests/realtime/hostile_callback_tests.cpp","tools/profile_engine.cpp"],
+      "steps":["Freeze upper bounds on active degrees of freedom, contacts, nonlinear iterations, scratch, events and output channels per accepted asset.","Instrument allocation/deallocation, locks, waits, I/O and solver iterations on actual audio-callback code paths and state transitions.","Prepare a new immutable asset fully off-thread, validate capacity and publish transactionally at a specified sample boundary.","Establish deferred non-audio-thread reclamation, safe telemetry snapshots and overflow counters with explicit lifetime proofs.","Benchmark attack, repeated plucks, many contacts, sample-rate switch and CPU contention, recording distributions and deadlines."],
+      "verify":["An exhausted event capacity and invalid replacement asset cannot leave dangling contact or a stuck note.","No callback allocation/deallocation or unbounded operation occurs in the measured supported envelope."],
+      "deliver":"RT capacity sheet, callback callgraph, stress binaries, ownership proof and measured profiles","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P14-T01","phase":"P14","title":"Build an independently testable JUCE and VST3 adapter","requires":["ENG-P13-T02"],"requirements":["REQ-PLG-001"],
+      "read":["docs/plugin/01-architecture-and-boundaries.md","docs/engineering/juce-boundary.md"],
+      "touch":["apps/plugin/PluginProcessor.cpp","apps/plugin/PluginProcessor.h","cmake/JucePlugin.cmake"],
+      "steps":["Obtain an owner-authorized JUCE dependency and licensing choice; do not auto-download or assume commercial/open-source terms.","Make C++20 engine independent from JUCE headers and buildable in the existing headless CMake path.","Implement format-specific AudioProcessor calls and an adapter converting host buses, sample rate and events to engine units.","Compile VST3 artifacts with a reviewed toolchain on Linux, Windows and macOS, and run an official VST3 validator when available."],
+      "verify":["Headless tests do not link JUCE or require a window system.","The validator scans the real generated plugin, not the current synthetic diagnostic alone."],
+      "deliver":"Plugin adapter target, pinned dependency/license record and cross-platform scan evidence","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P14-T02","phase":"P14","title":"Specify host event ordering, stable parameters and versioned state","requires":["ENG-P14-T01"],"requirements":["REQ-PLG-002"],
+      "read":["docs/plugin/02-parameters-state-and-compatibility.md","docs/plugin/04-midi-mpe-and-microtuning.md"],
+      "touch":["src/plugin/event_adapter.cpp","src/plugin/state_codec.cpp","tests/plugin/event_and_state_tests.cpp"],
+      "steps":["Publish stable parameter IDs with display units, ranges, smoothing, physical/observation distinction and backward-compatible value mapping.","Normalize MIDI/MPE/host events to monotone sample offsets and stable tie-breaks; keep a release/silence priority in finite queues.","Use explicit versioned state with byte/field limits, CRC or hash where meaningful, forward-compatibility policy and reversible migrations.","Differentially render identical normalized events through a headless adapter and plugin instance; test state under incomplete and malicious bytes."],
+      "verify":["Block partition and same-sample event order do not change an otherwise deterministic physical render.","Malformed state never partially installs invalid physical coefficients or removes the previously accepted instance."],
+      "deliver":"Parameter dictionary, serialization schema, migration corpus and host/engine differential tests","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P14-T03","phase":"P14","title":"Execute plugin lifecycle and validator matrix","requires":["ENG-P14-T02"],"requirements":["REQ-PLG-003"],
+      "read":["docs/plugin/03-host-lifecycle-buses-latency.md","docs/plugin/05-validator-host-and-packaging-evidence.md"],
+      "touch":["tests/plugin/lifecycle_host.cpp","tools/plugin_validation/README.md","experiments/host-matrix.md"],
+      "steps":["Run zero/one/variable sample blocks, sample-rate transitions, repeated prepare/release, bypass, transport seek and suspend/resume.","Vary bus layouts, offline/realtime mode, plugin instance count and project state round-trips with actual format adapters.","Run Steinberg's official VST3 validator and at least a planned representative DAW set under permission/licensing constraints.","Capture scan logs, host versions, plugin path/hashes and screenshots; distinguish automated runs from unavailable proprietary hosts."],
+      "verify":["A host rescan after a failed/malformed preset leaves the instance recoverable.","Reported latency/tail/buses match observed behavior across at least the supported host states."],
+      "deliver":"Executed host qualification matrix, official validator records and reproducible failure traces","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P15-T01","phase":"P15","title":"Build musician control grammar and observable engineering UI","requires":["ENG-P14-T01"],"requirements":["REQ-UXI-001"],
+      "read":["docs/ux/README.md","docs/plugin/02-parameters-state-and-compatibility.md"],
+      "touch":["apps/plugin/Editor.cpp","apps/plugin/Editor.h","docs/ux/control-dictionary.md"],
+      "steps":["Separate musician controls (tuning, selected string, excitation gesture, fret contact, damping) from observation/microphone controls and expert laboratory knobs.","Label every control with physical/inferred/synthetic status and prevent a raw unmeasured modulus from masquerading as measured hardware.","Prepare accessibility names, keyboard focus order, control descriptions, minimum hit targets and color-safe graphs.","Have practicing setar players review gesture terminology and mapping; document disagreement and adaptations for keyboards/MPE."],
+      "verify":["No UI action directly reads or mutates live state unsafely; changes pass through bounded adapter semantics.","A keyboard-only user can operate core controls and inspect focus/units without relying on decorative graphs."],
+      "deliver":"Working editor control map, accessibility report and practitioner feedback evidence","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P15-T02","phase":"P15","title":"Make graphs, screenshots and visual regressions reproducible","requires":["ENG-P15-T01","ENG-P14-T03"],"requirements":["REQ-UXI-002"],
+      "read":["docs/ux/README.md","docs/assets/README.md","docs/engineering/artifacts-and-reproducibility.md"],
+      "touch":["src/ui/telemetry_views.cpp","tools/visual_capture/README.md","tests/ui/visual_tests.cpp"],
+      "steps":["Expose plots for physical energy/work, mode frequencies/decays, bridge FRFs, contact force/time, waveform and runtime budget; label axes and model provenance.","Render deterministic UI states using fixed sample data, viewport, device scale, locale, fonts, theme and frozen animation.","Capture actual plugin/report windows, not mocks, in the available real GUI environment; annotate platform and renderer in metadata.","Test data/schema and layout structural assertions before opt-in platform-specific pixel/perceptual comparisons.","Preserve screenshot baselines with reviewer approval and store raw plot data for independent reconstruction."],
+      "verify":["A synthetic plot cannot be presented as a measured instrument plot by changing only its title.","A moved/occluded control is caught by structural or visual diff tests without changing the audio regression baseline."],
+      "deliver":"Real interface capture protocol, deterministically generated plot fixtures and reviewable visual artifact set","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P16-T01","phase":"P16","title":"Qualify all claimed platforms and available hosts","requires":["ENG-P14-T03","ENG-P15-T02"],"requirements":["REQ-QLF-001"],
+      "read":["docs/validation/07-cross-platform-ci.md","docs/plugin/05-validator-host-and-packaging-evidence.md"],
+      "touch":[".github/workflows/engineering.yml","experiments/qualification-matrix.md","tools/qualification/aggregate.py"],
+      "steps":["Define target OS/CPU/DAW format/sample rate/block size/offline versus realtime matrix and the required confidence per row.","Use portable headless and optional authorized JUCE jobs for automatic checks; archive test XML, validator output and capture artifacts.","Execute permitted licensed-host tests manually or on provisioned runners; link exact binary hashes and host versions.","Report unsupported hosts/architectures separately from passes and from tests unavailable because of credentials or licensing."],
+      "verify":["A missing macOS or Windows run produces an incomplete coverage report, not a green universal status.","Matrix rows are auditable back to a run and named test artifact, not guessed from a workflow configuration."],
+      "deliver":"Signed OS/host execution matrix and release-claim capability table","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P16-T02","phase":"P16","title":"Contain faults and verify recovery without corrupting physics evidence","requires":["ENG-P16-T01"],"requirements":["REQ-QLF-002","REQ-RTS-001"],
+      "read":["docs/realtime/02-events-capacity-and-overflow.md","docs/realtime/01-callback-contract.md"],
+      "touch":["tests/realtime/fault_injection_tests.cpp","tests/plugin/recovery_tests.cpp"],
+      "steps":["Inject NaN, invalid assets, solver nonconvergence, event overflow, repeated note-offs and plugin-parameter storms in bounded test configurations.","Choose explicit physical-failure responses (silence with fault flag, safe reinitialization, deferred recovery) and test their audible consequences.","Preserve highest-priority physical release and emergency-stop semantics in bounded queues; document event-loss counters.","Run CPU stress and instrumentation to verify fallback itself does not allocate, lock or loop indefinitely on the audio thread."],
+      "verify":["Every fault yields a declared state and diagnostic; no stuck-note or uncontrolled runaway persists after the documented recovery.","The failure remains a numerical failure in scientific reports even if the audio output was safely contained."],
+      "deliver":"Fault table, saturation tests, audible recovery traces and observed failure counters","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P17-T01","phase":"P17","title":"Preregister and execute independent acoustic fidelity study","requires":["ENG-P16-T01","ENG-P12-T02"],"requirements":["REQ-FID-001"],
+      "read":["docs/validation/03-acoustic-metrics.md","docs/validation/04-gesture-and-radiation-validation.md"],
+      "touch":["experiments/heldout-acoustic-prereg.md","tools/fidelity/compare.py"],
+      "steps":["Select specimen/session/player/gesture/microphone holdouts before any tuning and freeze inclusion/exclusion, metric bandwidth and uncertainty policy.","Match loudness, sample alignment, mic/room conditions and noise floors; retain physical pressure and sound-stage chain separately.","Compare pitch transients, partial trajectory, decay, bridge transfer, articulation timing, dynamics and spatial directivity with paired uncertainty intervals.","Use hierarchical or paired analysis to avoid treating correlated repetitions as independent specimens; report failure cases individually."],
+      "verify":["A model may pass pitch and fail attack, spatial sound or expressive response; no aggregate disguises that outcome.","Permuted holdout labels or leakage from training data triggers a validity failure before a score is published."],
+      "deliver":"Frozen preregistration, uncertainty-aware tables, failure exemplars and bounded fidelity statements","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P17-T02","phase":"P17","title":"Conduct blind listening and playable gesture evaluation","requires":["ENG-P17-T01","ENG-P16-T02"],"requirements":["REQ-FID-002"],
+      "read":["docs/validation/06-listening-experiments.md","docs/ethnomusicology/README.md"],
+      "touch":["experiments/practitioner-blind-study.md","data/evaluations/<study-id>/manifest.json"],
+      "steps":["Define separate blinded sound-discrimination and instrument-playing questions with inclusion criteria, training, consent and accessibility.","Randomize, counterbalance and loudness-match recordings without leaking condition identities through files, UI colors or order.","Record setar players' gesture success, timing, response, fatigue and specific failure narratives, not only preference scores.","Analyze effect sizes, confidence intervals, within-person dependence and practical significance; explicitly retain null/inconclusive results."],
+      "verify":["Randomization and masking can be independently replayed from a seed and manifest.","A study with too few participants or unbalanced conditions is labeled underpowered instead of indistinguishable."],
+      "deliver":"Authorized study record, anonymized analysis, cultural review and limited perceptual claims","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P18-T01","phase":"P18","title":"Review rights, dependencies, distribution and product claims","requires":["ENG-P17-T02"],"requirements":["REQ-REL-001"],
+      "read":["docs/governance/rights-and-dependencies.md","docs/phases/P18-release.md"],
+      "touch":["docs/governance/release-rights-checklist.md","third_party/notices.md"],
+      "steps":["Obtain owner's explicit project licensing/distribution decision before committing license or redistributing assets.","Audit JUCE and any VST3 SDK, math libraries, fonts, images, measurement files and musician recordings for version and permitted use.","Record attribution, consent withdrawal and geographic distribution/security constraints relevant to the intended package.","Check product claims against validated experiments and protect third-party trademarks; omit unverifiable parity/certification promises."],
+      "verify":["An unlicensed raw measurement or closed asset blocks packaging even if local DSP tests pass.","The produced notices exactly match actual package contents and pinned versions."],
+      "deliver":"Approved rights manifest, notices and claim-review signoffs","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P18-T02","phase":"P18","title":"Build reproducible installable artifacts and audit provenance","requires":["ENG-P18-T01"],"requirements":["REQ-REL-002"],
+      "read":["docs/validation/08-release-evidence-and-failure-triage.md","docs/plugin/05-validator-host-and-packaging-evidence.md"],
+      "touch":["cmake/Packaging.cmake","tools/release/manifest.py","tests/package/smoke_tests.py"],
+      "steps":["Freeze source revision, compiler/SDK versions, DSP asset/model ID, validation envelope and dependency hashes.","Create reproducible packages per authorized platform/format, with correct installation paths and rollback-safe uninstallation.","Run clean-machine scan, state migration, sample-rate changes and permitted host smoke tests on each actual artifact hash.","Prepare SBOM/checksums, signed/notarized artifact evidence only where identities and authority are legitimately available."],
+      "verify":["A delivered installer can reconstruct its core/asset provenance and test evidence by hash.","A package built with unreviewed asset changes fails the release manifest check."],
+      "deliver":"Audited release bundles, provenance hashes, installation/rollback and known-exclusion notes","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P19-T01","phase":"P19","title":"Govern scientific regression and model migrations","requires":["ENG-P18-T02"],"requirements":["REQ-MNT-001"],
+      "read":["docs/phases/P19-maintenance.md","docs/decisions/README.md"],
+      "touch":["docs/governance/model-migration-policy.md","tools/compare_evidence.py"],
+      "steps":["Separate additive experiments from accepted model versions and public parameter/asset schema migrations.","Pin a library of analytic oracles, measured holdouts with permissions, intentional counterexamples and benchmark limits.","For every numerical optimization or calibration update, compare old and new outputs on the same input manifests and document changed claims.","Supersede ADRs explicitly with migration, rollback and regression rationale; preserve historical evidence whenever rights permit."],
+      "verify":["A changed test baseline without an independent oracle and reviewer is rejected.","An old preset either migrates deterministically or fails with an actionable compatibility code."],
+      "deliver":"Scientific change protocol, version-comparison reports, migration fixtures and rollback guidance","status":"specified_not_implemented"
+    },
+    {
+      "id":"ENG-P19-T02","phase":"P19","title":"Maintain long-term provenance, consent and withdrawal handling","requires":["ENG-P19-T01"],"requirements":["REQ-MNT-002"],
+      "read":["docs/governance/rights-and-dependencies.md","docs/validation/02-reference-corpus-provenance.md"],
+      "touch":["data/retention-register.json","docs/governance/claim-withdrawal.md"],
+      "steps":["Track retained raw-data location, access owner, derivative dependencies, checksums, permitted disclosure and secure deletion policy.","Provide a way to withdraw consent-controlled evidence from future distributions without misrepresenting already published immutable releases.","Revalidate links, dependencies, calibration observations and toolchain on active supported platforms after material changes.","If a crucial primary source or license becomes unavailable, downgrade dependent claims and issue explicit migration or limitation notice."],
+      "verify":["A revoked asset is excluded from new packages while a claim-dependency report identifies affected results.","Another authorized maintainer can reproduce still-permitted results from the documented manifest and retained environment."],
+      "deliver":"Access/retention policy, consent-aware withdrawal flow and periodic evidence integrity record","status":"specified_not_implemented"
+    }
+  ]
+}

@@ -18,6 +18,7 @@ folder of recordings.
 | [Data contracts and provenance](data-contracts-and-provenance.md) | Machine-readable interpretation | Schema, checksum, rights validation |
 | [Uncertainty and calibration](uncertainty-and-calibration.md) | What the observations actually constrain | Complete uncertainty model |
 | [Independent validation](independent-validation.md) | Predictive tests outside calibration | Frozen model and groupwise partitions |
+| [Specimen completeness matrix](specimen-completeness-matrix.md) | All-domain digital-twin acquisition checklist and explicit unknowns | Actual specimen, rights and calibrated evidence |
 
 Read the [research evidence ledger](../research/evidence-ledger.md) before treating
 published procedures as established project practice. Read

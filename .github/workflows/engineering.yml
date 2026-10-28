@@ -43,8 +43,11 @@ jobs:
         run: cmake --build build --config Debug --parallel 2
       - name: Run independent numerical and integration tests
         run: ctest --test-dir build -C Debug --output-on-failure --output-junit test-results.xml
-      - name: Audit handbook structure, prose count, and local links
-        run: python tools/audit_docs.py
+      - name: Audit handbook, scientific phases and implementation traceability
+        shell: bash
+        run: |
+          python tools/audit_docs.py
+          python tools/audit_implementation.py
       - name: Render actual synthetic reference data
         shell: bash
         run: ${{ matrix.executable }} --output-dir artifacts/reference --duration 2 --sample-rate 48000

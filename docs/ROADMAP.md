@@ -26,6 +26,25 @@ documentation auditor checks that its dependency graph has no cycles or missing
 phase documents. The register does **not** claim a phase passed its scientific
 gate merely because its instructions have been written.
 
+For **implementation-level execution**, use the
+[41 traceable requirements](../roadmap/requirements.json), the
+[44 dependency-ordered engineering work orders](../roadmap/engineering-tasks.json),
+and the [implementation specification](engineering/implementation-specification.md).
+Each work order contains exact reading prerequisites, proposed source and test
+paths, procedural steps, falsifiable checks, evidence outputs and a status that
+currently means *specified, not implemented*. The 79 planned test identifiers
+are future acceptance targets; they do not describe CTests that already exist.
+The machine-backed work orders use the distinct **`ENG-Pxx-Tyy`** namespace:
+existing individual phase chapters already use `Pxx-Tyy` for their broader
+phase-level tasks. The two series intentionally do not share identifiers or
+pretend to be identical subtasks; each engineering work order links to its
+own phase and required reading.
+Their consistency is checked by `python3 tools/audit_implementation.py`,
+including task dependency cycles, coverage, reading links and status vocabulary.
+The [open decision-gate ledger](governance/engineering-decision-gates.md)
+states which physics, calibration, realtime, host and permission choices remain
+unresolved until experiments/review, no matter how detailed the instructions.
+
 | Phase | Work package | Principal evidence gate |
 | --- | --- | --- |
 | [P00](phases/P00-charter.md) | Scope, fidelity claims, and research governance | A bounded target and honest claim taxonomy. |

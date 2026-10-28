@@ -30,6 +30,14 @@ This volume covers what a contributor can actually build. Read
 or WAV as evidence. The [JUCE boundary](juce-boundary.md) describes the optional
 diagnostic and the substantial host work still required.
 
+To begin a **new** subsystem rather than reproduce the current bootstrap,
+read the [implementation-level specification](implementation-specification.md),
+[independent verification matrix](verification-matrix.md), and
+[performance/accuracy budget derivation](performance-budget.md). The
+[requirements](../../roadmap/requirements.json) and
+[work-order register](../../roadmap/engineering-tasks.json) are machine-checked
+plans; their proposed source files and tests do not yet exist.
+
 ## Prerequisites
 
 The default path needs CMake 3.25 or newer, a C++20 compiler with the normal
@@ -69,6 +77,7 @@ cmake --preset headless-debug
 cmake --build --preset headless-debug
 ctest --preset headless-debug
 python3 tools/audit_docs.py
+python3 tools/audit_implementation.py
 ```
 
 The configure preset writes into `build/headless-debug`. The build produces the

@@ -51,6 +51,14 @@ if(SETAR_BUILD_TESTS)
         add_test(NAME documentation.audit_self_tests
             COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/tools/test_audit.py")
         set_tests_properties(documentation.audit_self_tests PROPERTIES LABELS "documentation" TIMEOUT 30)
+        add_test(NAME documentation.implementation_traceability
+            COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/tools/audit_implementation.py")
+        set_tests_properties(documentation.implementation_traceability PROPERTIES
+            LABELS "documentation;traceability" TIMEOUT 30)
+        add_test(NAME documentation.implementation_mutations
+            COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/tools/test_implementation_audit.py")
+        set_tests_properties(documentation.implementation_mutations PROPERTIES
+            LABELS "documentation;traceability" TIMEOUT 30)
     endif()
 endif()
 

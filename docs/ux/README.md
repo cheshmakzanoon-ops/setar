@@ -10,6 +10,7 @@ and offline report images. Do not present one as evidence of another.
 | [Engineering observability](02-engineering-observability.md) | Units, energy, spectra, events, solver and performance meaning |
 | [Visual testing](03-visual-testing-and-screenshots.md) | Deterministic fixtures, numeric assertions, authentic captures, and reviewed thresholds |
 | [Accessibility and localization](04-accessibility-localization-and-feedback.md) | Keyboard, screen reader, contrast, Persian text, and actionable feedback |
+| [Engineering plots and screenshots](05-live-engineering-graphs-and-screenshot-contract.md) | Exact axes, real captures, split musician/lab modes, visual CI and provenance |
 
 The [musician wireframe](assets/musician-wireframe.svg) is an authored SVG design,
 not an implemented UI or captured screenshot. It deliberately contains no

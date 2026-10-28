@@ -16,9 +16,19 @@ inspect outputs, and progressively replace assumptions with evidence.
 1. [Read the orientation and capability boundaries](docs/START_HERE.md).
 2. [Follow the phase-by-phase engineering roadmap](docs/ROADMAP.md).
 3. [Use the evidence and acceptance rules](docs/governance/quality-contract.md).
-4. [Read the relevant technical volume](docs/INDEX.md), not the whole handbook at once.
-5. [Select a bounded implementation or review prompt](prompts/README.md).
-6. Build the reference scaffold, reproduce its tests, and attach evidence to changes.
+4. [Open the implementation-level engineering specification](docs/engineering/implementation-specification.md):
+   [41 requirements](roadmap/requirements.json) and
+   [44 detailed work orders](roadmap/engineering-tasks.json) with dependencies,
+   source/test locations, implementation instructions, and evidence handoffs.
+5. [Read the relevant technical volume](docs/INDEX.md), not the whole handbook at once.
+6. [Select a bounded implementation or review prompt](prompts/README.md).
+7. Build the reference scaffold, reproduce its tests, and attach evidence to changes.
+
+The [open decision-gate ledger](docs/governance/engineering-decision-gates.md)
+identifies measurements, method choices, permissions, and host qualifications
+that cannot be resolved by writing more prose. **Planned tests and proposed
+C++ interfaces are not implemented features.** All 41 new engineering
+requirements begin at specification-only status.
 
 There are **no project deadlines or calendar estimates** in this roadmap. Phases
 advance when their evidence gates are met. Activities such as data acquisition,
@@ -53,6 +63,7 @@ cmake --preset headless-debug
 cmake --build --preset headless-debug
 ctest --preset headless-debug
 python3 tools/audit_docs.py
+python3 tools/audit_implementation.py
 ```
 
 The headless path must not download JUCE or require an audio device. The optional
@@ -64,6 +75,8 @@ Do not mistake a passing bootstrap test for measured instrument validation.
 | Path | Responsibility |
 | --- | --- |
 | `docs/phases/` | Ordered work packages, dependencies, evidence gates, and handoffs. |
+| `roadmap/requirements.json`, `roadmap/engineering-tasks.json` | Machine-checked requirements, 44 implementation work orders, named planned tests and exact procedures. |
+| `docs/engineering/implementation-specification.md`, `docs/architecture/` | Implementation contracts, proposed C++ ownership/interfaces, solver selection and signal-flow diagrams. |
 | `docs/research/`, `docs/measurement/` | Primary-source audit, specimen acquisition, measurement protocols, and uncertainty. |
 | `docs/mathematics/`, `docs/numerics/` | Governing equations, discretization, energy, stability, and convergence. |
 | `docs/strings/`, `docs/contacts/`, `docs/performance/` | String behavior, nail/fret contacts, gestures, and tuning. |

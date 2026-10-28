@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "purpose": "Blank, non-measured specimen-acquisition template; NEVER a calibrated instrument asset",
+  "instrument_family": "iranian_setar",
+  "record_status": "unmeasured_template",
+  "specimen_id": null,
+  "owner_permission_reference": null,
+  "setup_id": null,
+  "session_id": null,
+  "frame": {
+    "name": "body_reference_proposed",
+    "handedness": "right",
+    "length_unit": "m",
+    "origin_m": null,
+    "orientation_matrix": null,
+    "calibration_reference": null
+  },
+  "conditions": {
+    "temperature_celsius": null,
+    "relative_humidity_percent": null,
+    "pressure_pa": null,
+    "instrument_conditioning_notes": null
+  },
+  "strings": [
+    {"index":0,"status":"unmeasured","scale_length_m":null,"linear_density_kg_per_m":null,"tension_n":null,"bending_stiffness_n_m2":null,"loss_model":null,"source_id":null,"uncertainty":null},
+    {"index":1,"status":"unmeasured","scale_length_m":null,"linear_density_kg_per_m":null,"tension_n":null,"bending_stiffness_n_m2":null,"loss_model":null,"source_id":null,"uncertainty":null},
+    {"index":2,"status":"unmeasured","scale_length_m":null,"linear_density_kg_per_m":null,"tension_n":null,"bending_stiffness_n_m2":null,"loss_model":null,"source_id":null,"uncertainty":null},
+    {"index":3,"status":"unmeasured","scale_length_m":null,"linear_density_kg_per_m":null,"tension_n":null,"bending_stiffness_n_m2":null,"loss_model":null,"source_id":null,"uncertainty":null}
+  ],
+  "fret_geometry_source": null,
+  "bridge_port_frame_source": null,
+  "bowl_and_wooden_soundboard_geometry_source": null,
+  "orthotropic_material_and_covariance_source": null,
+  "bridge_complex_mobility_source": null,
+  "cavity_radiation_source": null,
+  "nail_flesh_contact_source": null,
+  "gesture_session_sources": [],
+  "observation_calibration_source": null,
+  "training_split_id": null,
+  "heldout_split_id": null,
+  "license_and_consent_status": "unresolved",
+  "physical_admissibility_status": "not_evaluated",
+  "validation_status": "not_evaluated"
+}

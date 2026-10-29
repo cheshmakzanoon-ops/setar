@@ -1,7 +1,7 @@
 # Requirements-to-tests verification matrix and portable execution contract
 
 **Status:** full acceptance specifications, with a synthetic numerical baseline
-and **nine explicitly partial executable mappings**. The implemented subset
+and **ten explicitly partial executable mappings**. The implemented subset
 is audited in [executable-test-coverage.json](../../roadmap/executable-test-coverage.json),
 and its remaining gaps are recorded in
 [prototype contracts and test expansion](10-prototype-contracts-and-test-expansion.md).
@@ -65,7 +65,10 @@ not prove realistic setar motion.
   and scale-normalized numerical residual, not just a green boolean.
 - `numerics.dispersion_grid_refinement`, `numerics.loss_law_passivity`: compare
   stiffness-dependent partial frequencies and pole decay with analytic modal
-  limits, alternate discretization and zero-EI/zero-loss cases.
+  limits, alternate discretization and zero-EI/zero-loss cases. The loss half is
+  now partially executable for the uniform simply supported fixture; see
+  [damped-midpoint loss verification](../numerics/14-damped-midpoint-loss-verification.md)
+  for what it covers and what remains (measured loss, bridge leakage, nonuniform loss).
 
 ### T2. Nonlinearity, excitation, frets, retuning
 

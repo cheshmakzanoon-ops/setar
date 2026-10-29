@@ -31,8 +31,8 @@ identifies measurements, method choices, permissions, and host qualifications
 that cannot be resolved by writing more prose. **Planned tests and proposed
 C++ interfaces are not necessarily implemented features.** The new
 [executed-prototype coverage registry](roadmap/executable-test-coverage.json)
-maps **9 of 79 planned acceptance names to *partial* executable checks**;
-70 are not yet mapped, and the full 41 engineering requirements are not
+maps **10 of 79 planned acceptance names to *partial* executable checks**;
+69 are not yet mapped, and the full 41 engineering requirements are not
 claimed as completely verified. The
 [solver comparison and decision dossier](docs/architecture/07-experimental-solver-evidence-and-choice.md),
 [real specimen acquisition instructions](docs/measurement/13-acquisition-campaign-execution.md),

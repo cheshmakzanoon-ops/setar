@@ -110,7 +110,7 @@ spend money without owner authorization. No deadlines are assigned.
 > alternatives. Leave the product interface proposed until independently
 > validated integration results justify its final signature.
 
-## Gate 4 — executable acceptance: close the remaining 70 unmapped cases
+## Gate 4 — executable acceptance: close the remaining 69 unmapped cases
 
 > You are the verification lead. Begin with
 > `roadmap/requirements.json`, `roadmap/executable-test-coverage.json`,

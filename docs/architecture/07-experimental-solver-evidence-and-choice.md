@@ -17,7 +17,7 @@ composition has been chosen.
 | --- | --- |
 | [`include/setar/numerical_prototype.hpp`](../../include/setar/numerical_prototype.hpp) | Explicit offline types, units, time levels, ownership and limitations |
 | [`src/numerical_prototype.cpp`](../../src/numerical_prototype.cpp) | Dense-factorized implicit midpoint, local-stencil explicit leapfrog and two-mass oracle |
-| [`tests/numerical_prototype_tests.cpp`](../../tests/numerical_prototype_tests.cpp) | Eleven independently named native C++ cases; deliberately small analytic benchmark |
+| [`tests/numerical_prototype_tests.cpp`](../../tests/numerical_prototype_tests.cpp) | Fifteen independently named native C++ cases (four for passive loss, see [chapter 14](../numerics/14-damped-midpoint-loss-verification.md)); deliberately small analytic benchmark |
 | [`apps/compare_solvers.cpp`](../../apps/compare_solvers.cpp) | Deterministic 60-row frequency/CFL sweep, CSV on standard output |
 | [`tools/generate_solver_report.py`](../../tools/generate_solver_report.py) | Portable CSV validation, actual SVG graphs, HTML and source-hashed evidence |
 | [`tools/test_solver_report.py`](../../tools/test_solver_report.py) | Report consistency, convergence monotonicity, invalid-evidence rejection and CLI integration |
@@ -97,7 +97,9 @@ E_{n+1}-E_n=\Delta tF_{n+1/2}
 
 This specific linear fixed-coefficient update has no explicit stability CFL
 restriction, but is **dispersive**: its effective frequency is
-\(\hat\omega=(2/\Delta t)\arctan(\omega_h\Delta t/2)\).
+\(\hat\omega=(2/\Delta t)\arctan(\omega_h\Delta t/2)\). Passive loss is added to this same update
+in [chapter 14](../numerics/14-damped-midpoint-loss-verification.md), with an exact dissipation
+ledger; at zero loss the statements here are unchanged.
 Stability must never be equated with accurate high harmonics, correct contact,
 or physically valid moving fret boundaries. The current dense \(N\times N\)
 stiffness and solve use \(O(N^2)\) per step and \(O(N^3)\) preparation; treating

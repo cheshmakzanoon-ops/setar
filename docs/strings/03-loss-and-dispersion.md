@@ -133,6 +133,16 @@ joint fit, or carefully designed transfer-function experiment can help resolve
 the ambiguity. If it cannot be resolved, state the effective-model interpretation
 and restrict reuse of the parameters.
 
+## What is already executable for this loss law
+
+The uniform simply supported fixture above is now implemented twice, independently: as the exact
+modal reference (`setar::reference::ModalString`, including the \(\sigma_1\) wavenumber term) and as
+the implicit-midpoint finite-difference string with a nonnegative three-term loss and an exact
+dissipation ledger. [The verification chapter](../numerics/14-damped-midpoint-loss-verification.md)
+records what those tests establish and what they cannot: the loss magnitudes are synthetic, the
+\(k^2\) and \(\omega^2\) laws are nearly indistinguishable from decay data at setar-scale bending
+stiffness, and no measured partial decay, bridge leakage or nonuniform string is covered.
+
 ## Dispersion and pitch are not interchangeable
 
 Bending stiffness makes partial spacing depart from exact harmonics. Tuning the

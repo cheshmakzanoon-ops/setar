@@ -16,7 +16,7 @@ jobs:
   headless:
     name: Headless / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 20
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -24,12 +24,15 @@ jobs:
           - os: ubuntu-24.04
             executable: ./build/setar_render
             solver_executable: ./build/setar_compare_solvers
+            loss_executable: ./build/setar_loss_study
           - os: windows-2022
             executable: ./build/Debug/setar_render.exe
             solver_executable: ./build/Debug/setar_compare_solvers.exe
+            loss_executable: ./build/Debug/setar_loss_study.exe
           - os: macos-15
             executable: ./build/setar_render
             solver_executable: ./build/setar_compare_solvers
+            loss_executable: ./build/setar_loss_study
     steps:
       - name: Check out the exact event revision
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -66,6 +69,13 @@ jobs:
           mkdir -p artifacts/solver
           ${{ matrix.solver_executable }} > artifacts/solver/sweep.csv
           python tools/generate_solver_report.py --input artifacts/solver/sweep.csv --output artifacts/solver/report --source-revision "${{ github.sha }}"
+      - name: Generate synthetic passive-loss verification tables, graphs and provenance
+        shell: bash
+        run: |
+          mkdir -p artifacts/loss
+          ${{ matrix.loss_executable }} decay > artifacts/loss/decay.csv
+          ${{ matrix.loss_executable }} waveform > artifacts/loss/waveform.csv
+          python tools/generate_loss_report.py --decay artifacts/loss/decay.csv --waveform artifacts/loss/waveform.csv --output artifacts/loss/report --source-revision "${{ github.sha }}"
       - name: Preserve numerical evidence and test logs
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2

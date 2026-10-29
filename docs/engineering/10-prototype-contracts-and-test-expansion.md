@@ -18,8 +18,9 @@ Use this document with [proposed target contracts](../architecture/04-cpp20-modu
 | Library/target | Source | Runtime ownership | Permitted claim |
 | --- | --- | --- | --- |
 | `setar_reference` | [`reference.hpp`](../../include/setar/reference.hpp), [`reference.cpp`](../../src/reference.cpp) | Synthetic finite modal oscillator, linear pluck initial condition and simple resonator | Analytic reference only |
-| `setar_numerical_prototype` | [`numerical_prototype.hpp`](../../include/setar/numerical_prototype.hpp), [`numerical_prototype.cpp`](../../src/numerical_prototype.cpp) | Linear fixed-end implicit spatial string, explicit spatial string, two-mass spring | Numerical experiments only |
-| `setar_numerical_tests` | [`numerical_prototype_tests.cpp`](../../tests/numerical_prototype_tests.cpp) | Eleven targeted C++ test functions dispatched individually as CTests | Defined subset of synthetic numerical properties |
+| `setar_numerical_prototype` | [`numerical_prototype.hpp`](../../include/setar/numerical_prototype.hpp), [`numerical_prototype.cpp`](../../src/numerical_prototype.cpp) | Linear fixed-end implicit spatial string with optional passive three-term loss, explicit lossless spatial string, two-mass spring, loss oracles and a decay estimator | Numerical experiments only |
+| `setar_numerical_tests` | [`numerical_prototype_tests.cpp`](../../tests/numerical_prototype_tests.cpp) | Fifteen targeted C++ test functions dispatched individually as CTests, four of them for passive loss | Defined subset of synthetic numerical properties |
+| `setar_loss_study` | [`loss_study.cpp`](../../apps/loss_study.cpp) | Deterministic decay and waveform-convergence tables for the three-term loss law; shares its analytic comparison with the CTest through `tests/support/modal_crosscheck.hpp` | Quantified synthetic loss-law verification, no measured string loss |
 | `setar_compare_solvers` | [`compare_solvers.cpp`](../../apps/compare_solvers.cpp) | Deterministic 60-row sweep of spatial and temporal frequency relations | Quantified synthetic algorithm dispersion and CFL exclusions |
 | Python evidence tools | [`generate_solver_report.py`](../../tools/generate_solver_report.py) | Outside callback, plots and JSON/HTML provenance | Actual numerical visualizations, no host screenshot |
 | Measurement/qualification validators | [`validate_measurement_campaign.py`](../../tools/validate_measurement_campaign.py), [`validate_product_qualification.py`](../../tools/validate_product_qualification.py) | Offline schema, hash and completeness validation | Failure of fraudulent/missing metadata; not physical truth |
@@ -56,7 +57,7 @@ a real-time qualification or proof that contacts remain stable.
 
 | Model | Input | Output/diagnostic | Time-level promise | Known limit |
 | --- | --- | --- | --- | --- |
-| Midpoint string | `advance(F_mid_N)` | `WorkStep{v_port_mid_m_per_s, external_work_j, stored_energy_change_j, residual_j}` | Force and interpolated velocity share \(n+\tfrac12\) | Linear fixed support, no contact/body |
+| Midpoint string | `advance(F_mid_N)` | `WorkStep{v_port_mid_m_per_s, external_work_j, stored_energy_change_j, dissipated_energy_j, residual_j}`; residual = stored change − work + dissipated | Force, interpolated velocity and the dissipation form share \(n+\tfrac12\) | Linear fixed support, uniform nonnegative loss, no contact/body |
 | Explicit string | `advance(F_at_n_N)` | `LeapfrogWorkStep{work_j, modified_energy_change_j, residual_j}` | Force at integer \(n\), velocity is centered \((q_{n+1}-q_{n-1})/(2\Delta t)\) | Stable CFL only, modified staggered energy |
 | Two-mass oracle | `advance()` | Equal/opposite forces, each port's midpoint velocity, spring-energy change, two-port work and total-energy change | Both masses and spring share midpoint | Not a real string–wooden-body connection |
 
@@ -90,12 +91,12 @@ conventions that do not belong in this scalar prototype API.
    full 3D force/torque nor a proof of passivity of an independently
    integrated string–FEM reduction. That proof remains a future component gate.
 
-## Exact acceptance status: 79 full planned cases, 9 partially executable mappings
+## Exact acceptance status: 79 full planned cases, 10 partially executable mappings
 
 The [requirements registry](../../roadmap/requirements.json) still contains
 41 requirements and 79 proposed acceptance identifiers. The
 [coverage registry](../../roadmap/executable-test-coverage.json) intentionally
-maps only **nine** identifiers to executable *partial* checks:
+maps only **ten** identifiers to executable *partial* checks:
 
 | Planned acceptance case | Current exact CTest | What it does **not** yet establish |
 | --- | --- | --- |
@@ -104,6 +105,7 @@ maps only **nine** identifiers to executable *partial* checks:
 | `numerics.stability_envelope` | Same name | Nonlinear or variable-coefficient stability and complete failure policy |
 | `numerics.discrete_energy_ledger` | Same name | Damping/contact/radiation/tuning energy terms |
 | `numerics.dispersion_grid_refinement` | Same name | Observed dispersion across actual measured setar strings |
+| `numerics.loss_law_passivity` | Same name; see [chapter 14](../numerics/14-damped-midpoint-loss-verification.md) | Measured loss, string-versus-bridge loss separation, nonuniform or contact-coupled loss, other supports |
 | `coupling.two_mass_oracle` | Same name | Coupled string/body PDE or measured bridge mobility |
 | `coupling.port_power_balance` | Same name | Independent solver/multirate bridge port identity |
 | `data.provenance_rejection` | `data.acquisition_manifest_integrity` | Tensor positivity, certified calibration, actual consent |
@@ -111,9 +113,10 @@ maps only **nine** identifiers to executable *partial* checks:
 
 Additional executable tests `numerics.explicit_cfl_rejection`,
 `numerics.explicit_work_ledger`, `numerics.explicit_implicit_comparison`,
-`numerics.invalid_parameters`, `integration.solver_evidence`, and
+`numerics.invalid_parameters`, `numerics.loss_decay_estimator`, `numerics.loss_decay_oracle`,
+`numerics.loss_modal_reference_crosscheck`, `integration.solver_evidence`, `integration.loss_evidence`, and
 `documentation.executable_coverage_integrity` deepen the prototype but do
-not automatically complete further planned cases. The other **70** planned
+not automatically complete further planned cases. The other **69** planned
 acceptance names have no partial implementation mapping. No full requirement
 is promoted to measured/qualified or even globally numerically verified.
 

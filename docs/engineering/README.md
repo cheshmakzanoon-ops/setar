@@ -86,11 +86,12 @@ python3 tools/audit_implementation.py
 
 The configure preset writes into `build/headless-debug`. The build produces the
 `setar_reference` library, `setar_render`, and `setar_core_tests`, plus the
-`setar_numerical_prototype` library, `setar_compare_solvers` and
+`setar_numerical_prototype` library, `setar_compare_solvers`, `setar_loss_study` and
 `setar_numerical_tests` when numerical experiments are enabled. CTest invokes
 named numerical cases separately, the renderer/report integration test, and the
 documentation-audit self-tests, numerical prototype cases, evidence validator
-mutation tests and the solver-plot integration test. The handbook audit is an additional repository
+mutation tests, the solver-plot integration test and the passive-loss evidence test. The
+loss tests have a manual defect-injection companion, `tools/mutation_check_loss.py`. The handbook audit is an additional repository
 check: the audit's self-tests show that the auditor detects its intended defects,
 whereas running the auditor on this tree checks the actual handbook.
 

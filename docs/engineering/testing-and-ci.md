@@ -50,6 +50,7 @@ and document that dependency.
 | `core.parameters` | Valid supported domain; rejection of nonfinite, negative, zero, excessive, and derived-invalid inputs | Parameter rejection, not measured parameter plausibility |
 | `core.frequencies` | Characteristic equation, modal mass, and harmonic spacing at zero EI | Simply-supported uniform linear model only |
 | `core.analytic_response` | Modal displacement and velocity at a known physical time | Unforced underdamped evolution |
+| `core.wavenumber_loss` | The wavenumber-squared decay coefficient, alone and combined with the other two terms, against a long-double closed form; rejection of invalid or overcritical values | Analytic reference only; the finite-difference loss tests are the `numerics.loss_*` CTests |
 | `core.lossless_energy` | Finite-mode mechanical conservation over repeated updates | No damping and fixed modal truncation |
 | `core.passivity` | Nonnegative energy and bounded roundoff-scale positive steps | No external work after initialization |
 | `core.pluck_projection` | Fourier coefficients from independent quadrature and invalid-pluck transactionality | Finite projection of a sharp triangle |

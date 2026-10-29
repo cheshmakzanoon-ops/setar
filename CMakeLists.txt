@@ -33,6 +33,10 @@ if(SETAR_BUILD_NUMERICAL_EXPERIMENTS)
     add_executable(setar_compare_solvers apps/compare_solvers.cpp)
     target_link_libraries(setar_compare_solvers PRIVATE setar::numerical_prototype)
     setar_project_options(setar_compare_solvers)
+    add_executable(setar_loss_study apps/loss_study.cpp)
+    target_link_libraries(setar_loss_study PRIVATE setar::numerical_prototype setar::reference)
+    target_include_directories(setar_loss_study PRIVATE tests)
+    setar_project_options(setar_loss_study)
 endif()
 
 if(SETAR_BUILD_RENDERER)
@@ -46,23 +50,34 @@ if(SETAR_BUILD_TESTS)
     add_executable(setar_core_tests tests/reference_tests.cpp)
     target_link_libraries(setar_core_tests PRIVATE setar::reference)
     setar_project_options(setar_core_tests)
-    foreach(case_name IN ITEMS parameters frequencies analytic_response lossless_energy passivity
-                               pluck_projection convergence reset block_partition resonator endpoints)
+    foreach(case_name IN ITEMS parameters frequencies analytic_response wavenumber_loss lossless_energy
+                               passivity pluck_projection convergence reset block_partition
+                               resonator endpoints)
         add_test(NAME "core.${case_name}" COMMAND setar_core_tests "${case_name}")
         set_tests_properties("core.${case_name}" PROPERTIES LABELS "core;numerical" TIMEOUT 30)
     endforeach()
     if(SETAR_BUILD_NUMERICAL_EXPERIMENTS)
         add_executable(setar_numerical_tests tests/numerical_prototype_tests.cpp)
-        target_link_libraries(setar_numerical_tests PRIVATE setar::numerical_prototype)
+        # The analytic modal reference is linked only into the TEST so that the
+        # finite-difference library cannot depend on, and cannot be tuned against, its oracle.
+        target_link_libraries(setar_numerical_tests PRIVATE setar::numerical_prototype setar::reference)
+        target_include_directories(setar_numerical_tests PRIVATE tests)
         setar_project_options(setar_numerical_tests)
         foreach(case_name IN ITEMS string_spatial_convergence force_interpolation_adjoint
                                    stability_envelope discrete_energy_ledger
                                    dispersion_grid_refinement explicit_cfl_rejection
-                                   explicit_work_ledger explicit_implicit_comparison invalid_parameters)
+                                   explicit_work_ledger explicit_implicit_comparison
+                                   loss_law_passivity loss_decay_estimator loss_decay_oracle
+                                   loss_modal_reference_crosscheck invalid_parameters)
             add_test(NAME "numerics.${case_name}" COMMAND setar_numerical_tests "${case_name}")
             set_tests_properties("numerics.${case_name}" PROPERTIES
                 LABELS "numerical;prototype" TIMEOUT 60)
         endforeach()
+        # Dense O(N^2)-per-step references: about 7 s in Debug and 18 s under ASan/UBSan on
+        # Linux. The longer limit leaves headroom for MSVC checked-iterator Debug builds,
+        # whose speed has not been measured; it is not permission for unbounded work.
+        set_tests_properties(numerics.loss_decay_oracle numerics.loss_modal_reference_crosscheck
+            PROPERTIES TIMEOUT 240)
         foreach(case_name IN ITEMS two_mass_oracle port_power_balance)
             add_test(NAME "coupling.${case_name}" COMMAND setar_numerical_tests "${case_name}")
             set_tests_properties("coupling.${case_name}" PROPERTIES
@@ -105,6 +120,12 @@ if(SETAR_BUILD_TESTS)
                         --generator "${CMAKE_CURRENT_SOURCE_DIR}/tools/generate_solver_report.py")
             set_tests_properties(integration.solver_evidence PROPERTIES
                 LABELS "integration;numerical;visualization" TIMEOUT 60)
+            add_test(NAME integration.loss_evidence
+                COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/tools/test_loss_report.py"
+                        --study "$<TARGET_FILE:setar_loss_study>"
+                        --generator "${CMAKE_CURRENT_SOURCE_DIR}/tools/generate_loss_report.py")
+            set_tests_properties(integration.loss_evidence PROPERTIES
+                LABELS "integration;numerical;visualization" TIMEOUT 300)
         endif()
     endif()
 endif()

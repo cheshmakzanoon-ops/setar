@@ -38,6 +38,19 @@ void validate_grid(const StringGrid& g) {
     require_positive(h, "derived spatial grid spacing must be finite and positive");
     require_positive(g.linear_density_kg_per_m * h,
                      "derived nodal mass must be finite and positive");
+    require(std::isfinite(g.loss.decay_constant_per_s) && g.loss.decay_constant_per_s >= 0.0,
+            "constant decay must be finite and nonnegative (1/s)");
+    require(std::isfinite(g.loss.decay_wavenumber_squared_m2_per_s) &&
+                g.loss.decay_wavenumber_squared_m2_per_s >= 0.0,
+            "wavenumber-squared decay must be finite and nonnegative (m^2/s)");
+    require(std::isfinite(g.loss.decay_frequency_squared_s) &&
+                g.loss.decay_frequency_squared_s >= 0.0,
+            "frequency-squared decay must be finite and nonnegative (s)");
+}
+
+bool has_loss(const StringLoss& loss) noexcept {
+    return loss.decay_constant_per_s != 0.0 || loss.decay_wavenumber_squared_m2_per_s != 0.0 ||
+           loss.decay_frequency_squared_s != 0.0;
 }
 
 double grid_eigenvalue(const StringGrid& g, std::size_t mode_number) {
@@ -138,6 +151,166 @@ double midpoint_frequency_hz(double frequency_hz, double sample_rate_hz) {
     return sample_rate_hz * std::atan(pi * frequency_hz / sample_rate_hz) / pi;
 }
 
+double continuum_decay_rate_per_s(const StringGrid& g, std::size_t mode_number) {
+    validate_grid(g);
+    require(mode_number >= 1 && mode_number <= g.interior_nodes,
+            "harmonic number must lie in [1, number of interior nodes]");
+    const double wave_number = static_cast<double>(mode_number) * pi / g.length_m;
+    const double k2 = wave_number * wave_number;
+    const double omega2 = (g.tension_n * k2 + g.bending_stiffness_n_m2 * k2 * k2) /
+                          g.linear_density_kg_per_m;
+    const double rate = g.loss.decay_constant_per_s +
+                        g.loss.decay_wavenumber_squared_m2_per_s * k2 +
+                        g.loss.decay_frequency_squared_s * omega2;
+    require(std::isfinite(rate), "continuum decay rate is not representable");
+    return rate;
+}
+
+double spatial_grid_decay_rate_per_s(const StringGrid& g, std::size_t mode_number) {
+    validate_grid(g);
+    require(mode_number >= 1 && mode_number <= g.interior_nodes,
+            "harmonic number must lie in [1, number of interior nodes]");
+    const double lambda = grid_eigenvalue(g, mode_number);
+    const double omega2 = (g.tension_n * lambda + g.bending_stiffness_n_m2 * lambda * lambda) /
+                          g.linear_density_kg_per_m;
+    const double rate = g.loss.decay_constant_per_s +
+                        g.loss.decay_wavenumber_squared_m2_per_s * lambda +
+                        g.loss.decay_frequency_squared_s * omega2;
+    require(std::isfinite(rate), "grid decay rate is not representable");
+    return rate;
+}
+
+MidpointRoots midpoint_damped_roots(const StringGrid& g, std::size_t mode_number) {
+    validate_grid(g);
+    require(mode_number >= 1 && mode_number <= g.interior_nodes,
+            "harmonic number must lie in [1, number of interior nodes]");
+    const double lambda = grid_eigenvalue(g, mode_number);
+    const double omega2 = (g.tension_n * lambda + g.bending_stiffness_n_m2 * lambda * lambda) /
+                          g.linear_density_kg_per_m;
+    require_positive(omega2, "grid frequency is not representable");
+    const double omega = std::sqrt(omega2);
+    const double gamma = spatial_grid_decay_rate_per_s(g, mode_number);
+    const double dt = 1.0 / g.sample_rate_hz;
+    const double half_dt = 0.5 * dt;
+    MidpointRoots roots;
+    if (gamma < omega) {
+        // Underdamped: s = -gamma +/- i*wd. r = (1+s*h)/(1-s*h) with h = dt/2.
+        // |r|^2 = 1 - 4a/den and arg r = atan2(b,1-a) + atan2(b,1+a); log1p keeps
+        // the small decay of a lightly damped mode free of cancellation.
+        const double wd = std::sqrt((omega - gamma) * (omega + gamma));
+        const double a = gamma * half_dt;
+        const double b = wd * half_dt;
+        const double den = (1.0 + a) * (1.0 + a) + b * b;
+        const double log_radius = 0.5 * std::log1p(-4.0 * a / den);
+        roots.spectral_radius = std::exp(log_radius);
+        roots.decay_rate_per_s = -log_radius / dt;
+        roots.frequency_hz = std::abs(std::atan2(b, 1.0 - a) + std::atan2(b, 1.0 + a)) /
+                             (2.0 * pi * dt);
+        roots.oscillatory = true;
+    } else {
+        // Overdamped or critical: two real eigenvalues s = -x, x = gamma -/+ sqrt(gamma^2-Om^2).
+        // The slow one uses Om^2/(gamma+root) to avoid cancellation. No frequency exists.
+        const double root = std::sqrt((gamma - omega) * (gamma + omega));
+        const double slow = omega2 / (gamma + root);
+        const double fast = gamma + root;
+        const double radius_slow = std::abs(1.0 - slow * half_dt) / (1.0 + slow * half_dt);
+        const double radius_fast = std::abs(1.0 - fast * half_dt) / (1.0 + fast * half_dt);
+        roots.spectral_radius = std::max(radius_slow, radius_fast);
+        require_positive(roots.spectral_radius, "overdamped midpoint decay is not representable");
+        roots.decay_rate_per_s = -std::log(roots.spectral_radius) / dt;
+        roots.frequency_hz = 0.0;
+        roots.oscillatory = false;
+    }
+    return roots;
+}
+
+DecayEstimate estimate_decay(std::span<const double> samples, double sample_rate_hz) {
+    require_positive(sample_rate_hz, "estimator sample rate must be finite and positive (Hz)");
+    require(samples.size() >= 8, "decay estimation needs at least eight samples");
+    double scale = 0.0;
+    for (double value : samples) {
+        require(std::isfinite(value), "decay estimation input must be finite");
+        scale = std::max(scale, std::abs(value));
+    }
+    require_positive(scale, "decay estimation input is identically zero");
+    // Rows j: y = x[j+2] ~ a*x[j+1] + b*x[j]. Two nearly parallel regressors are the
+    // normal case (sampling far above the oscillation frequency), so the fit uses
+    // Gram-Schmidt QR with one reorthogonalization pass and sweeps y through the same
+    // projections (Bjorck's backward-stable augmented form). Data are scaled by their
+    // peak, so the result cannot depend on the signal gain.
+    const std::size_t rows = samples.size() - 2;
+    std::vector<double> c1(rows);
+    std::vector<double> c2(rows);
+    std::vector<double> y(rows);
+    for (std::size_t j = 0; j < rows; ++j) {
+        c1[j] = samples[j + 1] / scale;
+        c2[j] = samples[j] / scale;
+        y[j] = samples[j + 2] / scale;
+    }
+    const auto dot = [rows](const std::vector<double>& u, const std::vector<double>& w) {
+        double total = 0.0;
+        for (std::size_t j = 0; j < rows; ++j) {
+            total += u[j] * w[j];
+        }
+        return total;
+    };
+    const double r11 = std::sqrt(dot(c1, c1));
+    require_positive(r11, "decay estimation regressor is identically zero");
+    std::vector<double> q1(rows);
+    for (std::size_t j = 0; j < rows; ++j) {
+        q1[j] = c1[j] / r11;
+    }
+    double r12 = dot(q1, c2);
+    for (std::size_t j = 0; j < rows; ++j) {
+        c2[j] -= r12 * q1[j];
+    }
+    const double r12_correction = dot(q1, c2);
+    for (std::size_t j = 0; j < rows; ++j) {
+        c2[j] -= r12_correction * q1[j];
+    }
+    r12 += r12_correction;
+    const double r22 = std::sqrt(dot(c2, c2));
+    require(r22 > 1.0e-13 * r11,
+            "decay estimation fit is rank deficient (series too short or constant)");
+    const double t1 = dot(q1, y);
+    for (std::size_t j = 0; j < rows; ++j) {
+        y[j] -= t1 * q1[j];
+    }
+    const double t2 = dot(c2, y) / r22;
+    const double b = t2 / r22;
+    const double a = (t1 - r12 * b) / r11;
+    double residual = 0.0;
+    double signal = 0.0;
+    for (std::size_t j = 0; j < rows; ++j) {
+        const double fit = a * (samples[j + 1] / scale) + b * (samples[j] / scale);
+        const double miss = samples[j + 2] / scale - fit;
+        residual += miss * miss;
+        signal += (samples[j + 2] / scale) * (samples[j + 2] / scale);
+    }
+    require(std::isfinite(a) && std::isfinite(b) && signal > 0.0,
+            "decay estimation produced a nonfinite fit");
+    DecayEstimate estimate;
+    estimate.residual_rms_over_signal_rms = std::sqrt(residual / signal);
+    estimate.regressor_condition = r11 / r22;
+    const double discriminant = a * a + 4.0 * b;
+    if (discriminant < 0.0) {
+        require(b < 0.0, "decay estimation complex roots require a positive root product");
+        estimate.spectral_radius = std::sqrt(-b);
+        estimate.decay_rate_per_s = -0.5 * std::log(-b) * sample_rate_hz;
+        estimate.frequency_hz = std::abs(std::atan2(0.5 * std::sqrt(-discriminant), 0.5 * a)) *
+                                sample_rate_hz / (2.0 * pi);
+        estimate.oscillatory = true;
+    } else {
+        const double root = std::sqrt(discriminant);
+        estimate.spectral_radius = std::max(std::abs(0.5 * (a + root)), std::abs(0.5 * (a - root)));
+        require_positive(estimate.spectral_radius, "decay estimation found a zero spectral radius");
+        estimate.decay_rate_per_s = -std::log(estimate.spectral_radius) * sample_rate_hz;
+        estimate.frequency_hz = 0.0;
+        estimate.oscillatory = false;
+    }
+    return estimate;
+}
+
 double leapfrog_minimum_stable_rate_hz(const StringGrid& g) {
     validate_grid(g);
     return pi * spatial_grid_frequency_hz(g, g.interior_nodes);
@@ -153,6 +326,8 @@ double leapfrog_frequency_hz(double frequency_hz, double sample_rate_hz) {
 
 void LeapfrogStiffString::prepare(const StringGrid& g) {
     validate_grid(g);
+    require(!has_loss(g.loss),
+            "explicit prototype is lossless: use MidpointStiffString for a declared loss law");
     require(g.sample_rate_hz > 1.000000000001 * leapfrog_minimum_stable_rate_hz(g),
             "explicit stiff-string grid violates its analytically derived CFL bound");
     LeapfrogStiffString candidate;
@@ -241,6 +416,7 @@ void MidpointStiffString::prepare(const StringGrid& g) {
     const double alpha = dt * dt / (4.0 * g.linear_density_kg_per_m);
     std::vector<double> b(n * n, 0.0);
     candidate.stiffness_.assign(n * n, 0.0);
+    candidate.damping_.assign(n * n, 0.0);
     candidate.cholesky_.assign(n * n, 0.0);
     candidate.port_weights_.resize(n);
     candidate.q_.assign(n, 0.0);
@@ -270,8 +446,18 @@ void MidpointStiffString::prepare(const StringGrid& g) {
             const double value = g.tension_n * b[i * n + j] +
                                  g.bending_stiffness_n_m2 * b_squared;
             require(std::isfinite(value), "discrete stiffness matrix contains an invalid entry");
+            // D = 2*(s0*I + s1*B + s2*K/mu) is a nonnegative combination of SPD
+            // matrices, hence positive semidefinite: no sign of the loss can be wrong.
+            const double damping =
+                2.0 * ((i == j ? g.loss.decay_constant_per_s : 0.0) +
+                       g.loss.decay_wavenumber_squared_m2_per_s * b[i * n + j] +
+                       g.loss.decay_frequency_squared_s * value / g.linear_density_kg_per_m);
+            require(std::isfinite(damping), "discrete damping matrix contains an invalid entry");
             candidate.stiffness_[i * n + j] = value;
-            candidate.cholesky_[i * n + j] = (i == j ? 1.0 : 0.0) + alpha * value;
+            candidate.damping_[i * n + j] = damping;
+            // S = I + dt^2*K/(4*mu) + dt*D/2 (SPD): the implicit midpoint system matrix.
+            candidate.cholesky_[i * n + j] = (i == j ? 1.0 : 0.0) + alpha * value +
+                                             0.5 * dt * damping;
         }
     }
     // Dense Cholesky, even though the actual stiffness is pentadiagonal:
@@ -346,10 +532,15 @@ WorkStep MidpointStiffString::advance(double force_n) {
     const double before = energy_j();
     for (std::size_t i = 0; i < n; ++i) {
         double kq = 0.0;
+        double dq = 0.0;
         for (std::size_t j = 0; j < n; ++j) {
             kq += stiffness_[i * n + j] * q_[j];
+            dq += damping_[i * n + j] * q_[j];
         }
-        rhs_[i] = q_[i] + dt * v_[i] - alpha * kq + force_factor * port_weights_[i];
+        // [I + dt*D/2 - dt^2*K/(4*mu)] q_n + dt*v_n + dt^2*F*w/(2*mu*h) for the
+        // trapezoidal (implicit midpoint) rule applied to q' = v, v' = -A q - D v + g.
+        rhs_[i] = q_[i] + dt * v_[i] - alpha * kq + 0.5 * dt * dq +
+                  force_factor * port_weights_[i];
         require(std::isfinite(rhs_[i]), "forced midpoint right-hand side overflowed");
     }
     // Forward L*y = rhs; back-substitute L^T*q_next = y.
@@ -373,12 +564,25 @@ WorkStep MidpointStiffString::advance(double force_n) {
     for (std::size_t i = 0; i < n; ++i) {
         velocity_mid += port_weights_[i] * 0.5 * (v_[i] + next_v_[i]);
     }
+    // Dissipated energy dt*(mu*h)*v_mid^T D v_mid uses the damping operator and
+    // the midpoint velocity only; it never reads the energy before/after the step,
+    // so the ledger residual below is a genuine consistency check.
+    double dissipation_form = 0.0;
+    for (std::size_t i = 0; i < n; ++i) {
+        double dv = 0.0;
+        for (std::size_t j = 0; j < n; ++j) {
+            dv += damping_[i * n + j] * 0.5 * (v_[j] + next_v_[j]);
+        }
+        dissipation_form += 0.5 * (v_[i] + next_v_[i]) * dv;
+    }
+    const double dissipated = dt * mu * h * dissipation_form;
     const double work = force_n * velocity_mid * dt;
-    require(std::isfinite(after) && std::isfinite(work),
+    require(std::isfinite(after) && std::isfinite(work) && std::isfinite(dissipated),
             "forced midpoint step would exceed finite representable energy");
     std::copy(scratch_.begin(), scratch_.end(), q_.begin());
     std::copy(next_v_.begin(), next_v_.end(), v_.begin());
-    return {velocity_mid, work, after - before, (after - before) - work};
+    return {velocity_mid, work, after - before, dissipated,
+            (after - before) - work + dissipated};
 }
 
 double MidpointStiffString::energy_j() const noexcept {

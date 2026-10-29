@@ -39,6 +39,7 @@ reading-order index. Chapter order within a volume is not a project deadline.
 - [Architecture and ownership](architecture/README.md)
 - [Proposed C++20 engine interfaces](architecture/04-cpp20-module-contracts.md)
 - [Discrete solver comparison and coupling work](architecture/05-discrete-solver-selection.md)
+- [Damped-midpoint loss law: derivation, oracles and executed evidence](numerics/14-damped-midpoint-loss-verification.md)
 - [Physical signal and evidence flow diagrams](architecture/06-physical-and-evidence-flow.md)
 - [Engineering decision and open-gate ledger](governance/engineering-decision-gates.md)
 - [Fidelity and perceptual acceptance protocol](validation/09-final-fidelity-acceptance.md)

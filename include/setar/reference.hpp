@@ -16,6 +16,11 @@ struct StringParameters {
     double decay_constant_per_s = 0.8;
     double decay_frequency_squared_s = 0.0;
     std::size_t mode_count = 16;
+    // Appended after mode_count to keep existing aggregate initialization valid.
+    // Amplitude decay of mode n is
+    //   sigma_n = decay_constant + decay_wavenumber_squared*k_n^2 + decay_frequency_squared*omega_n^2
+    // with k_n = n*pi/L (rad/m): the u_txx loss of docs/strings/03-loss-and-dispersion.md.
+    double decay_wavenumber_squared_m2_per_s = 0.0;
 };
 
 inline constexpr std::size_t maximum_mode_count = 128;

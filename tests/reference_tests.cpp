@@ -180,6 +180,68 @@ void analytic_response() {
     }
 }
 
+void wavenumber_loss() {
+    // sigma_n = s0 + s1*k_n^2 + s2*omega_n^2, k_n = n*pi/L. Each term is checked alone
+    // and together against a long-double closed form, so a swapped or dropped term
+    // (for example s1 applied to omega^2 instead of k^2) cannot pass.
+    struct Law {
+        double s0;
+        double s1;
+        double s2;
+    };
+    for (const Law law : {Law{0.0, 0.4, 0.0}, Law{1.5, 0.0, 0.0}, Law{0.0, 0.0, 2.0e-9},
+                          Law{2.0, 0.3, 1.0e-9}}) {
+        StringParameters p;
+        p.mode_count = 12;
+        p.bending_stiffness_n_m2 = 0.00008;
+        p.decay_constant_per_s = law.s0;
+        p.decay_wavenumber_squared_m2_per_s = law.s1;
+        p.decay_frequency_squared_s = law.s2;
+        ModalString model;
+        model.prepare(p, 48000.0);
+        model.pluck(0.0005, 0.23);
+        const std::vector<setar::reference::ModeState> initial(model.modes().begin(),
+                                                              model.modes().end());
+        constexpr std::size_t steps = 4800;
+        for (std::size_t step = 0; step < steps; ++step) {
+            model.advance();
+        }
+        const long double time = static_cast<long double>(steps) / 48000.0L;
+        for (std::size_t index = 0; index < initial.size(); ++index) {
+            const long double k = static_cast<long double>(index + 1) * pi /
+                                  static_cast<long double>(p.length_m);
+            const long double omega = reference_omega(p, index + 1);
+            const long double sigma = static_cast<long double>(law.s0) +
+                                      static_cast<long double>(law.s1) * k * k +
+                                      static_cast<long double>(law.s2) * omega * omega;
+            close(model.modes()[index].decay_per_s, sigma, 1.0e-12L, 1.0e-13L,
+                  "modal decay equals s0 + s1*k^2 + s2*omega^2");
+            const long double wd = std::sqrt(omega * omega - sigma * sigma);
+            const long double expected_q = static_cast<long double>(initial[index].displacement_m) *
+                                           std::exp(-sigma * time) *
+                                           (std::cos(wd * time) + sigma / wd * std::sin(wd * time));
+            close(model.modes()[index].displacement_m, expected_q, 3.0e-15L, 2.0e-10L,
+                  "analytic displacement under the three-term loss law");
+        }
+    }
+    // Backwards compatibility: the new coefficient defaults to zero and changes nothing.
+    StringParameters legacy;
+    legacy.decay_constant_per_s = 2.0;
+    legacy.decay_frequency_squared_s = 2.0e-9;
+    check(legacy.decay_wavenumber_squared_m2_per_s == 0.0, "wavenumber loss defaults to zero");
+    const double nan = std::numeric_limits<double>::quiet_NaN();
+    for (double bad : {-1.0e-3, nan, std::numeric_limits<double>::infinity()}) {
+        StringParameters p;
+        p.decay_wavenumber_squared_m2_per_s = bad;
+        invalid([&] { setar::reference::validate(p, 48000.0); },
+                "negative or nonfinite wavenumber loss rejected");
+    }
+    StringParameters overcritical;
+    overcritical.decay_wavenumber_squared_m2_per_s = 100.0;
+    invalid([&] { setar::reference::validate(overcritical, 48000.0); },
+            "wavenumber loss that makes any retained mode overcritical is rejected");
+}
+
 void lossless_energy() {
     StringParameters p;
     p.decay_constant_per_s = 0.0;
@@ -444,6 +506,7 @@ int main(int argc, char** argv) {
         std::pair<std::string_view, void (*)()>{"parameters", parameters},
         std::pair<std::string_view, void (*)()>{"frequencies", frequencies},
         std::pair<std::string_view, void (*)()>{"analytic_response", analytic_response},
+        std::pair<std::string_view, void (*)()>{"wavenumber_loss", wavenumber_loss},
         std::pair<std::string_view, void (*)()>{"lossless_energy", lossless_energy},
         std::pair<std::string_view, void (*)()>{"passivity", passivity},
         std::pair<std::string_view, void (*)()>{"pluck_projection", pluck_projection},

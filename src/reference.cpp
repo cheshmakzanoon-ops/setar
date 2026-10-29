@@ -40,6 +40,14 @@ double angular_frequency(const StringParameters& parameters, std::size_t mode_nu
                          k2 * k2);
 }
 
+// Amplitude decay of one mode; every term is nonnegative, so no sign is chosen by hand.
+double decay_rate(const StringParameters& parameters, std::size_t mode_number, double omega) {
+    const double k = static_cast<double>(mode_number) * pi / parameters.length_m;
+    return parameters.decay_constant_per_s +
+           parameters.decay_wavenumber_squared_m2_per_s * k * k +
+           parameters.decay_frequency_squared_s * omega * omega;
+}
+
 struct Coefficients {
     double qq;
     double qv;
@@ -83,6 +91,8 @@ void validate(const StringParameters& parameters, double sample_rate_hz) {
                         "constant decay must be nonnegative and finite (1/s)");
     require_nonnegative(parameters.decay_frequency_squared_s,
                         "frequency-squared decay coefficient must be nonnegative and finite (s)");
+    require_nonnegative(parameters.decay_wavenumber_squared_m2_per_s,
+                        "wavenumber-squared decay coefficient must be nonnegative and finite (m^2/s)");
     require(parameters.mode_count >= 1 && parameters.mode_count <= maximum_mode_count,
             "mode count must be between 1 and 128");
     const double mass = parameters.linear_density_kg_per_m * parameters.length_m / 2.0;
@@ -92,8 +102,7 @@ void validate(const StringParameters& parameters, double sample_rate_hz) {
         require_positive(omega, "derived angular frequency is non-finite or underflowed");
         require(omega / (2.0 * pi) < maximum_frequency_fraction * sample_rate_hz,
                 "mode exceeds the strict 0.45 * sample-rate observation limit");
-        const double sigma = parameters.decay_constant_per_s +
-                             parameters.decay_frequency_squared_s * omega * omega;
+        const double sigma = decay_rate(parameters, mode_number, omega);
         require(std::isfinite(sigma) && sigma >= 0.0 && sigma < omega,
                 "each mode must have finite nonnegative undercritical decay (sigma < omega)");
     }
@@ -169,8 +178,7 @@ void ModalString::prepare(const StringParameters& parameters, double sample_rate
     const double mass = parameters.linear_density_kg_per_m * parameters.length_m / 2.0;
     for (std::size_t n = 1; n <= parameters.mode_count; ++n) {
         const double omega = angular_frequency(parameters, n);
-        const double sigma = parameters.decay_constant_per_s +
-                             parameters.decay_frequency_squared_s * omega * omega;
+        const double sigma = decay_rate(parameters, n, omega);
         const auto transition = coefficients(omega, sigma, sample_rate_hz);
         const double weight = pickup_fraction == 0.0 || pickup_fraction == 1.0
                                   ? 0.0

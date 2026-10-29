@@ -27,7 +27,7 @@ jobs:
           - os: windows-2022
             executable: ./build/Debug/setar_render.exe
             solver_executable: ./build/Debug/setar_compare_solvers.exe
-          - os: macos-14
+          - os: macos-15
             executable: ./build/setar_render
             solver_executable: ./build/setar_compare_solvers
     steps:

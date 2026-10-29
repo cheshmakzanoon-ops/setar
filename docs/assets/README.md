@@ -21,6 +21,25 @@ is a rasterization of the [proposed UX SVG](../ux/assets/musician-wireframe.svg)
 It is **not** an implemented JUCE/plugin editor, a captured app screenshot, or
 evidence of live controls.
 
+## Passive-loss verification graphs
+
+[`loss-study/`](loss-study/) holds the **actual** graphs, CSV tables and provenance of the synthetic
+loss-law study described in the
+[damped-midpoint loss chapter](../numerics/14-damped-midpoint-loss-verification.md):
+[decay by mode](loss-study/decay-by-mode.svg), [decay-error convergence](loss-study/decay-convergence.svg)
+and [waveform error against the analytic modal reference](loss-study/waveform-convergence.svg), each with a PNG
+raster export made with headless Chromium from the committed SVG (not a screenshot of any application).
+They were produced by a Linux GCC 13 Release build of the commit recorded in
+[`loss-evidence.json`](loss-study/loss-evidence.json) (`source_revision`), together with the SHA-256 of
+both CSVs. The loss magnitudes are arbitrary synthetic values; nothing here is measured setar data.
+Different compilers can change the last digits of the CSVs; compare orders and ratios, not digits.
+
+```sh
+setar_loss_study decay > decay.csv
+setar_loss_study waveform > waveform.csv
+python3 tools/generate_loss_report.py --decay decay.csv --waveform waveform.csv --output artifacts/loss --source-revision <actual-revision>
+```
+
 ## Regenerate a source report
 
 The default C++ and Python build/test instructions are in

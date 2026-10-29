@@ -1,0 +1,229 @@
+{
+  "decay_csv_sha256": "9cc267a53b3b08291780e83761ba4df046837b10b796ae3e262dc06771a4f1ad",
+  "decay_observed_order_finest_pair": {
+    "maximum": 1.9998625472956366,
+    "minimum": 1.983971067711843
+  },
+  "decay_orders_by_series": {
+    "combined/mode1": [
+      1.9973649916950598,
+      1.9993407912756305,
+      1.999835169258538
+    ],
+    "combined/mode2": [
+      1.9907064206761143,
+      1.9976692019344582,
+      1.9994168350932777
+    ],
+    "combined/mode3": [
+      1.9798439112244566,
+      1.9949239267376906,
+      1.9987286354728537
+    ],
+    "combined/mode4": [
+      1.9648569013844084,
+      1.9910988348456145,
+      1.9977673271834084
+    ],
+    "combined/mode6": [
+      1.9232602726564543,
+      1.9802531979394629,
+      1.9950263178299583
+    ],
+    "combined/mode8": [
+      1.8677943592145905,
+      1.9652627505584277,
+      1.9912003550455544
+    ],
+    "constant/mode1": [
+      1.995992529066475,
+      1.9989979639126945,
+      1.9997494803814087
+    ],
+    "constant/mode2": [
+      1.9839802852289161,
+      1.9959924318410387,
+      1.998997939523502
+    ],
+    "constant/mode3": [
+      1.9639918018097333,
+      1.9909850429945877,
+      1.9977454149418847
+    ],
+    "constant/mode4": [
+      1.9360690445085371,
+      1.9839784555775737,
+      1.9959919708482503
+    ],
+    "constant/mode6": [
+      1.8566041223476824,
+      1.9639825794923633,
+      1.990982697659638
+    ],
+    "constant/mode8": [
+      1.7458170184467745,
+      1.9360403690781594,
+      1.983971067711843
+    ],
+    "frequency_squared/mode1": [
+      1.9978030443814097,
+      1.9994502982537967,
+      1.9998625455911287
+    ],
+    "frequency_squared/mode2": [
+      1.9912411687374065,
+      1.997802929388754,
+      1.9994502694530918
+    ],
+    "frequency_squared/mode3": [
+      1.9804000059419833,
+      1.9950630829076241,
+      1.998763432621547
+    ],
+    "frequency_squared/mode4": [
+      1.965417916772415,
+      1.9912393429895814,
+      1.9978024695287362
+    ],
+    "frequency_squared/mode6": [
+      1.9238091975833276,
+      1.9803908804132788,
+      1.9950607630103898
+    ],
+    "frequency_squared/mode8": [
+      1.8683016673643196,
+      1.9653895826515286,
+      1.991232046804313
+    ],
+    "wavenumber_squared/mode1": [
+      1.9978030715025692,
+      1.9994503050428996,
+      1.9998625472956366
+    ],
+    "wavenumber_squared/mode2": [
+      1.991241600813664,
+      1.9978030378679656,
+      1.999450296603615
+    ],
+    "wavenumber_squared/mode3": [
+      1.9804021776400897,
+      1.9950636310527952,
+      1.9987635699855408
+    ],
+    "wavenumber_squared/mode4": [
+      1.9654247115582555,
+      1.991241070845832,
+      1.9978029033326425
+    ],
+    "wavenumber_squared/mode6": [
+      1.9238426180324175,
+      1.9803995621710118,
+      1.9950629543091685
+    ],
+    "wavenumber_squared/mode8": [
+      1.8684030989111637,
+      1.9654167340452886,
+      1.9912389510672786
+    ]
+  },
+  "decay_rows": 96,
+  "evidence_class": "synthetic_numerical_comparison_only",
+  "graphs": [
+    "decay-by-mode.svg",
+    "decay-convergence.svg",
+    "waveform-convergence.svg"
+  ],
+  "known_limitations": [
+    "Linear simply supported uniform string, one polarization, uniform grid; the sine modes diagonalize the damping operator only because coefficients are uniform",
+    "Loss magnitudes are arbitrary synthetic values, not fitted or measured string loss",
+    "Convergence is shown for band-limited, resolved initial data; the 6-mode band is pre-asymptotic on the coarsest grids by construction",
+    "Observed orders are for the joint (h, dt) refinement path used here",
+    "Wavenumber-squared and frequency-squared laws are nearly collinear at setar-scale bending stiffness: decay data cannot separate them (see numerics.loss_decay_oracle)",
+    "No bridge, body, nail or fret coupling; no measured partial decay of any instrument",
+    "Dense O(N^2) prototype; no CPU timing or real-time claim"
+  ],
+  "measured_instrument": false,
+  "producer": "setar_loss_study C++20; formulas in include/setar/numerical_prototype.hpp and tests/support/modal_crosscheck.hpp",
+  "publication_gates": {
+    "max_measured_vs_oracle_decay_rel": 1e-06,
+    "max_single_pair_fit_residual": 1e-08
+  },
+  "reference_specimen": null,
+  "refinement_levels_grid_nodes": [
+    15,
+    31,
+    63,
+    127
+  ],
+  "refinement_rule": "h and dt halved together; sample_rate/(N+1) is constant",
+  "source_revision": "a1c40bfefeca91e9fffc058f98e020e9c3446044",
+  "waveform_csv_sha256": "bcf7a57395817de8862ef1ec33403fb6290aeca9852a6bb3ef2993b90ed76ebd",
+  "waveform_matched_resolved_order_finest_pair": {
+    "combined | EI 1.5e-05 | 3 modes": 1.9958533804386913,
+    "combined | EI 8e-05 | 3 modes": 1.9959230349854193,
+    "constant | EI 1.5e-05 | 3 modes": 1.9956315204912907,
+    "frequency_squared | EI 1.5e-05 | 3 modes": 1.9957334769007085,
+    "lossless | EI 1.5e-05 | 3 modes": 1.9956466618580224,
+    "wavenumber_squared | EI 1.5e-05 | 3 modes": 1.9957755160985442
+  },
+  "waveform_orders_by_series": {
+    "combined | EI 1.5e-05 | 3 modes": [
+      1.8970088277561385,
+      1.981601208316322,
+      1.9958533804386913
+    ],
+    "combined | EI 1.5e-05 | 3 modes | ref constant_only": [
+      1.094406074293921,
+      0.2562497121923258,
+      0.020976450168406907
+    ],
+    "combined | EI 1.5e-05 | 3 modes | ref zero_loss": [
+      0.5963625965085181,
+      0.08482011440676905,
+      0.00597817212799364
+    ],
+    "combined | EI 1.5e-05 | 6 modes": [
+      1.1800516289924108,
+      1.985242333195716,
+      2.0396745944623875
+    ],
+    "combined | EI 8e-05 | 3 modes": [
+      1.8977055038991686,
+      1.981617324214211,
+      1.9959230349854193
+    ],
+    "constant | EI 1.5e-05 | 3 modes": [
+      1.8878311263435346,
+      1.9803459645414874,
+      1.9956315204912907
+    ],
+    "frequency_squared | EI 1.5e-05 | 3 modes": [
+      1.8917182226931608,
+      1.9806495826284531,
+      1.9957334769007085
+    ],
+    "lossless | EI 1.5e-05 | 3 modes": [
+      1.8880707645316568,
+      1.9804161610485695,
+      1.9956466618580224
+    ],
+    "lossless | EI 1.5e-05 | 6 modes": [
+      0.4817777164944839,
+      1.8342037549150012,
+      2.0149261106182705
+    ],
+    "wavenumber_squared | EI 1.5e-05 | 3 modes": [
+      1.8921413164792857,
+      1.9808428828496858,
+      1.9957755160985442
+    ]
+  },
+  "waveform_rows": 40,
+  "waveform_wrong_reference_order_finest_pair": {
+    "combined | EI 1.5e-05 | 3 modes | ref constant_only": 0.020976450168406907,
+    "combined | EI 1.5e-05 | 3 modes | ref zero_loss": 0.00597817212799364
+  },
+  "worst_measured_vs_oracle_decay_rel": 5.581046735869677e-10,
+  "worst_regressor_condition": 180.33082357546414,
+  "worst_single_pair_fit_residual": 2.662073356029061e-15
+}

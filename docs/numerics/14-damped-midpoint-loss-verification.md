@@ -166,6 +166,17 @@ of a pure \(\sigma_1\) law and a pure \(\sigma_2\) law, each calibrated at mode 
 stress fixture (EI = 0.01) they differ by 28%. A calibration that reports both coefficients for
 a setar-scale string from decay data alone would be reporting noise.
 
+## Figures
+
+The graphs below are computed by the C++ study and the report tool, not drawn by hand
+([provenance, hashes and the source revision](../assets/loss-study/loss-evidence.json)).
+
+![Decay rate relative to the continuum law by mode: measured markers sit on the amplification-root oracle; the 15-node grid under-damps by about 20% at mode 8](../assets/loss-study/decay-by-mode.png)
+
+![Decay-rate error against the continuum law falls at slope -2 as h and dt are halved](../assets/loss-study/decay-convergence.png)
+
+![Waveform error against the analytic modal reference: matched loss laws converge at second order, wrong-loss references plateau, the six-mode band is pre-asymptotic](../assets/loss-study/waveform-convergence.png)
+
 ## Failure modes and how the code reports them
 
 - Negative, NaN or infinite loss coefficients, or a non-finite derived matrix entry:

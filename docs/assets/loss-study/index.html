@@ -1,0 +1,37 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>Setar loss-law evidence</title>
+<style>body{background:#0f172a;color:#e2e8f0;font:16px/1.6 system-ui,sans-serif;
+max-width:1100px;margin:auto;padding:28px}a{color:#67e8f9}img{max-width:100%;height:auto}
+.warning{padding:16px;border:1px solid #f59e0b;background:#451a03}
+table{border-collapse:collapse}td,th{border-bottom:1px solid #475569;padding:6px 14px;text-align:left}</style>
+</head><body><h1>Passive loss in the linear string: synthetic verification evidence</h1>
+<p class="warning">This is not a measured Iranian setar, a fitted loss law, an acoustic or perceptual
+result, or a host screenshot. The loss magnitudes are arbitrary synthetic values.</p>
+<p>Decay CSV SHA-256: <code>9cc267a53b3b08291780e83761ba4df046837b10b796ae3e262dc06771a4f1ad</code> (96 rows).
+Waveform CSV SHA-256: <code>bcf7a57395817de8862ef1ec33403fb6290aeca9852a6bb3ef2993b90ed76ebd</code> (40 rows).</p>
+<p>Worst simulated-versus-oracle decay disagreement:
+<code>5.581e-10</code> (relative). Observed decay-error
+order at the finest refinement pair: 1.98 to 2.00.</p>
+<figure><img src="decay-by-mode.svg" alt="Decay rate by mode for the combined law">
+<figcaption>The simulated modal decay equals the amplification-root oracle, and both depart from the
+continuum law at high modes: the scheme's own algorithmic decay error, reported rather than hidden.</figcaption></figure>
+<figure><img src="decay-convergence.svg" alt="Decay error versus refinement">
+<figcaption>Second-order convergence of decay to the continuum law as h and dt are halved together.</figcaption></figure>
+<figure><img src="waveform-convergence.svg" alt="Waveform error versus refinement">
+<figcaption>With a matched analytic reference the waveform error falls at second order. A reference
+with the wrong loss law leaves an error floor that refinement does not remove: a model error,
+not a discretization error. Series with six modes show the resolution boundary. The matched
+three-mode curves nearly coincide.</figcaption></figure>
+<h2>Observed waveform convergence orders (successive refinement pairs)</h2>
+<table><thead><tr><th>Series</th><th>15→31</th><th>31→63</th><th>63→127</th></tr></thead><tbody><tr><td>combined | EI 1.5e-05 | 3 modes</td><td>1.90</td><td>1.98</td><td>2.00</td></tr>
+<tr><td>combined | EI 1.5e-05 | 3 modes | ref constant_only</td><td>1.09</td><td>0.26</td><td>0.02</td></tr>
+<tr><td>combined | EI 1.5e-05 | 3 modes | ref zero_loss</td><td>0.60</td><td>0.08</td><td>0.01</td></tr>
+<tr><td>combined | EI 1.5e-05 | 6 modes</td><td>1.18</td><td>1.99</td><td>2.04</td></tr>
+<tr><td>combined | EI 8e-05 | 3 modes</td><td>1.90</td><td>1.98</td><td>2.00</td></tr>
+<tr><td>constant | EI 1.5e-05 | 3 modes</td><td>1.89</td><td>1.98</td><td>2.00</td></tr>
+<tr><td>frequency_squared | EI 1.5e-05 | 3 modes</td><td>1.89</td><td>1.98</td><td>2.00</td></tr>
+<tr><td>lossless | EI 1.5e-05 | 3 modes</td><td>1.89</td><td>1.98</td><td>2.00</td></tr>
+<tr><td>lossless | EI 1.5e-05 | 6 modes</td><td>0.48</td><td>1.83</td><td>2.01</td></tr>
+<tr><td>wavenumber_squared | EI 1.5e-05 | 3 modes</td><td>1.89</td><td>1.98</td><td>2.00</td></tr></tbody></table>
+<p><a href="loss-decay.csv">Decay rows</a> · <a href="loss-waveform.csv">Waveform rows</a> ·
+<a href="loss-evidence.json">Provenance and limitations</a></p></body></html>

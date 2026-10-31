@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1140" height="460" viewBox="0 0 1140 460" role="img" aria-label="Estimated fundamental vs nominal (synthetic prototype)">
+<rect width="100%" height="100%" fill="#0f172a"/>
+<text x="90" y="34" font-size="22" fill="#f8fafc" font-family="sans-serif">Estimated fundamental vs nominal (synthetic prototype)</text>
+<text x="90" y="56" font-size="12" fill="#94a3b8" font-family="sans-serif">Spectral peak within ±80 cents of the ideal stiff-string nominal; descriptive, no pass/fail</text>
+<rect x="90" y="80" width="860" height="320" fill="none" stroke="#334155"/>
+<path d="M 90.0 80 V 400" stroke="#1e293b"/>
+<text x="90.0" y="418" font-size="12" fill="#cbd5e1" text-anchor="middle" font-family="monospace">0</text>
+<path d="M 385.3 80 V 400" stroke="#1e293b"/>
+<text x="385.3" y="418" font-size="12" fill="#cbd5e1" text-anchor="middle" font-family="monospace">2</text>
+<path d="M 680.7 80 V 400" stroke="#1e293b"/>
+<text x="680.7" y="418" font-size="12" fill="#cbd5e1" text-anchor="middle" font-family="monospace">4</text>
+<path d="M 90 340.0 H 950" stroke="#1e293b"/>
+<text x="82" y="344.0" font-size="12" fill="#cbd5e1" text-anchor="end" font-family="monospace">-50</text>
+<path d="M 90 240.0 H 950" stroke="#1e293b"/>
+<text x="82" y="244.0" font-size="12" fill="#cbd5e1" text-anchor="end" font-family="monospace">0</text>
+<path d="M 90 140.0 H 950" stroke="#1e293b"/>
+<text x="82" y="144.0" font-size="12" fill="#cbd5e1" text-anchor="end" font-family="monospace">50</text>
+<text x="520.0" y="440" font-size="13" fill="#e2e8f0" text-anchor="middle" font-family="sans-serif">stroke time (s)</text>
+<text transform="translate(22 240.0) rotate(-90)" font-size="13" fill="#e2e8f0" text-anchor="middle" font-family="sans-serif">estimate - nominal (cents)</text>
+<path d="M 90 240.0 H 950" stroke="#64748b" stroke-dasharray="4 4"/>
+<circle cx="104.8" cy="244.4" r="4" fill="#22d3ee"/>
+<circle cx="252.4" cy="234.2" r="4" fill="#fbbf24"/>
+<circle cx="400.1" cy="246.3" r="4" fill="#a78bfa"/>
+<circle cx="547.8" cy="244.3" r="4" fill="#34d399"/>
+<circle cx="710.2" cy="244.5" r="4" fill="#34d399"/>
+<circle cx="711.4" cy="245.7" r="4" fill="#a78bfa"/>
+<circle cx="828.3" cy="243.6" r="4" fill="#34d399"/>
+<circle cx="829.5" cy="247.4" r="4" fill="#a78bfa"/>
+<circle cx="830.7" cy="234.2" r="4" fill="#fbbf24"/>
+<circle cx="831.9" cy="243.5" r="4" fill="#22d3ee"/>
+<circle cx="946.5" cy="242.7" r="4" fill="#22d3ee"/>
+<circle cx="947.6" cy="234.0" r="4" fill="#fbbf24"/>
+<circle cx="948.8" cy="246.1" r="4" fill="#a78bfa"/>
+<circle cx="950.0" cy="242.8" r="4" fill="#34d399"/>
+<path d="M 970 96 h 22" stroke="#22d3ee" stroke-width="3"/>
+<text x="998" y="100" font-size="12" fill="#e2e8f0" font-family="sans-serif">string 0</text>
+<path d="M 970 114 h 22" stroke="#fbbf24" stroke-width="3"/>
+<text x="998" y="118" font-size="12" fill="#e2e8f0" font-family="sans-serif">string 1</text>
+<path d="M 970 132 h 22" stroke="#a78bfa" stroke-width="3"/>
+<text x="998" y="136" font-size="12" fill="#e2e8f0" font-family="sans-serif">string 2</text>
+<path d="M 970 150 h 22" stroke="#34d399" stroke-width="3"/>
+<text x="998" y="154" font-size="12" fill="#e2e8f0" font-family="sans-serif">string 3</text>
+</svg>

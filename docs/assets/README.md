@@ -99,3 +99,11 @@ inkscape docs/ux/assets/musician-wireframe.svg --export-filename=docs/assets/mus
 Use new output paths for independent reproduction. The source SVGs are the
 authoritative numeric plots; pixel differences between renderers do not change
 their physical data.
+
+## Playable-prototype demonstration renders
+
+[`prototype/`](prototype/README.md) holds four synthetic renders of the
+demonstration scores produced by `setar_play` and `tools/analyze_render.py`:
+24-bit WAV audio, spectrograms, energy-ledger and pitch graphs, and provenance
+JSON. They are renders of an unvalidated model with synthetic parameters, not
+recordings or measurements of a setar.

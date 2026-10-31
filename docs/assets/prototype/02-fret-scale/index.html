@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prototype render analysis</title>
+<style>body{background:#0f172a;color:#e2e8f0;font:16px/1.6 system-ui,sans-serif;max-width:1180px;
+margin:0 auto;padding:16px} img{max-width:100%;height:auto;border:1px solid #334155}
+.warning{padding:16px;border:1px solid #f59e0b;background:#451a03}
+table{border-collapse:collapse} th,td{border:1px solid #334155;padding:4px 8px;text-align:left;
+vertical-align:top} th{color:#94a3b8;font-weight:normal} code{color:#fbbf24}</style></head>
+<body><h1>Setar prototype render analysis</h1>
+<p class="warning"><strong>SYNTHETIC render of an unvalidated physical-model prototype with synthetic parameters. Not a measured or validated setar, not a recording, and not a fidelity, perceptual or realtime claim.</strong></p>
+<h2>Provenance</h2><table><tr><th>score</th><td>Scale on string 0 through the synthetic fret map — status: synthetic demonstration; not a transcription of a performance or a validated gesture</td></tr>
+<tr><th>score path</th><td>data/scores/02-fret-scale.score</td></tr>
+<tr><th>config</th><td>synthetic setar prototype (tuning synthetic-c4-g3-c3-c4, fret map pythagorean-17-safi-al-din) (provenance: synthetic)</td></tr>
+<tr><th>body</th><td>synthetic orthotropic plate + Helmholtz cavity + lateral bridge mode (not a measured setar) (provenance: synthetic, 48 modes)</td></tr>
+<tr><th>tuning</th><td>synthetic-c4-g3-c3-c4 — synthetic educational example, not a documented performer tuning</td></tr>
+<tr><th>fret map</th><td>pythagorean-17-safi-al-din — historical theory interval set used as a synthetic fret map; not a measured setar fret map and not a statement of performance practice</td></tr>
+<tr><th>source revision</th><td>3448c32</td></tr>
+<tr><th>render</th><td>48000 Hz, 412800 frames, pcm24, gain 1/Pa, no normalization, no clipping</td></tr>
+<tr><th>faults</th><td>first=none, rejected events=0, Newton failures=0, capacity overflows=0, containment resets=0</td></tr>
+<tr><th>timing</th><td>2.57x realtime — wall-clock measurement on this machine for this run only; not a realtime qualification</td></tr>
+<tr><th>energy ledger</th><td>max |residual| 3.71251e-13 J, relative to max stored 1.16741e-10</td></tr></table>
+<h2>Audio</h2><p><audio controls src="render.wav"></audio> (copied unchanged from the render)</p>
+<h2>Waveform</h2><img src="waveform.svg" alt="Left and right observed output waveform envelopes">
+<h2>Spectrogram</h2><img src="spectrogram.svg" alt="Spectrogram of the mono mix">
+<h2>Energy</h2><img src="energy.svg" alt="Modal energy per string and body over time">
+<h2>Pitch estimates</h2><img src="pitch.svg" alt="Estimated minus nominal fundamental in cents">
+<p>Hann window of 8192 samples starting 0.03 s after each nail stroke, zero-padded x2, largest mono-mix spectral peak within ±80 cents of the nominal, parabolic interpolation on log power. Sympathetic and other ringing strings are in the same mix; the estimate is descriptive only. Nominal frequencies are ideal stiff-string values for the speaking
+length implied by the score; they are not targets the model was tuned to and not measurements.
+15 of 15 strokes analysed.</p>
+<table><tr><th>time (s)</th><th>string</th><th>stop</th><th>fret</th><th>nominal (Hz)</th>
+<th>estimate (Hz)</th><th>cents</th><th>note</th></tr><tr><td>0.300</td><td>0</td><td>open</td><td>0</td><td>261.63</td><td>261.29</td><td>-2.2</td><td></td></tr>
+<tr><td>0.600</td><td>0</td><td>fret</td><td>3</td><td>294.33</td><td>294.25</td><td>-0.5</td><td></td></tr>
+<tr><td>0.900</td><td>0</td><td>fret</td><td>4</td><td>310.08</td><td>309.21</td><td>-4.8</td><td></td></tr>
+<tr><td>1.200</td><td>0</td><td>fret</td><td>7</td><td>348.84</td><td>—</td><td>—</td><td>no interior maximum in the search window</td></tr>
+<tr><td>1.500</td><td>0</td><td>fret</td><td>10</td><td>392.44</td><td>375.59</td><td>-76.0</td><td></td></tr>
+<tr><td>1.800</td><td>0</td><td>fret</td><td>11</td><td>413.44</td><td>—</td><td>—</td><td>no interior maximum in the search window</td></tr>
+<tr><td>2.100</td><td>0</td><td>fret</td><td>14</td><td>465.12</td><td>—</td><td>—</td><td>no interior maximum in the search window</td></tr>
+<tr><td>2.400</td><td>0</td><td>fret</td><td>17</td><td>523.26</td><td>522.85</td><td>-1.4</td><td></td></tr>
+<tr><td>2.700</td><td>0</td><td>fret</td><td>14</td><td>465.12</td><td>—</td><td>—</td><td>no interior maximum in the search window</td></tr>
+<tr><td>3.000</td><td>0</td><td>fret</td><td>11</td><td>413.44</td><td>—</td><td>—</td><td>no interior maximum in the search window</td></tr>
+<tr><td>3.300</td><td>0</td><td>fret</td><td>10</td><td>392.44</td><td>396.95</td><td>+19.8</td><td></td></tr>
+<tr><td>3.600</td><td>0</td><td>fret</td><td>7</td><td>348.84</td><td>—</td><td>—</td><td>no interior maximum in the search window</td></tr>
+<tr><td>3.900</td><td>0</td><td>fret</td><td>4</td><td>310.08</td><td>316.14</td><td>+33.6</td><td></td></tr>
+<tr><td>4.200</td><td>0</td><td>fret</td><td>3</td><td>294.33</td><td>—</td><td>—</td><td>no interior maximum in the search window</td></tr>
+<tr><td>4.500</td><td>0</td><td>open</td><td>0</td><td>261.63</td><td>261.29</td><td>-2.2</td><td></td></tr></table>
+<h2>What this page cannot show</h2>
+<p>It cannot show that the sound resembles a real setar: there is no measured specimen, no
+recording comparison and no listening study. The observation is a synthetic far-field monopole/dipole
+model of a synthetic body, not a calibrated microphone. The wall-clock speed is one run on one
+machine, not a realtime qualification. See <code>analysis.json</code> for exact numbers and input
+hashes.</p></body></html>

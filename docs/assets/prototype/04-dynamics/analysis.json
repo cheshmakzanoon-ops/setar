@@ -1,0 +1,156 @@
+{
+  "schema_version": 1,
+  "evidence_label": "synthetic_unvalidated_prototype_render",
+  "disclaimer": "SYNTHETIC render of an unvalidated physical-model prototype with synthetic parameters. Not a measured or validated setar, not a recording, and not a fidelity, perceptual or realtime claim.",
+  "source_revision": "3448c32",
+  "inputs": {
+    "render.wav": {
+      "sha256": "c2872aa83c9cfd2e9084054c7d560788ca88853f4b889cba3de4c6ea1b68befb",
+      "bytes": 2880044
+    },
+    "diagnostics.csv": {
+      "sha256": "fafd62b63f3659b1e5953dc70e1b9482913dc46b707be913532775c414c41d9f",
+      "bytes": 645667
+    },
+    "summary.json": {
+      "sha256": "22e08b4b1af65a24914fd0183aff8eeca32e4df504093a4d9fae849716a11682",
+      "bytes": 6458
+    }
+  },
+  "signal": {
+    "sample_rate_hz": 48000,
+    "frames": 480000,
+    "encoding": "pcm24",
+    "duration_s": 10.0,
+    "peak_left": 0.04592395376252577,
+    "peak_right": 0.09034157876271949,
+    "rms_left": 0.004306678781408778,
+    "rms_right": 0.007559269496308526,
+    "mean_left": -1.6175212404156539e-09,
+    "mean_right": -4.548828349370738e-09
+  },
+  "spectrogram": {
+    "fft_size": 2048,
+    "hop": 1328,
+    "columns": 360,
+    "max_display_hz": 6000.0,
+    "colour_scale": "dB relative to loudest cell (display only)",
+    "floor_db": -100.0
+  },
+  "energy": {
+    "max_energy_j": 0.004300007533774053,
+    "ledger_max_relative_residual": 1.4978141532831019e-12,
+    "ledger_max_stored_j": 0.00430607620414354
+  },
+  "faults": {
+    "first_fault": "none",
+    "rejected_events": 0,
+    "newton_failures": 0,
+    "capacity_overflows": 0,
+    "containment_resets": 0,
+    "max_newton_iterations": 4,
+    "max_active_channels": 9,
+    "blocks_with_faults": 0
+  },
+  "ledger": {
+    "enabled": true,
+    "residual_min_j": -7.1579027427493e-16,
+    "residual_max_j": 6.449701883681769e-15,
+    "max_abs_residual_j": 6.449701883681769e-15,
+    "max_stored_j": 0.00430607620414354,
+    "final_stored_j": 5.832989883969013e-06,
+    "final_external_work_j": 0.007584893883983209,
+    "final_dissipation_j": 0.007579060894105588,
+    "final_switching_j": 0,
+    "initial_stored_j": 0
+  },
+  "pitch_method": "Hann window of 8192 samples starting 0.03 s after each nail stroke, zero-padded x2, largest mono-mix spectral peak within \u00b180 cents of the nominal, parabolic interpolation on log power. Sympathetic and other ringing strings are in the same mix; the estimate is descriptive only.",
+  "pitch": [
+    {
+      "time_s": 0.1,
+      "string": 0,
+      "stop": "open",
+      "fret": 0,
+      "nominal_hz": 261.62556530059857,
+      "estimate_hz": 261.2927852436089,
+      "cents_vs_nominal": -2.2034806875150297,
+      "level_db_vs_strongest_40_4000hz": 0.0,
+      "strongest_peak_40_4000hz_hz": 260.7421875,
+      "window_start_s": 0.13,
+      "window_s": 0.17066666666666666,
+      "bin_hz": 2.9296875
+    },
+    {
+      "time_s": 1.3,
+      "string": 0,
+      "stop": "open",
+      "fret": 0,
+      "nominal_hz": 261.62556530059857,
+      "estimate_hz": 261.2991798201426,
+      "cents_vs_nominal": -2.161112992007947,
+      "level_db_vs_strongest_40_4000hz": 0.0,
+      "strongest_peak_40_4000hz_hz": 260.7421875,
+      "window_start_s": 1.33,
+      "window_s": 0.17066666666666666,
+      "bin_hz": 2.9296875
+    },
+    {
+      "time_s": 2.5,
+      "string": 0,
+      "stop": "open",
+      "fret": 0,
+      "nominal_hz": 261.62556530059857,
+      "estimate_hz": 261.30058623506517,
+      "cents_vs_nominal": -2.151794834751914,
+      "level_db_vs_strongest_40_4000hz": 0.0,
+      "strongest_peak_40_4000hz_hz": 260.7421875,
+      "window_start_s": 2.53,
+      "window_s": 0.17066666666666666,
+      "bin_hz": 2.9296875
+    },
+    {
+      "time_s": 3.7,
+      "string": 0,
+      "stop": "open",
+      "fret": 0,
+      "nominal_hz": 261.62556530059857,
+      "estimate_hz": 261.2871686926518,
+      "cents_vs_nominal": -2.2406943777163133,
+      "level_db_vs_strongest_40_4000hz": -2.7886576023136858,
+      "strongest_peak_40_4000hz_hz": 521.484375,
+      "window_start_s": 3.73,
+      "window_s": 0.17066666666666666,
+      "bin_hz": 2.9296875
+    },
+    {
+      "time_s": 4.9,
+      "string": 0,
+      "stop": "open",
+      "fret": 0,
+      "nominal_hz": 261.62556530059857,
+      "estimate_hz": 261.29799083871796,
+      "cents_vs_nominal": -2.168990589674649,
+      "level_db_vs_strongest_40_4000hz": -0.052504845287736766,
+      "strongest_peak_40_4000hz_hz": 521.484375,
+      "window_start_s": 4.93,
+      "window_s": 0.17066666666666666,
+      "bin_hz": 2.9296875
+    },
+    {
+      "time_s": 6.1,
+      "string": 0,
+      "stop": "open",
+      "fret": 0,
+      "nominal_hz": 261.62556530059857,
+      "estimate_hz": 261.29581248291043,
+      "cents_vs_nominal": -2.1834233813420436,
+      "level_db_vs_strongest_40_4000hz": -3.9451836402909155,
+      "strongest_peak_40_4000hz_hz": 521.484375,
+      "window_start_s": 6.13,
+      "window_s": 0.17066666666666666,
+      "bin_hz": 2.9296875
+    }
+  ],
+  "pitch_strokes_analyzed": 6,
+  "pitch_strokes_total": 6
+}

@@ -5,17 +5,103 @@ The intended instrument generates sound from physical state and interactions, no
 prerecorded notes. JUCE belongs at application/plugin boundaries; it is not the
 physics engine.
 
-**Current status:** an engineering handbook, an executable numerical bootstrap and
-a **playable synthetic prototype** (`setar::instrument`): four persistent
-two-polarization modal strings coupled through bridge springs to a synthetic
-modal body, with fingernail, finger-pad and tied-fret contacts solved by an
-energy-consistent discrete-gradient Newton step, sample-accurate physical
-gestures, a score-driven offline player and an optional JUCE adapter. Every
-parameter it uses is a declared synthetic placeholder. This is **not a finished
-or validated setar synthesizer**, not a measured digital twin, and not a claim of
-parity with any commercial instrument. Read the
-[prototype chapter](docs/engineering/11-playable-prototype.md) for exactly what
-is implemented, tested and still open.
+**Current status: a working, playable physical-model prototype with synthetic
+parameters.** The repository holds an engineering handbook, a verified numerical
+bootstrap, and `setar::instrument`, a C++20 engine that turns physical gestures
+(fingernail strokes, finger presses, slides, releases) into sound through
+string, contact, bridge and body mechanics. It renders scores to audio today.
+It is **not** a finished or validated setar synthesizer: every string gauge,
+body dimension, contact law, tuning and fret map is a declared synthetic or
+historical-theory placeholder, nothing has been measured on a real instrument,
+no setar player has reviewed it, and no listening test has been run. It makes no
+claim of parity with any commercial instrument.
+
+## Where the project stands
+
+### Implemented and covered by passing tests
+
+| Area | What exists | Evidence |
+| --- | --- | --- |
+| Strings | Four persistent strings, two transverse polarizations each, exact-modal update with three-term frequency-dependent loss (synthetic preset: 71–112 modes per polarization, 732 degrees of freedom with the body) | `solver.*` against closed-form oscillators; open-string pitch within a stated truncation budget of the ideal stiff string |
+| Contacts | Fingernail stroke with force/travel release, finger pads, tied-fret obstacles, fret stick spring, lateral finger damping, solved simultaneously by a bounded discrete-gradient Newton step | Discrete energy ledger closes to about 1e-12 of peak stored energy; release displacement within 2 % of the quasi-static oracle and converging from 48 to 192 kHz; fretted pitch −0.48 cents |
+| Bridge and body | Stiff bridge springs to a synthetic modal body: orthotropic plate plus Helmholtz cavity plus one lateral mode, 48 modes from 155 Hz to 7 kHz | Independent finite-difference plate oracle, closed-form cavity coupling, mobility reciprocity and passivity; sympathetic transfer only through the shared body; exact zero in the uncoupled limit |
+| Presets | Synthetic plain strings tuned C4–G3–C3–C4 (courses {0}, {1}, {2,3}), a reconstructed 17-interval Pythagorean fret map and a 24-EDO grid, 25 frets each | `preset.*` |
+| Performance layer | Text score grammar (pluck, strum, tremolo, press, slide, release, touch, damp, silence) and an allocation-free MIDI mapper | `score.*` |
+| Realtime properties | `process()` is noexcept and allocation-free; block-size invariance and replay are bitwise | `realtime.*`, `contact.gesture_replay` |
+| Offline player | `setar_play` renders a score to WAV with diagnostics and a summary; `tools/analyze_render.py` writes graphs and an HTML page | `integration.setar_play` renders all four demo scores with zero faults |
+
+[Listen to and inspect the demonstration renders](docs/assets/prototype/README.md).
+They are synthetic renders of an unvalidated model, not recordings.
+
+### Known limits
+
+- **Nothing is measured or validated.** All parameters are synthetic; fidelity to a
+  real setar is unknown.
+- **Physics simplifications:** linear string (no tension rise or pitch glide when
+  pressed or plucked hard), frictionless point contacts apart from the stick
+  spring, prescribed nail path, rectangular plate instead of the real soundboard,
+  rigid bowl, radiation folded into modal damping, uncalibrated observation.
+- **Realtime budget is not met in the worst case.** On this development container
+  a dense four-string gesture pattern needs about 0.8 of one core at 48 kHz, and
+  its 99th-percentile 256-sample block takes longer than the block lasts. The demo
+  scores render 2.5–3.9 times faster than real time with the ledger on. These are
+  single-machine measurements, not qualifications.
+- **The JUCE plugin adapter is written but not compiled.** It configures against
+  JUCE 8.0.10 and passes a syntax check; it has not been built, hosted or validated.
+- **Cross-platform CI for the prototype has not completed** on Windows or macOS
+  at the time of this merge; check the workflow runs for the current commit.
+- **The gesture grammar and fret maps have no practitioner review.** Stroke names,
+  dynamics and ornaments are engineering placeholders.
+
+### Appropriate next steps
+
+Work proceeds by evidence gate, not by date. In order:
+
+1. **Keep the baseline green.** Confirm the Linux, Windows, macOS and sanitizer
+   jobs pass for this merge and fix any platform-specific failure first
+   (REQ-LAB-002).
+2. **Meet the realtime budget.** Profile the worst-case block, reduce the
+   per-sample contact cost (block-sparse compliance, SIMD modal updates,
+   register-dependent mode caps) and record deadline percentiles (REQ-RTS-001,
+   ENG-P13-T02). Then build the JUCE adapter where external code may be compiled,
+   run a plugin validator and one host, and record the results (ENG-P14-T01).
+3. **Choose and document a reference instrument.** Select a real setar with the
+   owner's permission and record its construction and setup (ENG-P00-T01,
+   ENG-P01-T02). This is the gate that turns the prototype into a model of an
+   instrument instead of a model of a placeholder.
+4. **Measure before fitting.** Strings (mass, tension, stiffness, per-partial
+   decay), fret positions and action, bridge mobility in both directions, and
+   nail/finger contact behaviour, each with calibration and uncertainty
+   ([acquisition instructions](docs/measurement/13-acquisition-campaign-execution.md)).
+   Check identifiability before optimizing any parameter (ENG-P12-T01).
+5. **Replace synthetic parts with measured ones**, keeping the synthetic preset as a
+   regression fixture: measured string parameters, a body reduced from measured
+   FRFs or an FEM of the real soundboard and bowl (ENG-P08-T01..T03).
+6. **Add the missing physics in order of expected audibility**, each with an
+   independent oracle test: tension modulation, nail and finger friction, bridge
+   contact geometry, a radiation model (ENG-P04-T02, ENG-P05-T02, ENG-P10-T02).
+   Compare the engine with an independent high-resolution reference solver
+   (REQ-RTS-002).
+7. **Obtain practitioner review** of tunings, fret maps, strokes and ornaments under
+   the consent process (REQ-PRF-002), then run preregistered held-out acoustic
+   comparisons and blind listening tests (P17).
+8. **Choose a license and clear asset rights** before any distribution (P18).
+
+Read the [prototype chapter](docs/engineering/11-playable-prototype.md) for the
+full capability register and the [roadmap](docs/ROADMAP.md) for every gate.
+
+### Try it
+
+```sh
+cmake --preset headless-release
+cmake --build --preset headless-release
+build/headless-release/setar_play --score data/scores/03-phrase.score --output-dir artifacts/play/phrase --ledger
+python3 tools/analyze_render.py --input artifacts/play/phrase --output artifacts/play/phrase-report
+```
+
+Open `artifacts/play/phrase-report/index.html` to hear the render and see its
+spectrogram, energy ledger and pitch estimates. Write your own score with the
+[score format](docs/performance/07-score-format.md).
 
 ## Start here
 

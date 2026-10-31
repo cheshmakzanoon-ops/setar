@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "tool": "setar_play",
+  "evidence_label": "synthetic_unvalidated_prototype_render",
+  "disclaimer": "SYNTHETIC render of an unvalidated physical-model prototype with synthetic parameters. Not a measured or validated setar, not a recording, not a fidelity claim.",
+  "status": "ok",
+  "score": {"path": "data/scores/02-fret-scale.score", "title": "Scale on string 0 through the synthetic fret map", "status": "synthetic demonstration; not a transcription of a performance or a validated gesture", "end_time_s": 6.5999999999999996, "gesture_count": 29},
+  "preset": {
+    "tuning_id": "synthetic-c4-g3-c3-c4", "tuning_status": "synthetic educational example, not a documented performer tuning", "tuning_description": "Strings 0..3 = C4, G3 (pure fourth below string 0), C3 and C4 (string 3 an octave above string 2 as the paired course); C4 from A4 = 440 Hz",
+    "fret_map_id": "pythagorean-17-safi-al-din", "fret_map_status": "historical theory interval set used as a synthetic fret map; not a measured setar fret map and not a statement of performance practice", "fret_map_description": "17 Pythagorean intervals per octave (chain of fifths 3^-12..3^4; limma/comma steps) as reconstructed from Safi al-Din Urmawi's 13th-century theory, extended by eight doubled intervals into the second octave (25 frets)",
+    "defaults_used": true, "include_body": true
+  },
+  "config": {
+    "label": "synthetic setar prototype (tuning synthetic-c4-g3-c3-c4, fret map pythagorean-17-safi-al-din)", "provenance": "synthetic",
+    "body_label": "synthetic orthotropic plate + Helmholtz cavity + lateral bridge mode (not a measured setar)", "body_provenance": "synthetic", "body_modes": 48, "fret_count": 25, "max_mode_frequency_hz": 18000,
+    "strings": [
+      {"index": 0, "label": "string 0 (synthetic plain steel, 0.20 mm)", "total_length_m": 0.72000000000000008, "bridge_position_m": 0.68000000000000005, "tension_n": 31.221448063934734, "linear_density_kg_per_m": 0.00024661502330679882, "bending_stiffness_n_m2": 1.5707963267948967e-05, "nominal_open_frequency_hz": 261.62556530059857},
+      {"index": 1, "label": "string 1 (synthetic plain steel, 0.25 mm)", "total_length_m": 0.72000000000000008, "bridge_position_m": 0.68000000000000005, "tension_n": 27.440201969500237, "linear_density_kg_per_m": 0.00038533597391687309, "bending_stiffness_n_m2": 3.8349519697141022e-05, "nominal_open_frequency_hz": 196.21917397544897},
+      {"index": 2, "label": "string 2 (synthetic brass-like, 0.35 mm)", "total_length_m": 0.72000000000000008, "bridge_position_m": 0.68000000000000005, "tension_n": 25.881932440516895, "linear_density_kg_per_m": 0.00081779583763759293, "bending_stiffness_n_m2": 7.3661757434268475e-05, "nominal_open_frequency_hz": 130.81278265029928},
+      {"index": 3, "label": "string 3 (synthetic plain steel, 0.20 mm)", "total_length_m": 0.72000000000000008, "bridge_position_m": 0.68000000000000005, "tension_n": 31.221448063934734, "linear_density_kg_per_m": 0.00024661502330679882, "bending_stiffness_n_m2": 1.5707963267948967e-05, "nominal_open_frequency_hz": 261.62556530059857}
+    ]
+  },
+  "engine": {"string_modes_per_polarization": [71, 88, 112, 71], "body_modes": 48, "total_degrees_of_freedom": 732, "max_interaction_channels": 32, "max_newton_iterations": 50, "newton_tolerance_m": 1e-14},
+  "render": {"sample_rate_hz": 48000, "block_frames": 256, "frames": 412800, "duration_s": 8.5999999999999996, "tail_s": 2, "format": "pcm24", "channels": 2, "gain_per_pa": 1, "normalization": "none_fixed_gain", "clipping": "none", "observation": "body_radiation_model_pressure_pa_times_gain", "ledger_enabled": true, "max_events_per_block": 64},
+  "output": {"peak_left": 0.10457368940114975, "peak_right": 0.13531798124313354},
+  "faults": {"first_fault": "none", "rejected_events": 0, "newton_failures": 0, "capacity_overflows": 0, "containment_resets": 0, "max_newton_iterations": 14, "max_active_channels": 14, "blocks_with_faults": 0},
+  "timing": {"label": "wall-clock measurement on this machine for this run only; not a realtime qualification", "wall_clock_s": 3.341104597999998, "audio_s": 8.5999999999999996, "speed_vs_realtime": 2.5739990316819181, "max_block_wall_s": 0.0043513010000000001, "block_duration_s": 0.0053333333333333332},
+  "ledger": {"enabled": true, "residual_min_j": -3.712511289328483e-13, "residual_max_j": 1.0656623153360023e-15, "max_abs_residual_j": 3.712511289328483e-13, "max_stored_j": 0.0031801158624975251, "final_stored_j": 8.2392028598983101e-07, "final_external_work_j": 0.011546463571483489, "final_dissipation_j": 0.011553651919128287, "final_switching_j": 8.0122683010058501e-06, "initial_stored_j": 0},
+  "strokes_label": "nominal_hz is the ideal simply supported stiff-string fundamental of the speaking length implied by the score, not a measurement",
+  "strokes": [
+    {"time_s": 0.29999999999999999, "string": 0, "position_m": 0.56000000000000005, "angle_rad": -2.9915926535897932, "speed_m_per_s": 0.34999999999999998, "release_force_n": 0.80000000000000004, "stop": "open", "fret": 0, "speaking_length_m": 0.68000000000000005, "nominal_hz": 261.62556530059857},
+    {"time_s": 0.59999999999999998, "string": 0, "position_m": 0.56000000000000005, "angle_rad": -2.9915926535897932, "speed_m_per_s": 0.34999999999999998, "release_force_n": 0.80000000000000004, "stop": "fret", "fret": 3, "speaking_length_m": 0.60444444444444445, "nominal_hz": 294.32918073707668},
+    {"time_s": 0.90000000000000002, "string": 0, "position_m": 0.56000000000000005, "angle_rad": -2.9915926535897932, "speed_m_per_s": 0.34999999999999998, "release_force_n": 0.80000000000000004, "stop": "fret", "fret": 4, "speaking_length_m": 0.57374999999999998, "nominal_hz": 310.07541777231387},
+    {"time_s": 1.2, "string": 0, "position_m": 0.56000000000000005, "angle_rad": -2.9915926535897932, "speed_m_per_s": 0.34999999999999998, "release_force_n": 0.80000000000000004, "stop": "fret", "fret": 7, "speaking_length_m": 0.51000000000000001, "nominal_hz": 348.83554382621628},
+    {"time_s": 1.5, "string": 0, "position_m": 0.56000000000000005, "angle_rad": -2.9915926535897932, "speed_m_per_s": 0.34999999999999998, "release_force_n": 0.80000000000000004, "stop": "fret", "fret": 10, "speaking_length_m": 0.45333333333333337, "nominal_hz": 392.44098181940859},
+    {"time_s": 1.8, "string": 0, "position_m": 0.56000000000000005, "angle_rad": -2.9915926535897932, "speed_m_per_s": 0.34999999999999998, "release_force_n": 0.80000000000000004, "stop": "fret", "fret": 11, "speaking_length_m": 0.43031250000000004, "nominal_hz": 413.43631554861167},
+    {"time_s": 2.1000000000000001, "string": 0, "position_m": 0.56000000000000005, "angle_rad": -2.9915926535897932, "speed_m_per_s": 0.34999999999999998, "release_force_n": 0.80000000000000004, "stop": "fret", "fret": 14, "speaking_length_m": 0.38250000000000001, "nominal_hz": 465.11751147270832},
+    {"time_s": 2.3999999999999999, "string": 0, "position_m": 0.56000000000000005, "angle_rad": -2.9915926535897932, "speed_m_per_s": 0.5, "release_force_n": 1.2, "stop": "fret", "fret": 17, "speaking_length_m": 0.34000000000000002, "nominal_hz": 523.25955894083484},
+    {"time_s": 2.7000000000000002, "string": 0, "position_m": 0.56000000000000005, "angle_rad": -2.9915926535897932, "speed_m_per_s": 0.34999999999999998, "release_force_n": 0.80000000000000004, "stop": "fret", "fret": 14, "speaking_length_m": 0.38250000000000001, "nominal_hz": 465.11751147270832},
+    {"time_s": 3, "string": 0, "position_m": 0.56000000000000005, "angle_rad": -2.9915926535897932, "speed_m_per_s": 0.34999999999999998, "release_force_n": 0.80000000000000004, "stop": "fret", "fret": 11, "speaking_length_m": 0.43031250000000004, "nominal_hz": 413.43631554861167},
+    {"time_s": 3.2999999999999998, "string": 0, "position_m": 0.56000000000000005, "angle_rad": -2.9915926535897932, "speed_m_per_s": 0.34999999999999998, "release_force_n": 0.80000000000000004, "stop": "fret", "fret": 10, "speaking_length_m": 0.45333333333333337, "nominal_hz": 392.44098181940859},
+    {"time_s": 3.6000000000000001, "string": 0, "position_m": 0.56000000000000005, "angle_rad": -2.9915926535897932, "speed_m_per_s": 0.34999999999999998, "release_force_n": 0.80000000000000004, "stop": "fret", "fret": 7, "speaking_length_m": 0.51000000000000001, "nominal_hz": 348.83554382621628},
+    {"time_s": 3.8999999999999999, "string": 0, "position_m": 0.56000000000000005, "angle_rad": -2.9915926535897932, "speed_m_per_s": 0.34999999999999998, "release_force_n": 0.80000000000000004, "stop": "fret", "fret": 4, "speaking_length_m": 0.57374999999999998, "nominal_hz": 310.07541777231387},
+    {"time_s": 4.2000000000000002, "string": 0, "position_m": 0.56000000000000005, "angle_rad": -2.9915926535897932, "speed_m_per_s": 0.34999999999999998, "release_force_n": 0.80000000000000004, "stop": "fret", "fret": 3, "speaking_length_m": 0.60444444444444445, "nominal_hz": 294.32918073707668},
+    {"time_s": 4.5, "string": 0, "position_m": 0.56000000000000005, "angle_rad": -2.9915926535897932, "speed_m_per_s": 0.34999999999999998, "release_force_n": 0.80000000000000004, "stop": "open", "fret": 0, "speaking_length_m": 0.68000000000000005, "nominal_hz": 261.62556530059857}
+  ]
+}

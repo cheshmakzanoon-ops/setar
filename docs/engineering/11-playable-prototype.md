@@ -184,7 +184,7 @@ completed run on every platform.
 | Score and MIDI mapping | Yes, engineering placeholder grammar | `score.*` | Configured | No | Practitioner review (REQ-PRF-002) |
 | Synthetic presets | Yes | `preset.*` | Configured | No | Reference specimen strings, frets and tuning practice |
 | Offline player and analysis report | Yes | `integration.setar_play` | Configured, plus a render step | No | Calibrated level, listening study |
-| JUCE adapter | Source behind an option | None in the headless matrix | No | No | Build in CI, validator, host matrix |
+| JUCE adapter | Source behind an option; configured against JUCE 8.0.10 and syntax-checked, not compiled ([adapter chapter](../plugin/08-prototype-juce-adapter.md)) | None in the headless matrix | No | No | Compile, validator, host matrix |
 
 ## Failure modes and containment
 
@@ -217,7 +217,12 @@ to continue, and then records the counts.
 - The score grammar, stroke names, dynamics and fret maps are engineering
   placeholders, not documented practice of any performer.
 - Realtime safety is a source and hook-test property of `process()`; no host,
-  hardware or deadline qualification exists.
+  hardware or deadline qualification exists. On the development container a dense
+  four-string pattern averages about 0.8 of one core at 48 kHz but its
+  99th-percentile blocks exceed the block duration
+  ([realtime evidence](../realtime/05-prototype-realtime-evidence.md)).
+- [Demonstration renders](../assets/prototype/README.md) of the four scores are
+  committed with their provenance; they are synthetic renders, not recordings.
 
 ## Next evidence gates
 

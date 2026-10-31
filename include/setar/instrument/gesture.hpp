@@ -29,8 +29,9 @@ enum class GestureKind : std::uint8_t {
     // string's current vertical position, descending at speed_m_per_s to the
     // absolute vertical target height_m (m, string rest line = 0, negative toward
     // the soundboard; use fret_top_height_m() - depth to stop on a fret, or ~0 for
-    // a light touch / harmonic). If the slot is already active it is moved, not
-    // duplicated: the pad keeps its vertical state and retargets.
+    // a light touch / harmonic). If the slot is already active it is not duplicated
+    // or teleported: the pad keeps its position and vertical state, slides to
+    // position_m at speed_m_per_s and retargets its height.
     // Fields: slot, position_m, height_m, speed_m_per_s (> 0), gap_m (>= 0).
     FingerPress = 1,
     // Slide active pad `slot` along the string to position_m at speed_m_per_s (> 0).

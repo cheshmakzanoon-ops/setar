@@ -28,6 +28,10 @@ double power_second(double k, double alpha, double z) noexcept { // d2V/dz2
     const double p = -z;
     return p > 0.0 ? k * alpha * std::pow(p, alpha - 1.0) : 0.0;
 }
+double power_third(double k, double alpha, double z) noexcept { // d3V/dz3
+    const double p = -z;
+    return p > 0.0 ? -k * alpha * (alpha - 1.0) * std::pow(p, alpha - 2.0) : 0.0;
+}
 
 } // namespace
 
@@ -201,11 +205,15 @@ ChannelForce channel_force(const ChannelLaw& law, double z_prev_m, double s_m, d
         const double z1 = z_prev_m + s_m;
         const double k = law.stiffness;
         const double alpha = law.exponent;
-        if (std::abs(s_m) <= 1.0e-7 * (std::abs(z_prev_m) + std::abs(z1))) {
-            // Secant -> tangent limit; avoids cancellation when s is tiny relative to z.
+        // Below |s| ~ eps^(1/3)*|z| the secant's cancellation error (~eps*|z|/|s|) exceeds
+        // the error of the midpoint expansion G = V'(zm) + V'''(zm)*s^2/24 + O(s^4), so
+        // switch there. Both branches stay on one side of the kink at z = 0, because a
+        // sign change of z implies |s| >= (|z| + |z1|)/2.
+        if (std::abs(s_m) <= 1.0e-5 * (std::abs(z_prev_m) + std::abs(z1))) {
             const double zm = z_prev_m + 0.5 * s_m;
-            gradient = power_first(k, alpha, zm);
-            slope = 0.5 * power_second(k, alpha, zm);
+            const double third = power_third(k, alpha, zm);
+            gradient = power_first(k, alpha, zm) + third * s_m * s_m / 24.0;
+            slope = 0.5 * power_second(k, alpha, zm) + third * s_m / 12.0;
         } else {
             gradient = (power_potential(k, alpha, z1) - power_potential(k, alpha, z_prev_m)) / s_m;
             slope = (power_first(k, alpha, z1) - gradient) / s_m;

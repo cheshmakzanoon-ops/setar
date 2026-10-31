@@ -516,12 +516,11 @@ int render(const Options& options) {
     const si::InstrumentConfig config = si::synthetic_setar_config(preset);
     std::optional<si::TuningPreset> tuning;
     std::optional<si::FretMapDefinition> fret_map;
-    if (!options.tuning_id.empty()) {
-        tuning = si::find_tuning(options.tuning_id);
-    }
-    if (!options.fret_map_id.empty()) {
-        fret_map = si::find_fret_map(options.fret_map_id);
-    }
+    // Resolve defaults to their records so the summary always names what was rendered.
+    tuning = si::find_tuning(options.tuning_id.empty() ? si::default_tuning_id
+                                                       : std::string_view(options.tuning_id));
+    fret_map = si::find_fret_map(options.fret_map_id.empty() ? si::default_fret_map_id
+                                                             : std::string_view(options.fret_map_id));
     const si::PerformanceSettings settings = si::default_performance_settings();
     const si::Score score = si::parse_score(score_text, config, settings);
     const double rate = static_cast<double>(options.sample_rate);
@@ -714,7 +713,7 @@ int render(const Options& options) {
       << ", \"fret_map_status\": " << (fret_map ? json_string(fret_map->status) : "null")
       << ", \"fret_map_description\": "
       << (fret_map ? json_string(fret_map->description) : "null") << ",\n";
-    j << "    \"defaults_used\": " << (tuning && fret_map ? "false" : "true")
+    j << "    \"defaults_used\": " << (options.tuning_id.empty() || options.fret_map_id.empty() ? "true" : "false")
       << ", \"include_body\": " << (options.include_body ? "true" : "false") << "\n  },\n";
     j << "  \"config\": {\n";
     j << "    \"label\": " << json_string(config.label) << ", \"provenance\": "

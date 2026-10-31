@@ -41,3 +41,6 @@ numerical and contact chapters, and identify the smallest independent test.
 Unimplemented mechanics can be represented by transparent synthetic fixtures
 while the interpreter is developed, but must not be described as validated
 physical gestures.
+
+The implemented, unreviewed score grammar of the playable prototype is in
+[the prototype score format](07-score-format.md).

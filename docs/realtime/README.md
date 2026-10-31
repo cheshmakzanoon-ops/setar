@@ -11,6 +11,7 @@ entire future engine is already real-time qualified.
 | [Events and overflow](02-events-capacity-and-overflow.md) | How timing, note identity, capacity, and release integrity are preserved |
 | [Performance and numeric hygiene](03-performance-and-numerical-hygiene.md) | How cost, precision, denormals, and overload are measured |
 | [Concurrency and telemetry](04-concurrency-state-and-telemetry.md) | How prepared data and diagnostics cross threads without unsafe lifetime |
+| [Prototype realtime evidence](05-prototype-realtime-evidence.md) | Allocation, block-partition, replay and this-machine benchmark results for the prototype engine |
 
 Read the [validation evidence contract](../validation/00-evidence-contract.md)
 first. Bring a verified subsystem into the callback harness before optimizing

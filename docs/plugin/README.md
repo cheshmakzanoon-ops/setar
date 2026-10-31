@@ -11,6 +11,7 @@ numerical, acoustic, host, and usability evidence supports a broader claim.
 4. [MIDI, MPE, and tuning](04-midi-mpe-and-microtuning.md) separates protocol identity from physical gestures and tuning interpretation.
 5. [Validation and packaging](05-validator-host-and-packaging-evidence.md) defines tool, host, license, and distribution evidence.
 6. [Executable host-qualification playbook](06-host-qualification-playbook.md) maps actual plugin binaries to validators, test hosts, event/state cases, OS coverage and authentic screenshots.
+7. [Prototype JUCE adapter](08-prototype-juce-adapter.md) records the written, configured but uncompiled adapter around the prototype engine.
 
 The [real-time volume](../realtime/README.md) supplies callback and concurrency
 constraints. The [UX volume](../ux/README.md) supplies musician/engineering views,

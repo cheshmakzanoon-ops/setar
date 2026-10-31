@@ -169,3 +169,7 @@ failure and the linked 2004 PDF timed out during this documentation pass. The
 Atlas PDF was directly accessible. Obtain and inspect the complete original
 before reproducing an algorithm; an indexed excerpt is not a substitute for its
 assumptions, equations, or permission terms.
+
+The playable prototype's synthetic string gauges, tunings and fret maps are
+documented in [prototype string, tuning and fret presets](08-prototype-string-and-fret-presets.md).
+They are placeholders, not a measured string set.

@@ -13,6 +13,7 @@ Read after the [geometry volume](../geometry/README.md):
 7. [Damping and causal materials](07-damping-and-causal-materials.md).
 8. [Passive reduction and residual flexibility](08-passive-reduction-and-residual-flexibility.md).
 9. [Structural identifiability and experiment design](09-parameter-identifiability-and-experiment-design.md).
+10. [Synthetic prototype body](10-synthetic-prototype-body.md): the implemented plate, cavity and lateral-mode placeholder used by the playable prototype; synthetic, not a measured body.
 
 The central architecture distinguishes a feedback load from an observation:
 

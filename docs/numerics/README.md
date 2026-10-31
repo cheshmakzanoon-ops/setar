@@ -20,6 +20,7 @@ completion gates are defined in docs/ROADMAP.md.
 13. [Convergence and golden data](12-convergence-and-golden-data.md)
 14. [Reference algorithm blueprints](13-reference-algorithms.md)
 15. [Passive loss in the implicit-midpoint string: executed verification](14-damped-midpoint-loss-verification.md)
+16. [Modal-contact solver of the playable prototype](15-modal-contact-solver.md)
 
 The matching implementation, review, and debugging prompts are in prompts/numerics.
 Equations and test recipes are specifications, not proof of an executed test.

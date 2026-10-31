@@ -13,6 +13,7 @@
 
 #include <array>
 #include <cstddef>
+#include <cstdint>
 #include <span>
 #include <string>
 #include <string_view>
@@ -43,6 +44,10 @@ struct TuningPreset {
 struct FretInterval {
     std::string label;   // descriptive interval label
     double ratio = 1.0;  // frequency ratio above the open string, > 1
+    // Exact rational form numerator/denominator when both are nonzero (e.g. 256/243);
+    // 0/0 for irrational ratios such as equal divisions. ratio == numerator/denominator.
+    std::uint64_t numerator = 0;
+    std::uint64_t denominator = 0;
 };
 
 struct FretMapDefinition {
@@ -65,6 +70,11 @@ struct PresetOptions {
     double afterlength_m = 0.0;       // 0 = default
     bool include_body = true;         // false: empty BodyConfig (bridge contacts grounded)
 };
+
+inline constexpr std::string_view default_tuning_id = "synthetic-c4-g3-c3-c4";
+inline constexpr std::string_view default_fret_map_id = "pythagorean-17-safi-al-din";
+inline constexpr double default_speaking_length_m = 0.68; // synthetic
+inline constexpr double default_afterlength_m = 0.04;     // synthetic
 
 [[nodiscard]] std::span<const TuningPreset> tuning_presets();
 [[nodiscard]] std::span<const FretMapDefinition> fret_map_definitions();

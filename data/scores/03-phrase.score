@@ -1,0 +1,23 @@
+# Short phrase exercising tremolo, slide, damping, a touch harmonic and drone strokes on
+# the bass course. Ornament names in comments are engineering placeholders only.
+title Short phrase with tremolo, slide, damping and a touch harmonic
+status synthetic demonstration; not a transcription of a performance or a validated gesture
+strum @0.10 course=2 dyn=mp dir=down
+pluck @0.40 string=0 fret=7 dyn=mf
+pluck @0.80 string=0 fret=10 dyn=mf
+# Alternating down/up strokes (tremolo placeholder, sometimes called riz).
+tremolo @1.20 string=0 fret=11 dur=@0.9 rate=12 dyn=mp
+slide @2.15 string=0 to_fret=10 dur=@0.12
+pluck @2.40 string=0 dyn=mf
+strum @2.40 course=2 dyn=p dir=up
+pluck @2.90 string=0 fret=7 dyn=f
+damp @3.50 string=0 dur=@0.25
+# Light touch at half the speaking length of string 1, stroke, then lift.
+touch @4.00 string=1 at=0.5
+pluck @4.08 string=1 dyn=f
+release @4.20 string=1
+pluck @4.80 string=0 fret=4 dyn=mf
+pluck @5.20 string=0 fret=3 dyn=mf
+pluck @5.60 string=0 fret=0 dyn=mf
+strum @6.00 strings=0,1,2,3 dyn=mf dir=down
+end @8.0

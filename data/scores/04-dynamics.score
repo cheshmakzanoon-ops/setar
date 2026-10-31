@@ -1,0 +1,11 @@
+# The same open string 0 at the six dynamic levels pp..ff (synthetic nail speed and
+# slip-off force placeholders from default_performance_settings()).
+title One note at six dynamic levels
+status synthetic demonstration; not a transcription of a performance or a validated gesture
+pluck @0.10 string=0 dyn=pp
+pluck @1.30 string=0 dyn=p
+pluck @2.50 string=0 dyn=mp
+pluck @3.70 string=0 dyn=mf
+pluck @4.90 string=0 dyn=f
+pluck @6.10 string=0 dyn=ff
+end @8.0

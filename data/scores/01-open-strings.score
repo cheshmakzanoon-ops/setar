@@ -1,0 +1,12 @@
+# Each physical string open, then course strums. Format: docs/performance/07-score-format.md
+title Open strings and course strums
+status synthetic demonstration; not a transcription of a performance or a validated gesture
+pluck @0.10 string=0 dyn=mf
+pluck @1.10 string=1 dyn=mf
+pluck @2.10 string=2 dyn=mf
+pluck @3.10 string=3 dyn=mf
+# Bass course {2,3}: one stroke meets both strings 8 ms apart (synthetic sweep delay).
+strum @4.20 course=2 dyn=mf dir=down
+strum @5.00 strings=0,1,2,3 dyn=f dir=down
+strum @5.80 strings=0,1,2,3 dyn=mf dir=up
+end @8.0

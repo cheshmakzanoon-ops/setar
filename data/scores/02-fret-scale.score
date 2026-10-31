@@ -1,0 +1,22 @@
+# Ascending and descending on string 0 through a subset of the default fret map
+# (pythagorean-17-safi-al-din): open, 9/8, 32/27, 4/3, 3/2, 128/81, 16/9, 2/1.
+# The interval set is historical theory used as a synthetic fixture, not a measured fret map.
+title Scale on string 0 through the synthetic fret map
+status synthetic demonstration; not a transcription of a performance or a validated gesture
+tempo 200
+pluck 1 string=0 fret=0
+pluck 2 string=0 fret=3
+pluck 3 string=0 fret=4
+pluck 4 string=0 fret=7
+pluck 5 string=0 fret=10
+pluck 6 string=0 fret=11
+pluck 7 string=0 fret=14
+pluck 8 string=0 fret=17 dyn=f
+pluck 9 string=0 fret=14
+pluck 10 string=0 fret=11
+pluck 11 string=0 fret=10
+pluck 12 string=0 fret=7
+pluck 13 string=0 fret=4
+pluck 14 string=0 fret=3
+pluck 15 string=0 fret=0
+end 22

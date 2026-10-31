@@ -76,6 +76,8 @@ void ModalBank::prepare(std::span<const double> mass_kg, std::span<const double>
                         std::span<const double> decay_per_s, double dt_s) {
     require(mass_kg.size() == omega_rad_per_s.size() && mass_kg.size() == decay_per_s.size(),
             "modal bank arrays must have equal length");
+    // Checked here as well so an empty bank cannot carry an invalid step.
+    require(std::isfinite(dt_s) && dt_s > 0.0, "time step must be finite and positive (s)");
     const std::size_t n = mass_kg.size();
     std::vector<double> a(n), b(n), g(n), m(n), st(n), wt(n);
     for (std::size_t i = 0; i < n; ++i) {
@@ -262,7 +264,12 @@ NewtonResult SmallNewtonSolver::solve(std::size_t m, std::span<const double> com
                 mf += compliance[r * m + c] * f[c];
             }
             residual_[r] = trial[r] - b[r] - mf;
-            norm = std::max(norm, std::abs(residual_[r]));
+            // std::max would discard a NaN and report convergence; propagate it instead.
+            const double magnitude = std::abs(residual_[r]);
+            norm = std::isfinite(magnitude) ? std::max(norm, magnitude) : magnitude;
+            if (!std::isfinite(norm)) {
+                return norm;
+            }
         }
         return norm;
     };

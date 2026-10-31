@@ -316,7 +316,7 @@ void write_wav(const std::filesystem::path& path, const std::vector<float>& left
     stream.exceptions(std::ios::failbit | std::ios::badbit);
     const auto frames = static_cast<std::uint32_t>(left.size());
     const std::uint16_t channels = 2;
-    const std::uint16_t bytes_per_sample = format == Format::Float32 ? 4 : 3;
+    const auto bytes_per_sample = static_cast<std::uint16_t>(format == Format::Float32 ? 4U : 3U);
     const auto block_align = static_cast<std::uint16_t>(channels * bytes_per_sample);
     const std::uint32_t data_size = frames * block_align;
     const bool is_float = format == Format::Float32;
@@ -327,7 +327,7 @@ void write_wav(const std::filesystem::path& path, const std::vector<float>& left
     stream.write("WAVE", 4);
     stream.write("fmt ", 4);
     write_u32(stream, fmt_size);
-    write_u16(stream, is_float ? 3U : 1U);
+    write_u16(stream, static_cast<std::uint16_t>(is_float ? 3U : 1U));
     write_u16(stream, channels);
     write_u32(stream, sample_rate);
     write_u32(stream, sample_rate * block_align);

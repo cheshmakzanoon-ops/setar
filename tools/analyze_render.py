@@ -216,7 +216,7 @@ def spectrogram(mono: list[float], rate: int) -> tuple[list[list[float]], int, i
 
 
 def peak_near(mono: list[float], rate: int, start: int, nominal: float) -> dict | None:
-    """Largest spectral peak within +-SEARCH_CENTS of nominal, parabolic interpolation."""
+    """Largest spectral peak within ±SEARCH_CENTS of nominal, parabolic interpolation."""
     n = next_pow2(0.17 * rate)
     if start < 0 or start + n > len(mono):
         return None
@@ -452,7 +452,7 @@ def energy_svg(rows: list[dict], summary: dict, path: Path) -> dict:
 def pitch_svg(table: list[dict], path: Path) -> None:
     width, height = 1140, 460
     elements = svg_open(width, height, "Estimated fundamental vs nominal (synthetic prototype)",
-                        f"Spectral peak within +-{SEARCH_CENTS:g} cents of the ideal stiff-string "
+                        f"Spectral peak within ±{SEARCH_CENTS:g} cents of the ideal stiff-string "
                         "nominal; descriptive, no pass/fail")
     points = [(row["time_s"], row["cents_vs_nominal"], row["string"]) for row in table
               if row.get("cents_vs_nominal") is not None]
@@ -544,7 +544,7 @@ def produce(source: Path, out: Path, revision: str) -> dict:
         "ledger": summary.get("ledger"),
         "pitch_method": (f"Hann window of {next_pow2(0.17 * rate)} samples starting "
                          f"{STROKE_OFFSET_S} s after each nail stroke, zero-padded x2, largest "
-                         f"mono-mix spectral peak within +-{SEARCH_CENTS:g} cents of the nominal, "
+                         f"mono-mix spectral peak within ±{SEARCH_CENTS:g} cents of the nominal, "
                          "parabolic interpolation on log power. Sympathetic and other ringing "
                          "strings are in the same mix; the estimate is descriptive only."),
         "pitch": pitch_rows,
@@ -563,7 +563,11 @@ def write_html(path: Path, summary: dict, analysis: dict) -> None:
     faults, timing = summary["faults"], summary["timing"]
 
     def fmt(value: object, spec: str = ".6g") -> str:
-        return "—" if value is None else format(value, spec) if isinstance(value, float) else str(value)
+        if value is None:
+            return "—"
+        if isinstance(value, (int, float)) and not isinstance(value, bool):
+            return format(float(value), spec)
+        return str(value)
 
     provenance = [
         ("score", f'{score["title"]} — status: {score["status"]}'),

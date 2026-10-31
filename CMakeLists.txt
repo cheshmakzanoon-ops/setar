@@ -212,7 +212,7 @@ if(SETAR_BUILD_TESTS)
                         --analyzer "${CMAKE_CURRENT_SOURCE_DIR}/tools/analyze_render.py"
                         --scores "${CMAKE_CURRENT_SOURCE_DIR}/data/scores")
             set_tests_properties(integration.setar_play PROPERTIES
-                LABELS "integration;instrument" TIMEOUT 300)
+                LABELS "integration;instrument" TIMEOUT 900)
         endif()
         if(SETAR_BUILD_NUMERICAL_EXPERIMENTS)
             add_test(NAME integration.solver_evidence

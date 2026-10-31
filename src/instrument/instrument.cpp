@@ -365,36 +365,60 @@ struct Instrument::Impl {
         for (std::size_t s = 0; s < string_count && fret_count > 0; ++s) {
             assemble_frets(s, summary);
         }
-        // 5. Stick springs at frets in contact at level n; 6. lateral finger damping.
+        // 5. Stick spring at the stopping fret of each pressing pad (the first fret on the
+        //    bridge side of the pad). It engages when that fret is in contact at level n and
+        //    is held while the pad keeps pressing, so transient fret buzz stays frictionless.
+        // 6. Lateral finger damping while a pad is in contact.
         const std::size_t base_count = channel_count;
-        for (std::size_t i = 0; i < base_count; ++i) {
-            const Channel& src = channels[i];
-            if (src.kind == ChannelKind::Fret && src.z_cur < 0.0 &&
-                (cc.fret_stick_stiffness_n_per_m > 0.0 || cc.fret_stick_damping_n_s_per_m > 0.0)) {
-                const std::size_t s = src.string_index;
-                const std::size_t fi = src.fret;
-                Channel* c = push_channel(summary);
-                if (c == nullptr) {
-                    continue;
-                }
-                c->kind = ChannelKind::Stick;
-                c->string_index = static_cast<std::uint8_t>(s);
-                c->fret = static_cast<std::uint32_t>(fi);
-                c->key = stick_key(s, fi);
-                c->terms[0] = Term{static_cast<std::uint32_t>(2 * s + 1),
-                                   strings[s].fret_shapes.data() + fi * strings[s].modes, 1.0,
-                                   static_cast<std::int32_t>(fi + 1)};
-                c->term_count = 1;
-                c->law.kind = nm::ChannelLawKind::LinearSpring;
-                c->law.stiffness = cc.fret_stick_stiffness_n_per_m;
-                c->law.damping_n_s_per_m = cc.fret_stick_damping_n_s_per_m;
-                finish_channel(*c);
-                if (strings[s].stick_stamp[fi] + 1 != step_counter) {
-                    strings[s].stick_anchor[fi] = c->z_cur; // onset: anchor at level-n position
-                }
-                strings[s].stick_stamp[fi] = step_counter;
-                c->law.anchor_m = strings[s].stick_anchor[fi];
+        const bool stick_enabled =
+            cc.fret_stick_stiffness_n_per_m > 0.0 || cc.fret_stick_damping_n_s_per_m > 0.0;
+        for (std::size_t i = 0; i < base_count && stick_enabled; ++i) {
+            const Channel& pad = channels[i];
+            if (pad.kind != ChannelKind::FingerPad || pad.z_cur >= 0.0) {
+                continue;
             }
+            const std::size_t si = pad.string_index;
+            const double x_pad = fingers[si][pad.slot].x_m;
+            std::size_t fi = 0;
+            while (fi < fret_count && config.frets[fi].position_m <= x_pad) {
+                ++fi;
+            }
+            if (fi == fret_count || strings[si].stick_stamp[fi] == step_counter) {
+                continue;
+            }
+            const bool held = strings[si].stick_stamp[fi] + 1 == step_counter;
+            bool fret_contact = false;
+            for (std::size_t j = 0; j < base_count; ++j) {
+                const Channel& fc = channels[j];
+                fret_contact = fret_contact || (fc.kind == ChannelKind::Fret && fc.string_index == si &&
+                                                fc.fret == fi && fc.z_cur < 0.0);
+            }
+            if (!held && !fret_contact) {
+                continue;
+            }
+            Channel* c = push_channel(summary);
+            if (c == nullptr) {
+                continue;
+            }
+            c->kind = ChannelKind::Stick;
+            c->string_index = static_cast<std::uint8_t>(si);
+            c->fret = static_cast<std::uint32_t>(fi);
+            c->key = stick_key(si, fi);
+            c->terms[0] = Term{static_cast<std::uint32_t>(2 * si + 1),
+                               strings[si].fret_shapes.data() + fi * strings[si].modes, 1.0,
+                               static_cast<std::int32_t>(fi + 1)};
+            c->term_count = 1;
+            c->law.kind = nm::ChannelLawKind::LinearSpring;
+            c->law.stiffness = cc.fret_stick_stiffness_n_per_m;
+            c->law.damping_n_s_per_m = cc.fret_stick_damping_n_s_per_m;
+            finish_channel(*c);
+            if (!held) {
+                // Onset anchor at level n-1/2: minimizes the booked switching energy
+                // K/8*(z[n]-z[n-1])^2 of a spring born between two time levels.
+                strings[si].stick_anchor[fi] = 0.5 * (c->z_cur + c->z_prev);
+            }
+            strings[si].stick_stamp[fi] = step_counter;
+            c->law.anchor_m = strings[si].stick_anchor[fi];
         }
         if (cc.finger_lateral_damping_n_s_per_m > 0.0) {
             for (std::size_t i = 0; i < base_count; ++i) {
@@ -676,7 +700,10 @@ struct Instrument::Impl {
                 right += radiation[1][j] * accel;
             }
         }
-        finite = finite && std::isfinite(left) && std::isfinite(right);
+        // An observation beyond the float output range is a runaway state, not audio: it is
+        // contained like a non-finite state instead of being clipped.
+        constexpr double float_limit = static_cast<double>(std::numeric_limits<float>::max());
+        finite = finite && std::abs(left) <= float_limit && std::abs(right) <= float_limit;
         if (!finite) {
             contain(summary);
             out_left = 0.0;

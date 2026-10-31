@@ -49,28 +49,50 @@ std::string compiler_identity() {
     return out.str();
 }
 
-// Dense synthetic pattern: one gesture group every 60 ms cycling through strings and
-// frets, so contacts, slides and re-strikes overlap. Placeholder performance values.
+// Dense synthetic pattern: one gesture group every 60 ms cycling through strings, so
+// strokes, fretted notes, slides, releases and course strokes overlap across strings.
+// Like a player, a finger is always lifted before the same slot is placed elsewhere.
+// Placeholder performance values, not practitioner-derived gestures.
 std::vector<Timed> dense_pattern(const InstrumentConfig& c, double rate_hz, double seconds) {
     std::vector<Timed> out;
     const auto at = [&](double t_s) { return static_cast<std::uint64_t>(std::llround(t_s * rate_hz)); };
     const std::size_t frets = c.frets.size();
+    const auto pad_x = [&](std::size_t k) {
+        const double x_fret = c.frets[k].position_m;
+        return std::max(0.25 * x_fret, x_fret - 0.008);
+    };
     std::size_t step = 0;
     for (double t = 0.0; t < seconds; t += 0.06, ++step) {
         const std::size_t s = step % string_count;
         const StringConfig& str = c.strings[s];
-        GestureEvent e;
-        e.string_index = static_cast<std::uint8_t>(s);
-        if (frets > 0 && step % 3 != 2) {
+        const bool fretted = frets > 0 && step % 3 != 2;
+        if (fretted) {
             const std::size_t k = (step * 5) % frets;
-            const double x_fret = c.frets[k].position_m;
+            GestureEvent e;
             e.kind = GestureKind::FingerPress;
+            e.string_index = static_cast<std::uint8_t>(s);
             e.slot = 0;
-            e.position_m = std::max(0.25 * x_fret, x_fret - 0.008);
-            e.height_m = fret_top_height_m(str, x_fret) - 1.0e-3;
+            e.position_m = pad_x(k);
+            e.height_m = fret_top_height_m(str, c.frets[k].position_m) - 1.0e-3;
             e.speed_m_per_s = 0.2;
             e.gap_m = 1.0e-3;
             out.push_back({at(t), e});
+            if (step % 2 == 1) { // slide one fret toward the bridge while pressed
+                GestureEvent m;
+                m.kind = GestureKind::FingerMove;
+                m.string_index = static_cast<std::uint8_t>(s);
+                m.slot = 0;
+                m.position_m = pad_x(std::min(k + 1, frets - 1));
+                m.speed_m_per_s = 0.3;
+                out.push_back({at(t + 0.035), m});
+            }
+            GestureEvent r;
+            r.kind = GestureKind::FingerRelease;
+            r.string_index = static_cast<std::uint8_t>(s);
+            r.slot = 0;
+            r.speed_m_per_s = 0.2;
+            r.gap_m = 1.0e-3;
+            out.push_back({at(t + 0.2), r}); // lifted before this string's next step (+0.24 s)
         }
         GestureEvent n;
         n.kind = GestureKind::NailStroke;
@@ -89,23 +111,6 @@ std::vector<Timed> dense_pattern(const InstrumentConfig& c, double rate_hz, doub
                 cn.position_m = c.strings[cs].bridge_position_m - 0.12;
                 out.push_back({at(t + 0.03 + 0.002 * static_cast<double>(cs)), cn});
             }
-        }
-        if (frets > 0 && step % 6 == 1) {
-            GestureEvent m;
-            m.kind = GestureKind::FingerMove;
-            m.string_index = static_cast<std::uint8_t>(s);
-            m.position_m = std::max(0.25 * c.frets[0].position_m,
-                                    c.frets[(step * 7) % frets].position_m - 0.008);
-            m.speed_m_per_s = 0.3;
-            out.push_back({at(t + 0.04), m});
-        }
-        if (step % 5 == 4) {
-            GestureEvent r;
-            r.kind = GestureKind::FingerRelease;
-            r.string_index = static_cast<std::uint8_t>(s);
-            r.speed_m_per_s = 0.2;
-            r.gap_m = 1.0e-3;
-            out.push_back({at(t + 0.05), r});
         }
     }
     std::stable_sort(out.begin(), out.end(), [](const Timed& a, const Timed& b) { return a.sample < b.sample; });
@@ -128,12 +133,12 @@ struct Result {
 };
 
 Result run_case(const InstrumentConfig& config, double rate_hz, std::uint32_t block, double seconds,
-                bool ledger, PreparedInfo& info) {
+                bool ledger, std::uint32_t channels, PreparedInfo& info) {
     ProcessSpec spec;
     spec.sample_rate_hz = rate_hz;
     spec.max_block_frames = block;
     spec.max_events_per_block = 64;
-    spec.max_interaction_channels = 32;
+    spec.max_interaction_channels = channels;
     spec.max_newton_iterations = 50;
     spec.newton_tolerance_m = 1.0e-14;
     spec.output_gain_per_pa = 1.0;
@@ -186,8 +191,9 @@ double percentile(std::vector<double> v, double q) {
 
 void print_help() {
     std::cout << "setar_benchmark: wall time of Instrument::process on THIS machine (synthetic preset)\n"
-                 "Usage: setar_benchmark [--seconds S] [--rates R1,R2,...] [--blocks B1,B2,...] [--ledger]\n"
-                 "Defaults: --seconds 10 --rates 44100,48000,96000 --blocks 64,256,512\n"
+                 "Usage: setar_benchmark [--seconds S] [--rates R1,R2,...] [--blocks B1,B2,...] [--channels N]\n"
+                 "                       [--ledger]\n"
+                 "Defaults: --seconds 10 --rates 44100,48000,96000 --blocks 64,256,512 --channels 32\n"
                  "cpu_load = wall_time / audio_time (1.0 = exactly real time on one core).\n";
 }
 
@@ -217,6 +223,7 @@ int main(int argc, char** argv) {
         std::vector<double> rates{44100.0, 48000.0, 96000.0};
         std::vector<double> blocks{64.0, 256.0, 512.0};
         bool ledger = false;
+        std::uint32_t channels = 32;
         for (int i = 1; i < argc; ++i) {
             const std::string_view a(argv[i]);
             const auto value = [&]() -> std::string_view {
@@ -234,6 +241,8 @@ int main(int argc, char** argv) {
                 rates = parse_list(value());
             } else if (a == "--blocks") {
                 blocks = parse_list(value());
+            } else if (a == "--channels") {
+                channels = static_cast<std::uint32_t>(parse_list(value()).at(0));
             } else if (a == "--ledger") {
                 ledger = true;
             } else {
@@ -243,7 +252,8 @@ int main(int argc, char** argv) {
         const InstrumentConfig config = synthetic_setar_config();
         std::cout << "# THIS-MACHINE MEASUREMENT of a SYNTHETIC prototype; not a host/DAW qualification\n"
                   << "# preset=" << config.label << "\n# compiler=" << compiler_identity()
-                  << "\n# ledger=" << (ledger ? "on" : "off") << " seconds=" << seconds << '\n'
+                  << "\n# ledger=" << (ledger ? "on" : "off") << " seconds=" << seconds
+                  << " max_interaction_channels=" << channels << '\n'
                   << "sample_rate_hz,block_frames,string_modes_0,string_modes_1,string_modes_2,"
                      "string_modes_3,body_modes,total_dof,audio_s,wall_s,cpu_load,block_us_p50,"
                      "block_us_p99,block_us_max,block_budget_us,max_active_channels,"
@@ -253,7 +263,7 @@ int main(int argc, char** argv) {
             for (const double b : blocks) {
                 const auto block = static_cast<std::uint32_t>(b);
                 PreparedInfo info;
-                const Result r = run_case(config, rate, block, seconds, ledger, info);
+                const Result r = run_case(config, rate, block, seconds, ledger, channels, info);
                 const double audio_s = std::round(seconds * rate) / rate;
                 std::cout << rate << ',' << block << ',' << info.string_modes[0] << ','
                           << info.string_modes[1] << ',' << info.string_modes[2] << ','

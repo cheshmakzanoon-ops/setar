@@ -16,6 +16,16 @@ choices must be attached to a specimen and practitioner, not inferred from the
 instrument's name. Consult the research and ethnomusicology volumes before using
 anatomical or performance assumptions in code.
 
+The executable scaffold now includes a **playable synthetic prototype** of that
+instrument class: four persistent strings with two transverse polarizations, a
+synthetic modal body shared through bridge springs, nail, finger-pad and fret
+contacts, sample-accurate physical gestures and a score-driven offline player.
+Its [capability register](engineering/11-playable-prototype.md#capability-register)
+separates what is implemented, tested, configured in CI, acoustically validated
+(nothing) and deferred. Its strings, body, contact laws, tunings and fret maps are
+placeholders labeled synthetic; it is a place to verify mechanisms, not evidence
+about a particular setar.
+
 The desired sound engine is primarily C++. Python may support offline analysis,
 data conversion, documentation audits, and reproducible plotting. CMake handles
 portable builds. JUCE is useful for plugin/application integration, parameters,
@@ -40,6 +50,11 @@ tests and evidence packets. The [engineering decision ledger](governance/enginee
 marks unresolved physical/host/license choices that documentation cannot
 legitimately fill in. Work orders and their 79 named *planned tests* are not
 implemented runtime features; use the registers to choose the next honest gate.
+
+To work on the playable prototype, read
+[the prototype chapter](engineering/11-playable-prototype.md) and
+[the modal-contact solver derivation](numerics/15-modal-contact-solver.md) before
+changing the engine, and keep its synthetic labels intact in every report.
 
 Each phase has entry conditions, task sequence, outputs, tests, failure rules, and
 an exit gate. The gate is not an authorization to ignore uncertainties in later
@@ -69,6 +84,12 @@ file, call a network service, or perform an unbounded nonlinear solve in an audi
 callback. Offline assets are prepared away from that callback and installed via a
 documented state transition.
 
+Current state: `setar::instrument::Instrument::process()` is a first realtime-shaped
+engine with fixed capacities, bounded Newton iterations, reported faults and an
+allocation-hook test. It has no measured deadline profile, asset-publication path
+or host qualification, and its "reduced" model is not yet derived from or compared
+against an independent converged reference.
+
 ### 3. Instrument application and plugin
 
 The plugin translates host events and human controls into the engine's contracts.
@@ -76,6 +97,12 @@ It owns host lifecycle, presets, parameter identifiers, presentation, accessibil
 and state migration. It must not own undocumented alternative physics that makes
 the standalone renderer and plugin disagree. A JUCE editor screenshot establishes
 that something rendered; it does not establish a correct boundary condition.
+
+Current state: an optional JUCE adapter for the prototype exists behind
+`SETAR_ENABLE_JUCE_INSTRUMENT` and maps host notes to physical gestures through the
+same performance layer as the offline player. It is not built by the headless CI
+matrix, and no plugin validator or host session has been recorded; see
+[the adapter chapter](plugin/08-prototype-juce-adapter.md).
 
 ## Evidence labels
 

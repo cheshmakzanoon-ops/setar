@@ -2,10 +2,14 @@
 
 ## Scope and present capability
 
-The executable portion of this repository is a deliberately small numerical
-reference, not a completed setar. It supplies a C++20 library, an offline renderer,
-independent numerical tests, a deterministic report generator, and configured
-cross-platform checks. An optional JUCE boundary demonstrates how the same core
+The executable portion of this repository is a numerical reference plus a
+playable synthetic prototype, not a completed or validated setar. It supplies
+C++20 libraries, an offline renderer, independent numerical tests, a deterministic
+report generator, and configured cross-platform checks. The prototype engine
+`setar::instrument` (four persistent two-polarization modal strings, a synthetic
+modal body, nail/finger/fret contacts, an offline score player) is described in
+[the prototype chapter](11-playable-prototype.md); this page's remaining
+sections describe the original single-string reference unless they say otherwise. An optional JUCE boundary demonstrates how the same core
 could be reached from a host or standalone application. The optional target is not
 part of the default tested dependency closure.
 
@@ -162,6 +166,16 @@ of actual exported displacement. The energy graph spans the exported run. The
 dispersion graph compares exported natural frequencies with the tension-only
 frequencies derived independently from the same stated inputs.
 
+The playable prototype has its own score-driven player:
+
+```sh
+build/headless-debug/setar_play --score data/scores/01-open-strings.score --output-dir artifacts/play/open-strings
+```
+
+Its outputs, options and analysis report are described in
+[the offline player chapter](12-offline-player-and-analysis.md). Its render is
+observed body pressure from synthetic parameters, not a calibrated recording.
+
 Choose a new output directory for each experiment. Both the renderer and report
 generator refuse to overwrite their known output files. This makes a common
 mistake visible: rerunning with different parameters while retaining a graph
@@ -191,7 +205,9 @@ is an explicit presentation change, not a fix for physical instability.
 | `SETAR_BUILD_REPORT_TESTS` | `ON` | With tests enabled, require Python and exercise WAV/CSV/report integration plus audit self-tests. |
 | `SETAR_WARNINGS_AS_ERRORS` | `ON` | Treat project-target compiler warnings as errors. |
 | `SETAR_ENABLE_SANITIZERS` | `OFF` | Add address and undefined-behavior instrumentation on supported GCC/Clang toolchains. |
+| `SETAR_BUILD_INSTRUMENT` | `ON` | Build the playable prototype libraries, `setar_play`, `setar_benchmark` and, with tests enabled, the `setar_instrument_*_tests` runners and `integration.setar_play`. |
 | `SETAR_ENABLE_JUCE` | `OFF` | Add the optional JUCE diagnostic Standalone/VST3 targets. |
+| `SETAR_ENABLE_JUCE_INSTRUMENT` | `OFF` | Add the optional JUCE adapter for the prototype from `plugin/`; requires `SETAR_BUILD_INSTRUMENT=ON` and an explicit `JUCE_SOURCE_DIR`. |
 | `JUCE_SOURCE_DIR` | empty | Explicit existing JUCE source directory; never fetched automatically. |
 
 If report tests are enabled while tests are built, the renderer must also be
@@ -210,7 +226,7 @@ cmake --build build/core-only
 
 There is not yet a versioned installed-package ABI, an exported CMake package,
 or a supported binary distribution. Consumers inside this build can link
-`setar::reference`. Treat the public headers as a research interface whose changes
+`setar::reference` or the prototype aggregate `setar::instrument`. Treat the public headers as a research interface whose changes
 still require review and tests, not as a promise of indefinite ABI compatibility.
 
 ## Compiler and numerical policy

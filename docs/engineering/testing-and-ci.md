@@ -64,6 +64,28 @@ and document that dependency.
 | `documentation.implementation_traceability` | 41 requirements, 44 work orders, 119 original phase tasks mapped, unique IDs, reading paths, coverage, DAG and future-test ownership | Planning consistency, **not** executed future physics tests |
 | `documentation.implementation_mutations` | Controlled duplicate, orphan, path, cycle, schema and status/coverage defects are rejected | Mutation tests of the planning auditor, not physical fidelity |
 
+### Playable prototype tests
+
+The prototype runners are registered through the CMake function
+`setar_instrument_tests`; each receives its full CTest name as its only argument
+and carries the `instrument` label plus a module label. Seventeen names coincide
+with planned acceptance identifiers and are mapped as **partial** checks in the
+[coverage registry](../../roadmap/executable-test-coverage.json); the others are
+additional prototype checks. Their scope is synthetic throughout.
+
+| CTest family | Runner | Independent property | Important boundary |
+| --- | --- | --- | --- |
+| `solver.*` (10) | `tests/instrument/numerics_tests.cpp` | Exact-modal free response and energy identity, forced convergence, sine-shape accuracy, discrete-gradient identity and monotonicity, Newton against bisection and a coupled oracle, point-spring string eigenfrequencies, invalid inputs | Building blocks only, not the coupled instrument |
+| `engine.*` (7) | `tests/instrument/engine_tests.cpp` | Configuration validation, lossless and lossy energy ledgers, open and fretted pitch against stiff-string formulas, event ordering, Newton-failure reporting | Synthetic configuration; tolerances documented in the runner |
+| `contact.*`, `coupling.*`, `performance.*`, `acoustics.*`, `controls.*` (10) | `tests/instrument/engine_tests.cpp` | Nail passivity and release state, fret crossing work, afterlength release, sympathetic transfer and its uncoupled limit, persistent restrike state, one-way observation, slide continuity | Partial mappings of planned acceptance cases; no measured data |
+| `materials.*`, `body.*` (7) | `tests/instrument/body_tests.cpp` | Orthotropic reciprocity/positivity, plate frequency and cavity coupling oracles, mobility reciprocity and passivity, invalid designs | Synthetic plate, not a specimen FEM or measured FRF |
+| `preset.*` (5) | `tests/instrument/preset_tests.cpp` | Tension inverse, fret positions from ratios, configuration admissibility, cents, invalid inputs | Synthetic gauges, tunings and interval sets |
+| `score.*` (6) | `tests/instrument/performance_tests.cpp` | Score parsing and line-numbered errors, scheduling order, fret choice, course sweep, MIDI mapping | Engineering placeholder grammar, not practitioner-reviewed |
+| `realtime.*`, `contact.gesture_replay` (5) | `tests/instrument/realtime_tests.cpp` | Allocation hook around `process()`, block-partition invariance, capacity limits, overflow reporting, deterministic replay | Single build and machine; no deadline measurement |
+| `integration.setar_play` | `tools/test_setar_play.py` | Actual player executable on the synthetic scores, output file contracts, finite output and analysis report | Not a listening or calibration test |
+
+Select them with `ctest --preset headless-debug -L instrument --output-on-failure`.
+
 The numerical cases carry `core` and `numerical` labels. The report case carries
 `integration` and `report`. Audit self-tests carry `documentation`. Use these
 labels to select a diagnostic subset, but run the complete applicable baseline
@@ -155,9 +177,11 @@ rather than relying on a random seed that nobody records.
 ## Configured GitHub Actions matrix
 
 The workflow in `.github/workflows/engineering.yml` configures headless builds on
-`ubuntu-24.04`, `windows-2022`, and `macos-14`. Each job builds the C++ targets,
-runs CTest, audits the handbook, executes a fresh synthetic render, builds the
-report, and uploads evidence. A separate Linux job builds and runs the suite with
+`ubuntu-24.04`, `windows-2022`, and `macos-15`. Each job builds the C++ targets,
+runs CTest (including the prototype runners), audits the handbook, executes a
+fresh synthetic reference render, renders every synthetic score in `data/scores`
+with `setar_play`, runs the render analysis, builds the reports, and uploads
+evidence. A separate Linux job builds and runs the suite with
 AddressSanitizer and UndefinedBehaviorSanitizer.
 
 These are workflow definitions. Their presence is not evidence that the jobs ran
@@ -223,7 +247,11 @@ excitation configuration are outside that render contract. These are current
 source-level properties and lifecycle assumptions, not a completed performance
 certification.
 
-The baseline does not yet install a platform allocator hook or collect
+The prototype's `realtime.allocation_hook` test replaces the global
+`operator new`/`operator delete` in its own runner and counts calls made inside
+`Instrument::process()`. That is a portable allocation probe for the engine core
+only; it does not observe platform allocators beneath the C++ runtime, locks or
+system calls, and it does not cover a host adapter. No test collects
 per-callback execution-time distributions. It does not test scheduling under
 CPU contention, device changes, power-management transitions, editor interaction,
 or multiple plugin instances. Those experiments need representative hardware,

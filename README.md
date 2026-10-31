@@ -5,11 +5,17 @@ The intended instrument generates sound from physical state and interactions, no
 prerecorded notes. JUCE belongs at application/plugin boundaries; it is not the
 physics engine.
 
-**Current status:** an engineering handbook and executable numerical bootstrap.
-This is **not a finished setar synthesizer**, not a measured digital twin, and not
-a claim of parity with any commercial instrument. The first executable fixtures
-are explicitly synthetic. They establish a reproducible place to verify equations,
-inspect outputs, and progressively replace assumptions with evidence.
+**Current status:** an engineering handbook, an executable numerical bootstrap and
+a **playable synthetic prototype** (`setar::instrument`): four persistent
+two-polarization modal strings coupled through bridge springs to a synthetic
+modal body, with fingernail, finger-pad and tied-fret contacts solved by an
+energy-consistent discrete-gradient Newton step, sample-accurate physical
+gestures, a score-driven offline player and an optional JUCE adapter. Every
+parameter it uses is a declared synthetic placeholder. This is **not a finished
+or validated setar synthesizer**, not a measured digital twin, and not a claim of
+parity with any commercial instrument. Read the
+[prototype chapter](docs/engineering/11-playable-prototype.md) for exactly what
+is implemented, tested and still open.
 
 ## Start here
 
@@ -31,8 +37,8 @@ identifies measurements, method choices, permissions, and host qualifications
 that cannot be resolved by writing more prose. **Planned tests and proposed
 C++ interfaces are not necessarily implemented features.** The new
 [executed-prototype coverage registry](roadmap/executable-test-coverage.json)
-maps **10 of 79 planned acceptance names to *partial* executable checks**;
-69 are not yet mapped, and the full 41 engineering requirements are not
+maps **27 of 79 planned acceptance names to *partial* executable checks**;
+52 are not yet mapped, and the full 41 engineering requirements are not
 claimed as completely verified. The
 [solver comparison and decision dossier](docs/architecture/07-experimental-solver-evidence-and-choice.md),
 [real specimen acquisition instructions](docs/measurement/13-acquisition-campaign-execution.md),
@@ -62,7 +68,7 @@ quality. Pianoteq is a third-party product and trademark, not an implementation
 reference, an affiliation, or a certified quality level. This project does not
 copy proprietary source, presets, measurements, or designs.
 
-## Build the numerical bootstrap
+## Build the numerical bootstrap and the prototype
 
 The intended baseline is CMake, a C++20 compiler, and Python 3 for report and
 documentation tooling. See [engineering setup](docs/engineering/README.md) for
@@ -72,6 +78,7 @@ the exact current build commands and toolchain requirements.
 cmake --preset headless-debug
 cmake --build --preset headless-debug
 ctest --preset headless-debug
+build/headless-debug/setar_play --score data/scores/01-open-strings.score --output-dir artifacts/play/open-strings
 python3 tools/audit_docs.py
 python3 tools/audit_implementation.py
 python3 tools/audit_executable_coverage.py
@@ -81,7 +88,10 @@ python3 tools/validate_product_qualification.py data/product-qualification-templ
 
 The headless path must not download JUCE or require an audio device. The optional
 JUCE path requires an explicitly supplied checkout and a reviewed license choice.
-Do not mistake a passing bootstrap test for measured instrument validation.
+Do not mistake a passing bootstrap test, or a pleasant prototype render, for
+measured instrument validation. `setar_play` writes the render of a synthetic
+score together with its diagnostics; see the
+[offline player chapter](docs/engineering/12-offline-player-and-analysis.md).
 
 ## Repository map
 
@@ -97,9 +107,10 @@ Do not mistake a passing bootstrap test for measured instrument validation.
 | `docs/realtime/`, `docs/plugin/`, `docs/ux/` | Bounded processing, host contracts, and musician/engineering interfaces. |
 | `docs/validation/` | Verification, acoustic validation, perceptual evaluation, and release evidence. |
 | `docs/governance/`, `docs/decisions/` | Scope, acceptance policy, risks, decision records, and stewardship. |
-| `include/`, `src/` | Public numerical interfaces and implementation. |
+| `include/`, `src/` | Public numerical interfaces and implementation; `include/setar/instrument` and `src/instrument` hold the playable prototype engine. |
 | `apps/`, `tests/`, `tools/` | Executable experiments, independent tests, reports, and audits. |
-| `data/`, `experiments/` | Data contracts and reproducible experiment definitions, not unlicensed recordings. |
+| `data/`, `experiments/` | Data contracts, synthetic demonstration scores (`data/scores`) and reproducible experiment definitions, not unlicensed recordings. |
+| `plugin/` | Optional JUCE adapter for the prototype (`SETAR_ENABLE_JUCE_INSTRUMENT`), not part of the headless matrix. |
 | `prompts/` | Scoped instructions for human or AI-assisted implementation, review, and investigation. |
 | `.github/` | Cross-platform CI and contribution templates. |
 

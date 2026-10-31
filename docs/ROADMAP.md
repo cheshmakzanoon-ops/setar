@@ -17,8 +17,13 @@ credibility from an unverified upstream assumption.
 
 Each detailed phase contains reading, prerequisites, tasks, outputs, tests, prompts,
 and handoff conditions. All scientific completion states begin unproven. The
-repository bootstrap only implements a limited subset of the laboratory/tooling
-work; inspect source and CI for current capabilities.
+repository implements a limited subset of the laboratory/tooling work plus a
+playable synthetic prototype that touches P04–P06, P09–P11 and P13–P14
+mechanisms with placeholder parameters; see its
+[capability register](engineering/11-playable-prototype.md#capability-register).
+A prototype mechanism is not a passed phase gate: every one of those phases still
+lacks its measured or validated evidence. Inspect source and CI for current
+capabilities.
 
 The machine-readable [phase register](../roadmap/phase-register.json) records
 dependencies, documentation paths, and current evidence-status boundaries. The
@@ -31,8 +36,11 @@ For **implementation-level execution**, use the
 [44 dependency-ordered engineering work orders](../roadmap/engineering-tasks.json),
 and the [implementation specification](engineering/implementation-specification.md).
 Each work order contains exact reading prerequisites, proposed source and test
-paths, procedural steps, falsifiable checks, evidence outputs and a status that
-currently means *specified, not implemented*. The 79 planned test identifiers
+paths, procedural steps, falsifiable checks, evidence outputs and a status.
+Most remain *specified, not implemented*; the work orders touched by the
+prototype carry `in_progress` or `implemented_unverified` together with an
+`implementation_evidence` record naming the actual source paths, CTests and the
+missing evidence. The 79 planned test identifiers
 are future acceptance targets; they do not describe CTests that already exist.
 The machine-backed work orders use the distinct **`ENG-Pxx-Tyy`** namespace:
 existing individual phase chapters already use `Pxx-Tyy` for their broader

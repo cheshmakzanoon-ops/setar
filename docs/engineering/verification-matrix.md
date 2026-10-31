@@ -1,7 +1,9 @@
 # Requirements-to-tests verification matrix and portable execution contract
 
-**Status:** full acceptance specifications, with a synthetic numerical baseline
-and **ten explicitly partial executable mappings**. The implemented subset
+**Status:** full acceptance specifications, with a synthetic numerical baseline,
+a playable synthetic prototype and **27 explicitly partial executable mappings**
+(10 from the numerical bootstrap, 17 from the prototype; 52 planned identifiers
+have none). The implemented subset
 is audited in [executable-test-coverage.json](../../roadmap/executable-test-coverage.json),
 and its remaining gaps are recorded in
 [prototype contracts and test expansion](10-prototype-contracts-and-test-expansion.md).
@@ -199,6 +201,15 @@ add_test(NAME coupling.port_power_balance
 set_tests_properties(coupling.port_power_balance PROPERTIES
     LABELS "contract;numerical;coupling" TIMEOUT 60)
 ```
+
+The prototype uses the actual helper `setar_instrument_tests(<runner> <source>
+<labels> LIBS <modules> TESTS <names>)` in `CMakeLists.txt`. It registers each
+full name as its own CTest and passes that name to the runner. The coverage audit
+accepts a mapping only if the name appears in such a `TESTS` list, the runner
+path matches the registered source and the runner's dispatch entry does not point
+to a `not_implemented` stub. For example, `coupling.cross_string_transfer` and
+`coupling.uncoupled_limit` are registered this way in the engine runner; they are
+partial synthetic checks of the T3 cases above, not their completion.
 
 The existing portable configure/build/test sequence must remain valid:
 

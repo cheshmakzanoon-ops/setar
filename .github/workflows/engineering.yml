@@ -25,14 +25,17 @@ jobs:
             executable: ./build/setar_render
             solver_executable: ./build/setar_compare_solvers
             loss_executable: ./build/setar_loss_study
+            player_executable: ./build/setar_play
           - os: windows-2022
             executable: ./build/Debug/setar_render.exe
             solver_executable: ./build/Debug/setar_compare_solvers.exe
             loss_executable: ./build/Debug/setar_loss_study.exe
+            player_executable: ./build/Debug/setar_play.exe
           - os: macos-15
             executable: ./build/setar_render
             solver_executable: ./build/setar_compare_solvers
             loss_executable: ./build/setar_loss_study
+            player_executable: ./build/setar_play
     steps:
       - name: Check out the exact event revision
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -76,6 +79,21 @@ jobs:
           ${{ matrix.loss_executable }} decay > artifacts/loss/decay.csv
           ${{ matrix.loss_executable }} waveform > artifacts/loss/waveform.csv
           python tools/generate_loss_report.py --decay artifacts/loss/decay.csv --waveform artifacts/loss/waveform.csv --output artifacts/loss/report --source-revision "${{ github.sha }}"
+      - name: Render synthetic prototype scores and analyze each render
+        shell: bash
+        run: |
+          shopt -s nullglob
+          scores=(data/scores/*.score)
+          if [ "${#scores[@]}" -eq 0 ]; then
+            echo "no synthetic scores found in data/scores" >&2
+            exit 1
+          fi
+          mkdir -p artifacts/prototype/render artifacts/prototype/report
+          for score in "${scores[@]}"; do
+            name="$(basename "$score" .score)"
+            ${{ matrix.player_executable }} --score "$score" --output-dir "artifacts/prototype/render/$name"
+            python tools/analyze_render.py --input "artifacts/prototype/render/$name" --output "artifacts/prototype/report/$name" --source-revision "${{ github.sha }}"
+          done
       - name: Preserve numerical evidence and test logs
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2

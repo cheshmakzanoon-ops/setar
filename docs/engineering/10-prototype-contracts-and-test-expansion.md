@@ -1,6 +1,10 @@
 # Verified prototype contracts, acceptance mapping, and implementation handoffs
 
-**Status: executable prototype verification, not frozen product ABI.**
+**Status: executable prototype verification, not frozen product ABI.** The
+playable four-string prototype that followed these experiments is documented
+separately in [chapter 11](11-playable-prototype.md); the section
+[Playable prototype acceptance mappings](#playable-prototype-acceptance-mappings)
+below records its partial coverage.
 The project now has two dependency-free C++20 linear spatial solvers and a
 two-mass interface oracle in addition to its original exact synthetic modal
 reference. These are deliberately isolated from JUCE and from the physical
@@ -91,12 +95,13 @@ conventions that do not belong in this scalar prototype API.
    full 3D force/torque nor a proof of passivity of an independently
    integrated string–FEM reduction. That proof remains a future component gate.
 
-## Exact acceptance status: 79 full planned cases, 10 partially executable mappings
+## Exact acceptance status: 79 full planned cases, 10 bootstrap partial mappings
 
 The [requirements registry](../../roadmap/requirements.json) still contains
 41 requirements and 79 proposed acceptance identifiers. The
-[coverage registry](../../roadmap/executable-test-coverage.json) intentionally
-maps only **ten** identifiers to executable *partial* checks:
+[coverage registry](../../roadmap/executable-test-coverage.json) maps
+**ten** identifiers from the numerical bootstrap to executable *partial* checks
+(the prototype's further 17 are listed in the next section):
 
 | Planned acceptance case | Current exact CTest | What it does **not** yet establish |
 | --- | --- | --- |
@@ -116,8 +121,9 @@ Additional executable tests `numerics.explicit_cfl_rejection`,
 `numerics.invalid_parameters`, `numerics.loss_decay_estimator`, `numerics.loss_decay_oracle`,
 `numerics.loss_modal_reference_crosscheck`, `integration.solver_evidence`, `integration.loss_evidence`, and
 `documentation.executable_coverage_integrity` deepen the prototype but do
-not automatically complete further planned cases. The other **69** planned
-acceptance names have no partial implementation mapping. No full requirement
+not automatically complete further planned cases. Together with the
+prototype mappings, **52** planned acceptance names still have no partial
+implementation mapping. No full requirement
 is promoted to measured/qualified or even globally numerically verified.
 
 The machine audit
@@ -126,6 +132,32 @@ checks the planned IDs, required gaps, runner paths and CMake registrations.
 It must fail on invented cases, missing runners or attempts to relabel
 prototype tests as full acceptance. Reviewers should reject a PR that changes
 the count by simply adding a label or a green empty test.
+
+## Playable prototype acceptance mappings
+
+The `setar::instrument` prototype adds **17** partial mappings, bringing the
+registry to 27 of 79 planned identifiers. Each name below is registered as a
+CTest of the same name through `setar_instrument_tests`:
+
+| Planned acceptance case | Runner | What it does **not** yet establish |
+| --- | --- | --- |
+| `contact.nail_passivity`, `contact.release_convergence` | `tests/instrument/engine_tests.cpp` | Measured nail law, friction, compliant nail, high-resolution independent contact reference |
+| `contact.fret_crossing_work`, `contact.release_afterlength` | `tests/instrument/engine_tests.cpp` | Measured fret/finger laws, pressing tension rise, lateral bends |
+| `controls.sweep_continuity` | `tests/instrument/engine_tests.cpp` | Tension retuning and its energy ledger |
+| `coupling.cross_string_transfer`, `coupling.uncoupled_limit` | `tests/instrument/engine_tests.cpp` | Measured bridge mobility, detuning study, independent coupled solver |
+| `performance.persistent_state`, `performance.restrike_memory` | `tests/instrument/engine_tests.cpp` | Host mapping qualification, practitioner-reviewed sequences |
+| `acoustics.observation_invariance` | `tests/instrument/engine_tests.cpp` | Calibrated observation, directivity hold-out |
+| `materials.reciprocity`, `materials.positive_energy` | `tests/instrument/body_tests.cpp` | Specimen or published tensors, rotated grain frames |
+| `body.mobility_reciprocity`, `body.mobility_passivity` | `tests/instrument/body_tests.cpp` | Measured complex multiport mobility with uncertainty |
+| `contact.gesture_replay` | `tests/instrument/realtime_tests.cpp` | Cross-platform bit identity, measured gesture trajectories |
+| `realtime.allocation_hook`, `realtime.max_work` | `tests/instrument/realtime_tests.cpp` | Platform allocator/lock audit, measured deadline distributions, host boundary |
+
+The prototype's other CTests (`solver.*`, `engine.*`, remaining `body.*`,
+`preset.*`, `score.*`, `realtime.block_partition`, `realtime.capacity_overflow`
+and `integration.setar_play`) are listed as additional executable prototype
+tests and complete no further planned case. The audit now also recognizes the
+`setar_instrument_tests` registration style and refuses a mapping whose runner
+dispatches the name to a `not_implemented` stub.
 
 ## How to add the next accepted C++ component without weakening the matrix
 
@@ -202,7 +234,9 @@ matrix, so no claim of real VST3 compatibility follows from this gate.
   applied work. No unilateral-law data have been acquired yet.
 - `InstrumentState` must own four persistent string histories, a shared
   body/cavity state and all contact states, with memory independent of host
-  note events. No such class is currently integrated.
+  note events. The synthetic prototype `setar::instrument::Instrument` now does
+  this for its own reduced model; the signature is not frozen and nothing about
+  it is measured.
 - `RealtimePlan` must bound contact iterations, solver complexity, event
   storage, sample-rate factors, maximum block and asset reclamation. No
   callback allocation/lock audit or measured deadline trace yet exists.

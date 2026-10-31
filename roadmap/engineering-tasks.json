@@ -89,7 +89,8 @@
       "touch":["src/strings/multi_axis.cpp","tests/strings/nonlinear_string_tests.cpp"],
       "steps":["Choose actual string coordinate axes and force projections measured at bridge and excitation positions.","Derive strain extension and potential energy before coding nonlinear tension, and identify longitudinal assumptions.","Build decoupled and exactly symmetric limits and quantify amplitude-dependent frequency and mode coupling.","Evaluate whether torsional motion belongs in the bounded reference model using sensitivity and independent measurements; record an explicit justified exclusion if not.","Compare analytic weak-amplitude predictions with a separate converged time-domain solver; guard inadmissible strain and loss."],
       "verify":["Removing transverse coupling recovers independently validated scalar strings.","A conservative nonlinear test conserves or correctly accounts for total mechanical energy as amplitude varies."],
-      "deliver":"Energy derivation, multi-axis tests and quantified extension domain","status":"specified_not_implemented"
+      "deliver":"Energy derivation, multi-axis tests and quantified extension domain","status":"in_progress",
+      "implementation_evidence":{"paths":["src/instrument/instrument.cpp","src/instrument/numerics.cpp"],"ctests":["engine.lossless_energy_ledger"],"note":"Two transverse polarizations are implemented as separate modal banks per string, coupled only through the nail channel and bridge/body; nonlinear tension and polarization coupling terms are not implemented."}
     },
     {
       "id":"ENG-P05-T01","phase":"P05","title":"Measure and classify nail/flesh contact and release","requires":["ENG-P01-T02","ENG-P04-T02"],"requirements":["REQ-EXC-001","REQ-EXC-002"],
@@ -105,7 +106,8 @@
       "touch":["include/setar/contact/nail.hpp","src/contact/nail.cpp","tests/contact/nail_tests.cpp"],
       "steps":["Define compression, relative velocity, friction internal state and potential/dissipation terms in SI units.","Prove admissible work signs and choose exact/discrete-gradient or bounded implicit root method for the nonlinear state.","Implement engagement, slip and release conditions with explicit event ordering and a finite iteration/failure bound.","Test stiff and soft contacts, near-grazing plucks, zero relative speed and recontact against an independent high-resolution reference.","Separate physically meaningful release sound from an arbitrary ADSR envelope or sample-trigger switch."],
       "verify":["Repeated contact cannot inject unreported energy in a passive synthetic fixture.","An intentionally nonconverged root solve returns an error rather than a plausible audio sample."],
-      "deliver":"Contact state machine, work equations, iteration histograms and traceable release examples","status":"specified_not_implemented"
+      "deliver":"Contact state machine, work equations, iteration histograms and traceable release examples","status":"implemented_unverified",
+      "implementation_evidence":{"paths":["src/instrument/instrument.cpp","src/instrument/numerics.cpp"],"ctests":["contact.nail_passivity","contact.release_convergence","engine.newton_failure_reporting"],"note":"Synthetic one-sided power-law nail channel with discrete-gradient Newton solve and force-threshold/travel release; no friction internal state, no measured contact law and no independent high-resolution contact reference yet."}
     },
     {
       "id":"ENG-P05-T03","phase":"P05","title":"Define and replay controlled pluck trajectories","requires":["ENG-P05-T02"],"requirements":["REQ-EXC-002","REQ-PRF-002"],
@@ -113,7 +115,8 @@
       "touch":["include/setar/performance/gesture.hpp","tests/performance/gesture_replay_tests.cpp"],
       "steps":["Represent contact path, direction, nail compliance control, start/end times and physical string target in an event manifest.","Develop deterministic replay with explicit interpolation and time units, independent of host buffer boundaries.","Expose repeated plucks without replacing existing string state; record force, contact work, bridge transfer and sound observation.","Compare reproducibility across block partitions and sensitivity across speed/angle while preserving a different held-out player/session."],
       "verify":["One normalized gesture timeline produces matching physical observables across block sizes within declared arithmetic tolerances.","Replacing gesture metadata with a different physical unit fails validation."],
-      "deliver":"Event schema, deterministic gesture renderer and contact/observation report","status":"specified_not_implemented"
+      "deliver":"Event schema, deterministic gesture renderer and contact/observation report","status":"in_progress",
+      "implementation_evidence":{"paths":["include/setar/instrument/gesture.hpp","src/instrument/performance.cpp","tests/instrument/realtime_tests.cpp"],"ctests":["contact.gesture_replay","realtime.block_partition"],"note":"Deterministic physical gesture events and synthetic replay exist; measured pluck trajectories, held-out player sessions and speed/angle sensitivity studies do not."}
     },
     {
       "id":"ENG-P06-T01","phase":"P06","title":"Implement moving fret, fingertip and afterlength contacts","requires":["ENG-P05-T02"],"requirements":["REQ-FRT-001"],
@@ -121,7 +124,8 @@
       "touch":["src/contact/fret.cpp","src/contact/fingertip.cpp","tests/contact/fret_tests.cpp"],
       "steps":["Inventory actual tied-fret geometry, tangent/normal direction, compliance and friction for the chosen specimen.","Construct contact potential/normal complementarity and damping without deleting the string state beyond the stopped point.","Derive external finger work for moving contact points and discretize with the chosen energy-consistent update.","Exercise sliding, hammer-on/pull-off, fret buzz from repeated intermittent contact, release, multiple constraints and afterlength response, including hard-contact limiting cases."],
       "verify":["A lifted finger restores the preserved state and permitted afterlength motion.","No artificial energy gain is concealed by unilateral velocity zeroing at the fret."],
-      "deliver":"Contact implementation, independent energy ledger, penetration and convergence curves","status":"specified_not_implemented"
+      "deliver":"Contact implementation, independent energy ledger, penetration and convergence curves","status":"implemented_unverified",
+      "implementation_evidence":{"paths":["src/instrument/instrument.cpp"],"ctests":["contact.fret_crossing_work","contact.release_afterlength","engine.fretted_pitch"],"note":"Finger pad, tied-fret obstacles, fret stick spring and afterlength segments are implemented in the persistent modal string with synthetic laws; no measured fret, finger or afterlength data."}
     },
     {
       "id":"ENG-P06-T02","phase":"P06","title":"Implement state-preserving retuning and control movement","requires":["ENG-P06-T01"],"requirements":["REQ-FRT-002"],
@@ -129,7 +133,8 @@
       "touch":["src/strings/retune_transition.cpp","tests/strings/retune_tests.cpp"],
       "steps":["Classify controls as physical tension change, contact motion, geometry change or a disclosed nonphysical convenience transform.","Define how mass/momentum and displacement map through a coefficient/mesh change; derive work or state-projection defect.","Exercise monotone ramps, reversals, abrupt changes, simultaneous plucks and repeated same-sample controls.","Reject or transactionally defer an unsupported transition without corrupting the old live state."],
       "verify":["The transition reports energy change and continuity error instead of silently zeroing modes.","Different render block partitions reproduce the same normalized control trajectory."],
-      "deliver":"Physical-control transition policies, numerical diagnostics and regression set","status":"specified_not_implemented"
+      "deliver":"Physical-control transition policies, numerical diagnostics and regression set","status":"in_progress",
+      "implementation_evidence":{"paths":["src/instrument/instrument.cpp"],"ctests":["controls.sweep_continuity"],"note":"Continuous finger slide (control movement) is implemented with ledger accounting; tension retuning and peg actuation are not implemented."}
     },
     {
       "id":"ENG-P07-T01","phase":"P07","title":"Capture specimen geometry with uncertainty and frames","requires":["ENG-P01-T02"],"requirements":["REQ-GEO-001"],
@@ -145,7 +150,8 @@
       "touch":["src/assets/material_validation.cpp","tests/assets/material_tests.cpp"],
       "steps":["Document longitudinal/radial/tangential axes and how density, modulus, shear and Poisson values were obtained.","Form the compliance tensor, enforce reciprocal cross-terms and test strict positive definiteness on all accepted parameter samples.","Propagate published errors, humidity variation, grain orientation and correlated uncertainties into modal predictions.","Keep values failing symmetry or energy tests quarantined, including suspicious published tables; design targeted independent measurement."],
       "verify":["Intentional E and nu inconsistency yields a deterministic validation failure.","Physically rotated material axes transform predicted responses consistently, not via an arbitrary gain."],
-      "deliver":"Admissible tensor parser, parameter priors and uncertainty sensitivity table","status":"specified_not_implemented"
+      "deliver":"Admissible tensor parser, parameter priors and uncertainty sensitivity table","status":"in_progress",
+      "implementation_evidence":{"paths":["src/instrument/body_model.cpp","tests/instrument/body_tests.cpp"],"ctests":["materials.reciprocity","materials.positive_energy"],"note":"Orthotropic reciprocity and positive-definiteness checks are applied to synthetic plate constants only; no specimen tensors, rotated axes or published-value audit are executed."}
     },
     {
       "id":"ENG-P08-T01","phase":"P08","title":"Construct independent body FEM and mesh-convergence study","requires":["ENG-P07-T02"],"requirements":["REQ-BOD-001"],
@@ -169,7 +175,8 @@
       "touch":["src/body/reduction.cpp","tests/body/reduced_model_tests.cpp"],
       "steps":["Compute and normalize retained modes or a rational passive fit using the full port matrix, not just one microphone response.","Choose bandwidth, residual treatment, damping form and reduction rank before reporting quality.","Compare retained-pole response and transient port work to independent high-order structural or measured reference.","Sweep reduction rank and quantify size, runtime, bridge mobility error and sensitivity to changed fretting or excitation positions."],
       "verify":["Passive synthetic body cannot spontaneously create energy at the connector.","Fitted resonance peaks do not hide large held-out cross-port phase error."],
-      "deliver":"Portable immutable body asset, reduction provenance, port-response error-vs-cost figures","status":"specified_not_implemented"
+      "deliver":"Portable immutable body asset, reduction provenance, port-response error-vs-cost figures","status":"in_progress",
+      "implementation_evidence":{"paths":["src/instrument/body_model.cpp","tests/instrument/body_tests.cpp"],"ctests":["body.mobility_passivity","body.mobility_reciprocity","body.plate_frequency_oracle"],"note":"The body is a synthetic analytic orthotropic plate plus Helmholtz cavity and lateral mode, not a reduction of a verified FEM; passivity and reciprocity are checked on its modal mobility only."}
     },
     {
       "id":"ENG-P09-T01","phase":"P09","title":"Assemble bidirectional string–bridge–body step","requires":["ENG-P03-T03","ENG-P04-T02","ENG-P08-T03"],"requirements":["REQ-CPL-001"],
@@ -177,7 +184,8 @@
       "touch":["src/physics/coupled_step.cpp","tests/coupling/port_energy_tests.cpp"],
       "steps":["Declare endpoint displacement/velocity basis, body bridge basis, force direction and discrete time level for every active port.","Derive coupled residual and solve string/body reactions in one consistent step; include contact force coupling where needed.","Verify joint energy: initial + external work - dissipation - final = numerical defect, with uncertainty/roundoff bound.","Compare monolithic and partitioned schemes on an analytic two-mass and a converged string/body fixture.","Do not introduce a transport delay, rescaled output or unphysical gain to stabilize feedback without a new approximation study."],
       "verify":["Zero coupling, infinite-mass support and extreme passive impedance limits match independent predictions.","Exchanging order of subsystem evaluation does not alter a correctly solved simultaneous power connection."],
-      "deliver":"Joint-step equation, solver residual and energy ledger, fixture tests and chosen strategy ADR","status":"specified_not_implemented"
+      "deliver":"Joint-step equation, solver residual and energy ledger, fixture tests and chosen strategy ADR","status":"implemented_unverified",
+      "implementation_evidence":{"paths":["src/instrument/instrument.cpp"],"ctests":["engine.lossless_energy_ledger","coupling.uncoupled_limit"],"note":"Bridge springs between each string polarization and the modal body are solved simultaneously with contacts in one Newton system (no sample delay); synthetic parameters only and no comparison with an independent coupled solver."}
     },
     {
       "id":"ENG-P09-T02","phase":"P09","title":"Verify passive sympathetic transfer among strings","requires":["ENG-P09-T01"],"requirements":["REQ-CPL-002"],
@@ -185,7 +193,8 @@
       "touch":["tests/coupling/cross_string_tests.cpp","experiments/sympathetic-transfer.md"],
       "steps":["Drive string A with B/C/D initially silent and measure each string's state and bridge transfer independently from final sound.","Test damping, tuning detuning, contact arrest and structural mobility changes in a symmetric and asymmetric fixture.","Verify cross response is mediated by the shared physical port and disappears when that port is disconnected.","Compare transfer magnitude/phase or decay to calibrated bridge/string measurements never used in the fitting objective."],
       "verify":["The unstruck strings contain physical vibration and proper energy accounting, not copied audio samples.","Controlled detuning changes beating and transfer in the predicted direction without arbitrary per-string gains."],
-      "deliver":"Cross-string state/FRF plots and source-to-observation causal trace","status":"specified_not_implemented"
+      "deliver":"Cross-string state/FRF plots and source-to-observation causal trace","status":"implemented_unverified",
+      "implementation_evidence":{"paths":["src/instrument/instrument.cpp"],"ctests":["coupling.cross_string_transfer","coupling.uncoupled_limit"],"note":"Undriven strings move only through the shared synthetic body; the controlled detuning study and measured sympathetic response are outstanding."}
     },
     {
       "id":"ENG-P10-T01","phase":"P10","title":"Verify cavity and vibrating-boundary energy exchange","requires":["ENG-P08-T01"],"requirements":["REQ-ACO-001"],
@@ -201,7 +210,8 @@
       "touch":["src/acoustics/radiation.cpp","tests/acoustics/observation_tests.cpp","experiments/directivity-sweep.md"],
       "steps":["Choose an offline wave/BEM/reference radiation treatment and derive a reduced observation map from body/cavity state.","Measure microphone location, angle, calibration, room response and relative timing with controlled source and repeated placements.","Keep free-field, room convolution, listening gain and optional creative effects in separately switchable, metadata-visible layers.","Validate multipoint complex pressure and directivity against withheld observation angles or distances; expose frequency-range limits."],
       "verify":["Microphone relocation changes observation but does not add force or energy to the body when there is no acoustic feedback.","Near/far-field limits, directivity and level falloff have independent sanity checks before subjective comparison."],
-      "deliver":"Complex pressure mapping, directivity plots, independent source/room isolation and holdout results","status":"specified_not_implemented"
+      "deliver":"Complex pressure mapping, directivity plots, independent source/room isolation and holdout results","status":"in_progress",
+      "implementation_evidence":{"paths":["src/instrument/instrument.cpp","src/instrument/body_model.cpp"],"ctests":["acoustics.observation_invariance"],"note":"One-way synthetic observation of body modal acceleration via monopole/dipole weights; uncalibrated, no directivity or room model and radiation damping is absorbed in modal damping."}
     },
     {
       "id":"ENG-P11-T01","phase":"P11","title":"Implement four persistent physical strings and shared body","requires":["ENG-P06-T02","ENG-P09-T02","ENG-P10-T02"],"requirements":["REQ-PRF-001","REQ-CPL-002"],
@@ -209,7 +219,8 @@
       "touch":["include/setar/engine/instrument.hpp","src/engine/instrument.cpp","tests/engine/persistent_state_tests.cpp"],
       "steps":["Allocate exactly four persistent physical string states for the selected instrument hypothesis, each with explicit tuning, frets and contact locations.","Connect strings to one shared structural response and observation; preserve individual state across new note and rest events.","Provide defined reset scopes for host transport and physical state, and distinguish sustained state from stale note-on bookkeeping.","Exercise open strings, stopped strings, sympathetic response, fast re-strikes and damping without independent sample voices."],
       "verify":["Plucking one string perturbs the others only through allowed physical couplings.","Reset-one-contact and reset-transport leave unrelated physical vibration unchanged by the declared policy."],
-      "deliver":"Single-writer instrument state owner, event tests, physical snapshot and transfer evidence","status":"specified_not_implemented"
+      "deliver":"Single-writer instrument state owner, event tests, physical snapshot and transfer evidence","status":"implemented_unverified",
+      "implementation_evidence":{"paths":["include/setar/instrument/instrument.hpp","src/instrument/instrument.cpp"],"ctests":["performance.persistent_state","performance.restrike_memory","coupling.cross_string_transfer"],"note":"Instrument owns four persistent two-polarization strings and one shared body; gestures never allocate strings. Synthetic parameters; no measured reference instrument."}
     },
     {
       "id":"ENG-P11-T02","phase":"P11","title":"Formalize idiomatic playing controls and tuning grammar","requires":["ENG-P11-T01","ENG-P05-T03"],"requirements":["REQ-PRF-002"],
@@ -217,7 +228,8 @@
       "touch":["data/performance/gesture-taxonomy.json","tests/performance/phrase_tests.cpp"],
       "steps":["Interview/record authorized setar performers about pluck orientation, phrase articulation, microtonal stopping, damping, ornaments and practical input limitations.","Define a physical gesture protocol independent of MIDI 1.0 and a separate explicit host mapping policy, including ambiguous string selection.","Prepare small annotated gesture/phrase fixture sets and reserve player/session splits before tuning response.","Have practitioners test gesture semantics, timing and limitations; log disagreements instead of collapsing them to a generic synth note."],
       "verify":["Every accepted gesture maps to deterministic physical control variables and a defined state transition.","An unexpressible host event is flagged or rejected according to a documented accessible fallback."],
-      "deliver":"Approved gesture grammar, reference phrase manifests and cross-player review notes","status":"specified_not_implemented"
+      "deliver":"Approved gesture grammar, reference phrase manifests and cross-player review notes","status":"in_progress",
+      "implementation_evidence":{"paths":["src/instrument/performance.cpp","docs/performance/07-score-format.md"],"ctests":["score.parse_valid","score.course_sweep"],"note":"An engineering placeholder score/gesture grammar exists; it is not practitioner-reviewed, which remains the blocking evidence for this work order."}
     },
     {
       "id":"ENG-P12-T01","phase":"P12","title":"Measure parameter sensitivity, degeneracy and identifiability","requires":["ENG-P11-T01","ENG-P07-T02"],"requirements":["REQ-IDN-001"],
@@ -249,7 +261,8 @@
       "touch":["src/engine/asset_publication.cpp","tests/realtime/hostile_callback_tests.cpp","tools/profile_engine.cpp"],
       "steps":["Freeze upper bounds on active degrees of freedom, contacts, nonlinear iterations, scratch, events and output channels per accepted asset.","Instrument allocation/deallocation, locks, waits, I/O and solver iterations on actual audio-callback code paths and state transitions.","Prepare a new immutable asset fully off-thread, validate capacity and publish transactionally at a specified sample boundary.","Establish deferred non-audio-thread reclamation, safe telemetry snapshots and overflow counters with explicit lifetime proofs.","Benchmark attack, repeated plucks, many contacts, sample-rate switch and CPU contention, recording distributions and deadlines."],
       "verify":["An exhausted event capacity and invalid replacement asset cannot leave dangling contact or a stuck note.","No callback allocation/deallocation or unbounded operation occurs in the measured supported envelope."],
-      "deliver":"RT capacity sheet, callback callgraph, stress binaries, ownership proof and measured profiles","status":"specified_not_implemented"
+      "deliver":"RT capacity sheet, callback callgraph, stress binaries, ownership proof and measured profiles","status":"in_progress",
+      "implementation_evidence":{"paths":["src/instrument/instrument.cpp","tests/instrument/realtime_tests.cpp","apps/setar_benchmark.cpp"],"ctests":["realtime.allocation_hook","realtime.max_work","realtime.capacity_overflow"],"note":"process() is noexcept with fixed capacities, overflow counters and an allocation-hook test; asset publication, telemetry handoff and measured deadline profiles are not implemented."}
     },
     {
       "id":"ENG-P14-T01","phase":"P14","title":"Build an independently testable JUCE and VST3 adapter","requires":["ENG-P13-T02"],"requirements":["REQ-PLG-001"],
@@ -257,7 +270,8 @@
       "touch":["apps/plugin/PluginProcessor.cpp","apps/plugin/PluginProcessor.h","cmake/JucePlugin.cmake"],
       "steps":["Obtain an owner-authorized JUCE dependency and licensing choice; do not auto-download or assume commercial/open-source terms.","Make C++20 engine independent from JUCE headers and buildable in the existing headless CMake path.","Implement format-specific AudioProcessor calls and an adapter converting host buses, sample rate and events to engine units.","Compile VST3 artifacts with a reviewed toolchain on Linux, Windows and macOS, and run an official VST3 validator when available."],
       "verify":["Headless tests do not link JUCE or require a window system.","The validator scans the real generated plugin, not the current synthetic diagnostic alone."],
-      "deliver":"Plugin adapter target, pinned dependency/license record and cross-platform scan evidence","status":"specified_not_implemented"
+      "deliver":"Plugin adapter target, pinned dependency/license record and cross-platform scan evidence","status":"in_progress",
+      "implementation_evidence":{"paths":["plugin/CMakeLists.txt"],"ctests":[],"note":"An optional JUCE adapter is gated by SETAR_ENABLE_JUCE_INSTRUMENT and is not built by the headless matrix; no plugin validator or host run has been recorded."}
     },
     {
       "id":"ENG-P14-T02","phase":"P14","title":"Specify host event ordering, stable parameters and versioned state","requires":["ENG-P14-T01"],"requirements":["REQ-PLG-002"],

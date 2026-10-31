@@ -1,9 +1,9 @@
 # Contributing to the setar engineering laboratory
 
 Contribute a bounded, reviewable change that removes an unknown or adds verified
-behavior. The repository currently contains an engineering handbook and a
-synthetic C++20 numerical bootstrap, not a completed or acoustically validated
-setar. Read [AGENTS.md](AGENTS.md), [the orientation](docs/START_HERE.md), the
+behavior. The repository currently contains an engineering handbook, a
+synthetic C++20 numerical bootstrap and a playable synthetic prototype
+(`setar::instrument`), not a completed or acoustically validated setar. Read [AGENTS.md](AGENTS.md), [the orientation](docs/START_HERE.md), the
 [roadmap](docs/ROADMAP.md), and the relevant technical chapter before editing.
 
 ## Define the work before changing it
@@ -55,6 +55,8 @@ ctest --preset headless-debug --show-only
 The existing diagnostic selections include:
 
 ```sh
+ctest --preset headless-debug -L instrument --output-on-failure
+ctest --preset headless-debug -R '^contact[.]' --verbose
 ctest --preset headless-debug -L numerical --output-on-failure
 ctest --preset headless-debug -R '^core[.](lossless_energy|passivity)$' --verbose
 ctest --preset headless-debug -L integration --output-on-failure
@@ -79,6 +81,13 @@ Sanitizer availability and execution are separate facts. Preserve startup or
 runtime restrictions as blockers; do not silently disable detection and call the
 unchanged suite passed. See [testing and CI](docs/engineering/testing-and-ci.md)
 for the current scope, limitations, and platform evidence policy.
+
+For prototype changes, keep each module's boundary: `numerics`, `engine`,
+`body`, `preset` and `performance` are separate static libraries, and each test
+runner links only what it exercises. A coverage mapping in
+`roadmap/executable-test-coverage.json` must name a runner whose dispatch entry
+is a real test; `tools/audit_executable_coverage.py` rejects `not_implemented`
+stubs. Keep every synthetic label in presets, scores and reports.
 
 ## Numerical changes
 

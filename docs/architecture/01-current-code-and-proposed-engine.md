@@ -2,7 +2,7 @@
 
 ## The implemented dependency graph
 
-The headless build defines the C++20 library setar_reference and the in-tree alias setar::reference. The offline executable setar_render and the numerical test executable link that library. Python is used by offline report and audit tools, not by the numerical update. JUCE is optional and disabled by default.
+The headless build defines the C++20 library setar_reference and the in-tree alias setar::reference. The offline executable setar_render and the numerical test executable link that library. The finite-difference experiments live in setar_numerical_prototype. The playable synthetic prototype adds five static libraries (setar_instrument_numerics, setar_instrument_engine, setar_instrument_body, setar_instrument_preset, setar_instrument_performance) behind the aggregate alias setar::instrument, the executables setar_play and setar_benchmark, and one test runner per module. Python is used by offline report and audit tools, not by the numerical update. JUCE is optional and disabled by default; the prototype's adapter in plugin/ is a separate opt-in.
 
 These statements describe inspected source and CMake configuration. They do not assert that every platform job has run, that a plugin host accepted the optional target, or that the reference reproduces a measured instrument. See [testing and CI](../engineering/testing-and-ci.md) for the evidence required before making those claims.
 
@@ -46,6 +46,21 @@ The renderer rejects known output overwrites and invalid configurations. Its fil
 The optional JUCE application owns a single ModalString. It prepares a fixed synthetic configuration, duplicates one observation into the selected output channels, and retriggers on its button or recognized note-on. Pitch and velocity do not change physical configuration; note-off and expressive controllers are not modeled. Serialization is empty.
 
 Its event scan is bounded and its UI trigger is an atomic boolean whose repeated requests can coalesce. These are diagnostic policies, not a production gesture queue. Stereo output is dual mono, not spatial radiation.
+
+## Implemented prototype engine
+
+The responsibilities proposed below now have a first concrete, synthetic realization in `setar::instrument`. It does not retire the reference above; the reference remains an independent oracle.
+
+| Responsibility | Actual implementation | Present boundary |
+|---|---|---|
+| Instrument state | `Instrument` in [instrument.hpp](../../include/setar/instrument/instrument.hpp): four persistent strings, two polarizations each, one shared body bank, nail and two finger slots per string | Synthetic parameters; no cavity pressure state beyond the modal reduction |
+| Coupled step | Simultaneous discrete-gradient Newton over bridge, nail, finger, fret and stick channels ([numerics.hpp](../../include/setar/instrument/numerics.hpp)) | Frictionless point contacts; bounded iterations with reported non-convergence |
+| Observation | Body modal acceleration times synthetic radiation weights, two channels, fixed gain | Uncalibrated; one-way |
+| Prepared asset | `InstrumentConfig` validated in `prepare()`, transactional on failure | No hashing, publication or off-thread handoff yet |
+| Event adapter | [performance.hpp](../../include/setar/instrument/performance.hpp): score parser, scheduler, MIDI-like mapper | Placeholder grammar, not practitioner-reviewed |
+| Application boundary | `setar_play` offline player; optional JUCE adapter in `plugin/` | Adapter not built in CI and not validated in a host |
+
+See [the prototype chapter](../engineering/11-playable-prototype.md) for the capability register and [the solver chapter](../numerics/15-modal-contact-solver.md) for the scheme.
 
 ## Proposed engine decomposition
 

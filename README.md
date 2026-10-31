@@ -29,6 +29,7 @@ claim of parity with any commercial instrument.
 | Performance layer | Text score grammar (pluck, strum, tremolo, press, slide, release, touch, damp, silence) and an allocation-free MIDI mapper | `score.*` |
 | Realtime properties | `process()` is noexcept and allocation-free; block-size invariance and replay are bitwise | `realtime.*`, `contact.gesture_replay` |
 | Offline player | `setar_play` renders a score to WAV with diagnostics and a summary; `tools/analyze_render.py` writes graphs and an HTML page | `integration.setar_play` renders all four demo scores with zero faults |
+| Cross-platform CI | Headless build and every CTest on Ubuntu 24.04 (GCC), Windows 2022 (MSVC, warnings as errors) and macOS 15, plus a Linux address/undefined-behaviour sanitizer job, and score rendering on all three | [Run 41177416020](https://github.com/cheshmakzanoon-ops/setar/actions/runs/41177416020) on commit `1db2dcf`: all four jobs passed |
 
 [Listen to and inspect the demonstration renders](docs/assets/prototype/README.md).
 They are synthetic renders of an unvalidated model, not recordings.
@@ -48,8 +49,6 @@ They are synthetic renders of an unvalidated model, not recordings.
   single-machine measurements, not qualifications.
 - **The JUCE plugin adapter is written but not compiled.** It configures against
   JUCE 8.0.10 and passes a syntax check; it has not been built, hosted or validated.
-- **Cross-platform CI for the prototype has not completed** on Windows or macOS
-  at the time of this merge; check the workflow runs for the current commit.
 - **The gesture grammar and fret maps have no practitioner review.** Stroke names,
   dynamics and ornaments are engineering placeholders.
 
@@ -57,9 +56,9 @@ They are synthetic renders of an unvalidated model, not recordings.
 
 Work proceeds by evidence gate, not by date. In order:
 
-1. **Keep the baseline green.** Confirm the Linux, Windows, macOS and sanitizer
-   jobs pass for this merge and fix any platform-specific failure first
-   (REQ-LAB-002).
+1. **Keep the baseline green.** The Linux, Windows, macOS and sanitizer jobs
+   passed for the prototype merge; every later change must keep them passing,
+   and a configured job is not evidence for an untested platform (REQ-LAB-002).
 2. **Meet the realtime budget.** Profile the worst-case block, reduce the
    per-sample contact cost (block-sparse compliance, SIMD modal updates,
    register-dependent mode caps) and record deadline percentiles (REQ-RTS-001,

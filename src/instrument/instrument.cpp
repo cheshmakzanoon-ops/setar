@@ -117,6 +117,9 @@ struct StringData {
     std::vector<double> stick_anchor;     // per fret
     std::vector<std::uint64_t> fret_stamp;  // step at which the fret channel was assembled
     std::vector<std::uint64_t> stick_stamp; // step at which the stick channel was assembled
+    // Rigorous lower bound of each fret gap at the current level n: set to the exact gap when
+    // evaluated, then decreased every step by sum|q[n+1]-q[n]| >= |gap change| (|phi| <= 1).
+    std::vector<double> fret_slack;
 };
 
 void require(bool ok, const std::string& message) {
@@ -150,6 +153,7 @@ struct Instrument::Impl {
     std::size_t fret_count = 0;
     std::array<std::vector<double>, bridge_channels> body_shapes{};
     std::array<double, bridge_channels * bridge_channels> body_compliance{};
+    std::array<double, bridge_channels * bridge_channels> bridge_block{}; // full bridge-bridge M
     std::array<std::vector<double>, observation_count> radiation{}; // w * gain / dt^2
     std::array<NailState, string_count> nails{};
     std::array<std::array<FingerState, 2>, string_count> fingers{};
@@ -158,6 +162,14 @@ struct Instrument::Impl {
     std::vector<Channel> channels;
     std::size_t channel_count = 0;
     std::vector<double> compliance, rhs, zprev_buf, sol, force;
+    // Schur-complement workspace (see solve()).
+    std::vector<std::size_t> linear_index, nonlinear_index, lin_pivot;
+    std::vector<double> alpha, beta, lin_matrix, work_vector, force_l0, coupling, reduced_rhs,
+        reduced_compliance, reduced_z_prev, reduced_s, reduced_force;
+    std::vector<nm::ChannelLaw> reduced_law;
+    // Warm start of contact channels from the previous step (per ledger key).
+    std::vector<double> key_s;
+    std::vector<std::uint64_t> key_contact_stamp;
     std::vector<nm::ChannelLaw> laws;
     nm::SmallNewtonSolver solver;
 
@@ -191,6 +203,9 @@ struct Instrument::Impl {
     }
 
     [[nodiscard]] double pair_compliance(const Channel& a, const Channel& b) const noexcept {
+        if (a.kind == ChannelKind::Bridge && b.kind == ChannelKind::Bridge) {
+            return bridge_block[a.key * bridge_channels + b.key]; // constant, built in prepare()
+        }
         double out = 0.0;
         for (std::uint32_t i = 0; i < a.term_count; ++i) {
             const Term& ta = a.terms[i];
@@ -231,6 +246,7 @@ struct Instrument::Impl {
         for (auto& sd : strings) {
             std::fill(sd.fret_stamp.begin(), sd.fret_stamp.end(), std::uint64_t{0});
             std::fill(sd.stick_stamp.begin(), sd.stick_stamp.end(), std::uint64_t{0});
+            std::fill(sd.fret_slack.begin(), sd.fret_slack.end(), -std::numeric_limits<double>::infinity());
         }
         for (auto& row : bridge_force) {
             row.fill(0.0);
@@ -239,6 +255,7 @@ struct Instrument::Impl {
         baseline_pending = true;
         last_key_count = 0;
         std::fill(key_stamp.begin(), key_stamp.end(), std::uint64_t{0});
+        std::fill(key_contact_stamp.begin(), key_contact_stamp.end(), std::uint64_t{0});
         // Step stamps start at 2 so that stamp 0 never means "present last step".
         step_counter = 2;
         last_active_channels = 0;
@@ -270,10 +287,34 @@ struct Instrument::Impl {
         return &c;
     }
 
+    // One pass over each term's modes for all three levels; same summation order as
+    // ModalBank::gather_*, hence bitwise-identical values.
     void finish_channel(Channel& c) const noexcept {
-        c.z_prev = gather(c, 0) - c.u_prev;
-        c.z_cur = gather(c, 1) - c.u_cur;
-        c.z_free = gather(c, 2) - c.u_next;
+        double zp = 0.0;
+        double zc = 0.0;
+        double zn = 0.0;
+        for (std::uint32_t i = 0; i < c.term_count; ++i) {
+            const Term& t = c.terms[i];
+            const nm::ModalBank& bank = banks[t.bank];
+            const double* prev = bank.previous().data();
+            const double* cur = bank.current().data();
+            const double* next = bank.next().data();
+            const double* w = t.shape;
+            double a = 0.0;
+            double b = 0.0;
+            double d = 0.0;
+            for (std::size_t k = 0; k < bank.size(); ++k) {
+                a += prev[k] * w[k];
+                b += cur[k] * w[k];
+                d += next[k] * w[k];
+            }
+            zp += t.coefficient * a;
+            zc += t.coefficient * b;
+            zn += t.coefficient * d;
+        }
+        c.z_prev = zp - c.u_prev;
+        c.z_cur = zc - c.u_cur;
+        c.z_free = zn - c.u_next;
     }
 
     void assemble(ProcessSummary& summary) noexcept {
@@ -494,8 +535,12 @@ struct Instrument::Impl {
         }
         const nm::ModalBank& bank = banks[2 * s];
         for (std::size_t f = 0; f < fret_count; ++f) {
+            if (sd.fret_slack[f] - change >= fret_margin_m) {
+                continue; // the exact test below would also skip
+            }
             const std::span<const double> shp(sd.fret_shapes.data() + f * sd.modes, sd.modes);
             const double z_cur = bank.gather_current(shp) - sd.fret_height[f];
+            sd.fret_slack[f] = z_cur;
             if (z_cur - change >= fret_margin_m) {
                 continue;
             }
@@ -525,7 +570,7 @@ struct Instrument::Impl {
                 continue;
             }
             for (std::size_t f = 0; f < fret_count; ++f) {
-                if (sd.fret_stamp[f] == step_counter) {
+                if (sd.fret_stamp[f] == step_counter || sd.fret_slack[f] - change >= 0.0) {
                     continue;
                 }
                 const std::span<const double> shp(sd.fret_shapes.data() + f * sd.modes, sd.modes);
@@ -542,6 +587,61 @@ struct Instrument::Impl {
         return added;
     }
 
+    // In-place LU with partial pivoting of the n x n row-major matrix `a`; false if singular.
+    static bool lu_factor(double* a, std::size_t* piv, std::size_t n) noexcept {
+        for (std::size_t col = 0; col < n; ++col) {
+            std::size_t best = col;
+            for (std::size_t r = col + 1; r < n; ++r) {
+                if (std::abs(a[r * n + col]) > std::abs(a[best * n + col])) {
+                    best = r;
+                }
+            }
+            piv[col] = best;
+            if (best != col) {
+                for (std::size_t c = 0; c < n; ++c) {
+                    std::swap(a[col * n + c], a[best * n + c]);
+                }
+            }
+            const double pivot = a[col * n + col];
+            if (pivot == 0.0 || !std::isfinite(pivot)) {
+                return false;
+            }
+            for (std::size_t r = col + 1; r < n; ++r) {
+                const double factor = a[r * n + col] / pivot;
+                a[r * n + col] = factor;
+                if (factor != 0.0) {
+                    for (std::size_t c = col + 1; c < n; ++c) {
+                        a[r * n + c] -= factor * a[col * n + c];
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    static void lu_solve(const double* a, const std::size_t* piv, std::size_t n, double* x) noexcept {
+        for (std::size_t r = 0; r < n; ++r) {
+            std::swap(x[r], x[piv[r]]);
+            double sum = x[r];
+            for (std::size_t c = 0; c < r; ++c) {
+                sum -= a[r * n + c] * x[c];
+            }
+            x[r] = sum;
+        }
+        for (std::size_t r = n; r-- > 0;) {
+            double sum = x[r];
+            for (std::size_t c = r + 1; c < n; ++c) {
+                sum -= a[r * n + c] * x[c];
+            }
+            x[r] = sum / a[r * n + r];
+        }
+    }
+
+    // Solves s - b - M F(s) = 0 for all channels. Linear channels (bridge/stick springs,
+    // dampers: F = alpha - beta*s) are eliminated exactly by a Schur complement, so the
+    // Newton iteration only runs on the one-sided contacts with the reduced compliance
+    // M' = M_NN - M_NL (beta^-1 + M_LL)^-1 M_LN (still symmetric positive semidefinite).
+    // Initial guesses for contacts are taken from sol[] (free motion or warm start).
     nm::NewtonResult solve() noexcept {
         const std::size_t m = channel_count;
         for (std::size_t r = 0; r < m; ++r) {
@@ -552,15 +652,105 @@ struct Instrument::Impl {
                 compliance[c * m + r] = v;
             }
             rhs[r] = a.z_free - a.z_prev;
-            zprev_buf[r] = a.z_prev;
-            laws[r] = a.law;
         }
-        return solver.solve(m, std::span<const double>(compliance.data(), m * m),
-                            std::span<const double>(rhs.data(), m),
-                            std::span<const nm::ChannelLaw>(laws.data(), m),
-                            std::span<const double>(zprev_buf.data(), m), dt, std::span<double>(sol.data(), m),
-                            std::span<double>(force.data(), m), spec.max_newton_iterations,
-                            spec.newton_tolerance_m);
+        std::size_t ml = 0;
+        std::size_t mn = 0;
+        for (std::size_t c = 0; c < m; ++c) {
+            const nm::ChannelLaw& law = channels[c].law;
+            if (law.kind == nm::ChannelLawKind::OneSidedPower) {
+                nonlinear_index[mn++] = c;
+            } else {
+                linear_index[ml++] = c;
+                const double k = law.kind == nm::ChannelLawKind::LinearSpring ? law.stiffness : 0.0;
+                beta[c] = 0.5 * k + law.damping_n_s_per_m / (2.0 * dt);
+                alpha[c] = -k * (channels[c].z_prev - law.anchor_m);
+            }
+        }
+        auto M = [&](std::size_t r, std::size_t c) { return compliance[r * m + c]; };
+        // A = I + M_LL * beta, factorized once.
+        for (std::size_t i = 0; i < ml; ++i) {
+            for (std::size_t j = 0; j < ml; ++j) {
+                lin_matrix[i * ml + j] = (i == j ? 1.0 : 0.0) + M(linear_index[i], linear_index[j]) * beta[linear_index[j]];
+            }
+        }
+        nm::NewtonResult result;
+        if (!lu_factor(lin_matrix.data(), lin_pivot.data(), ml)) {
+            result.finite = false;
+            return result;
+        }
+        // F_L0 = alpha - beta * A^-1 (b_L + M_LL alpha).
+        for (std::size_t i = 0; i < ml; ++i) {
+            double v = rhs[linear_index[i]];
+            for (std::size_t j = 0; j < ml; ++j) {
+                v += M(linear_index[i], linear_index[j]) * alpha[linear_index[j]];
+            }
+            work_vector[i] = v;
+        }
+        lu_solve(lin_matrix.data(), lin_pivot.data(), ml, work_vector.data());
+        for (std::size_t i = 0; i < ml; ++i) {
+            const std::size_t c = linear_index[i];
+            force_l0[i] = alpha[c] - beta[c] * work_vector[i];
+        }
+        // C = beta * A^-1 * M_LN (ml x mn), column by column.
+        for (std::size_t j = 0; j < mn; ++j) {
+            for (std::size_t i = 0; i < ml; ++i) {
+                work_vector[i] = M(linear_index[i], nonlinear_index[j]);
+            }
+            lu_solve(lin_matrix.data(), lin_pivot.data(), ml, work_vector.data());
+            for (std::size_t i = 0; i < ml; ++i) {
+                coupling[i * mn + j] = beta[linear_index[i]] * work_vector[i];
+            }
+        }
+        for (std::size_t i = 0; i < mn; ++i) {
+            const std::size_t ci = nonlinear_index[i];
+            double v = rhs[ci];
+            for (std::size_t l = 0; l < ml; ++l) {
+                v += M(ci, linear_index[l]) * force_l0[l];
+            }
+            reduced_rhs[i] = v;
+            for (std::size_t j = 0; j < mn; ++j) {
+                double w = M(ci, nonlinear_index[j]);
+                for (std::size_t l = 0; l < ml; ++l) {
+                    w -= M(ci, linear_index[l]) * coupling[l * mn + j];
+                }
+                reduced_compliance[i * mn + j] = w;
+            }
+            reduced_law[i] = channels[ci].law;
+            reduced_z_prev[i] = channels[ci].z_prev;
+            reduced_s[i] = sol[ci];
+        }
+        if (mn > 0) {
+            result = solver.solve(mn, std::span<const double>(reduced_compliance.data(), mn * mn),
+                                  std::span<const double>(reduced_rhs.data(), mn),
+                                  std::span<const nm::ChannelLaw>(reduced_law.data(), mn),
+                                  std::span<const double>(reduced_z_prev.data(), mn), dt,
+                                  std::span<double>(reduced_s.data(), mn),
+                                  std::span<double>(reduced_force.data(), mn), spec.max_newton_iterations,
+                                  spec.newton_tolerance_m);
+        } else {
+            result.converged = true;
+        }
+        for (std::size_t i = 0; i < mn; ++i) {
+            sol[nonlinear_index[i]] = reduced_s[i];
+            force[nonlinear_index[i]] = reduced_force[i];
+        }
+        // Back-substitute the linear channels: F_L = F_L0 - C F_N, s_L = b_L + M_L* F.
+        for (std::size_t i = 0; i < ml; ++i) {
+            double f = force_l0[i];
+            for (std::size_t j = 0; j < mn; ++j) {
+                f -= coupling[i * mn + j] * reduced_force[j];
+            }
+            force[linear_index[i]] = f;
+        }
+        for (std::size_t i = 0; i < ml; ++i) {
+            const std::size_t c = linear_index[i];
+            double v = rhs[c];
+            for (std::size_t k = 0; k < m; ++k) {
+                v += M(c, k) * force[k];
+            }
+            sol[c] = v;
+        }
+        return result;
     }
 
     void scatter() noexcept {
@@ -655,7 +845,10 @@ struct Instrument::Impl {
         }
         assemble(summary);
         for (std::size_t c = 0; c < channel_count; ++c) {
-            sol[c] = channels[c].z_free - channels[c].z_prev;
+            const Channel& ch = channels[c];
+            // Warm start a contact that was penetrating at the end of the previous step.
+            const bool warm = ch.key != no_key && key_contact_stamp[ch.key] + 1 == step_counter;
+            sol[c] = warm ? key_s[ch.key] : ch.z_free - ch.z_prev;
         }
         nm::NewtonResult result = solve();
         scatter();
@@ -671,11 +864,20 @@ struct Instrument::Impl {
                 sol[c] = ch.z_free - ch.z_prev;
             }
             const nm::NewtonResult second = solve();
-            result.iterations += second.iterations;
+            // Report the per-solve maximum so the value never exceeds max_newton_iterations.
+            result.iterations = std::max(result.iterations, second.iterations);
             result.residual_m = second.residual_m;
             result.converged = second.converged;
             result.finite = second.finite;
             scatter();
+        }
+        for (std::size_t c = 0; c < channel_count; ++c) {
+            const Channel& ch = channels[c];
+            if (ch.key != no_key && ch.law.kind == nm::ChannelLawKind::OneSidedPower &&
+                ch.z_prev + sol[c] < 0.0) {
+                key_s[ch.key] = sol[c];
+                key_contact_stamp[ch.key] = step_counter;
+            }
         }
         last_active_channels = static_cast<std::uint32_t>(channel_count);
         summary.max_active_channels = std::max(summary.max_active_channels, last_active_channels);
@@ -700,10 +902,9 @@ struct Instrument::Impl {
                 right += radiation[1][j] * accel;
             }
         }
-        // An observation beyond the float output range is a runaway state, not audio: it is
-        // contained like a non-finite state instead of being clipped.
-        constexpr double float_limit = static_cast<double>(std::numeric_limits<float>::max());
-        finite = finite && std::abs(left) <= float_limit && std::abs(right) <= float_limit;
+        // The float output is what the host receives: an observation that is not finite after
+        // the cast (beyond float range) is a runaway state and is contained, never clipped.
+        finite = finite && std::isfinite(static_cast<float>(left)) && std::isfinite(static_cast<float>(right));
         if (!finite) {
             contain(summary);
             out_left = 0.0;
@@ -773,6 +974,17 @@ struct Instrument::Impl {
 
         for (auto& bank : banks) {
             bank.commit();
+        }
+        for (std::size_t si = 0; si < string_count && fret_count > 0; ++si) {
+            const auto cur = banks[2 * si].current();
+            const auto prev = banks[2 * si].previous();
+            double moved = 0.0;
+            for (std::size_t i = 0; i < cur.size(); ++i) {
+                moved += std::abs(cur[i] - prev[i]);
+            }
+            for (double& slack : strings[si].fret_slack) {
+                slack -= moved;
+            }
         }
         for (auto& nail : nails) {
             if (nail.active() || nail.phase == NailPhase::Released) {
@@ -891,15 +1103,20 @@ struct Instrument::Impl {
                 return false;
             }
             FingerState& f = fingers[si][e.slot];
-            f.x_m = e.position_m;
-            f.x_target = e.position_m;
-            numerics::fill_sine_shape(sd.finger_shape[e.slot], theta_scale * e.position_m);
             if (!f.active) {
+                f.x_m = e.position_m;
+                f.x_target = e.position_m;
+                f.slide_speed = 0.0;
+                numerics::fill_sine_shape(sd.finger_shape[e.slot], theta_scale * e.position_m);
                 f.u_cur = displacement_at(2 * si, sd.finger_shape[e.slot]) + e.gap_m;
                 f.u_prev = f.u_cur;
                 f.u_next = f.u_cur;
                 f.force = 0.0;
-                f.slide_speed = 0.0;
+            } else {
+                // Retarget an active pad physically: it keeps its position and vertical state
+                // and slides to the new position at the event speed (never a position jump).
+                f.x_target = e.position_m;
+                f.slide_speed = e.speed_m_per_s;
             }
             f.active = true;
             f.releasing = false;
@@ -1015,6 +1232,7 @@ void Instrument::prepare(const InstrumentConfig& config, const ProcessSpec& spec
         sd.stick_anchor.assign(im.fret_count, 0.0);
         sd.fret_stamp.assign(im.fret_count, 0);
         sd.stick_stamp.assign(im.fret_count, 0);
+        sd.fret_slack.assign(im.fret_count, -std::numeric_limits<double>::infinity());
         im.info.string_modes[si] = sd.modes;
         dof += 2 * sd.modes;
     }
@@ -1045,6 +1263,15 @@ void Instrument::prepare(const InstrumentConfig& config, const ProcessSpec& spec
                     im.banks[body_bank].compliance(im.body_shapes[a], im.body_shapes[b]);
             }
         }
+        for (std::size_t a = 0; a < bridge_channels; ++a) {
+            for (std::size_t b = 0; b < bridge_channels; ++b) {
+                // Same string and polarization share the string bank (static id 0).
+                const double string_part = a == b ? im.strings[a / 2].static_compliance[0] : 0.0;
+                const double body_part =
+                    im.banks[body_bank].size() > 0 ? im.body_compliance[a * bridge_channels + b] : 0.0;
+                im.bridge_block[a * bridge_channels + b] = string_part + body_part;
+            }
+        }
         for (std::size_t o = 0; o < observation_count; ++o) {
             im.radiation[o].assign(kept.size(), 0.0);
             for (std::size_t i = 0; i < kept.size(); ++i) {
@@ -1064,11 +1291,24 @@ void Instrument::prepare(const InstrumentConfig& config, const ProcessSpec& spec
     im.sol.assign(cap, 0.0);
     im.force.assign(cap, 0.0);
     im.laws.assign(cap, nm::ChannelLaw{});
+    im.linear_index.assign(cap, 0);
+    im.nonlinear_index.assign(cap, 0);
+    im.lin_pivot.assign(cap, 0);
+    for (auto* v : {&im.alpha, &im.beta, &im.work_vector, &im.force_l0, &im.reduced_rhs, &im.reduced_z_prev,
+                    &im.reduced_s, &im.reduced_force}) {
+        v->assign(cap, 0.0);
+    }
+    im.lin_matrix.assign(cap * cap, 0.0);
+    im.coupling.assign(cap * cap, 0.0);
+    im.reduced_compliance.assign(cap * cap, 0.0);
+    im.reduced_law.assign(cap, nm::ChannelLaw{});
     im.solver.prepare(cap);
     const std::size_t keys = bridge_channels + 3 * string_count + 2 * string_count * im.fret_count;
     im.key_value.assign(keys, 0.0);
     im.key_stamp.assign(keys, 0);
     im.key_dissipative.assign(keys, 0);
+    im.key_s.assign(keys, 0.0);
+    im.key_contact_stamp.assign(keys, 0);
     for (std::size_t si = 0; si < string_count; ++si) {
         im.key_dissipative[im.nail_key(si)] = 1;
         im.key_dissipative[im.finger_key(si, 0)] = 1;
@@ -1229,6 +1469,8 @@ void Instrument::set_string_modal_displacement(std::size_t string_index, Polariz
         require(std::isfinite(q), "modal displacement must be finite");
     }
     bank.set_displacement(modal_displacement_m);
+    auto& slack = impl_->strings[string_index].fret_slack;
+    std::fill(slack.begin(), slack.end(), -std::numeric_limits<double>::infinity());
     impl_->ledger = EnergyLedger{};
     impl_->baseline_pending = true;
 }

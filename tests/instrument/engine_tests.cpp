@@ -719,6 +719,8 @@ void newton_failure_reporting() {
         FaultCode first = FaultCode::None;
         render(inst, {{0, nail(0, 0.5, 0.3, 1.0, 1.5)}}, 4800, 256,
                [&](std::uint64_t, std::span<const float> l, std::span<const float>, const ProcessSummary& sm) {
+                   check(sm.max_newton_iterations <= iterations,
+                         "reported Newton iterations never exceed the declared per-solve cap");
                    failures += sm.newton_failures;
                    if (first == FaultCode::None) {
                        first = sm.first_fault;
@@ -1117,10 +1119,16 @@ void sweep_continuity() {
     inst.prepare(c, fixture_spec(rate, true));
     const double speed = 0.1;
     const std::uint64_t slide_at = static_cast<std::uint64_t>(0.1 * rate);
+    // A FingerPress on the already-active slot retargets it: it must slide at the event
+    // speed (here equal to the slide speed), never jump.
+    const std::uint64_t repress_at = static_cast<std::uint64_t>(0.4 * rate);
+    GestureEvent repress = press(c, 0, c.frets[5].position_m, 1.0e-3);
+    repress.speed_m_per_s = speed;
     const std::vector<Timed> events{
         {0, press(c, 0, c.frets[2].position_m, 1.0e-3)},
         {static_cast<std::uint64_t>(0.05 * rate), nail(0, 0.55, 0.3, 0.4, 0.6)},
         {slide_at, move(0, c.frets[2].position_m - 0.008 + 0.02, speed)},
+        {repress_at, repress},
     };
     double last_x = 0.0;
     double last_force = 0.0;
@@ -1132,9 +1140,14 @@ void sweep_continuity() {
     double peak = 0.0;
     double worst = 0.0;
     std::uint64_t n = 0;
-    render(inst, events, static_cast<std::uint64_t>(0.4 * rate), 1,
+    double max_energy_before_repress = 0.0;
+    double max_energy_after_repress = 0.0;
+    render(inst, events, static_cast<std::uint64_t>(1.15 * rate), 1,
            [&](std::uint64_t start, std::span<const float>, std::span<const float>, const ProcessSummary& sm) {
-               check(sm.first_fault == FaultCode::None, "slide must not fault");
+               check(sm.first_fault == FaultCode::None, "slide and re-press must not fault");
+               (start < repress_at ? max_energy_before_repress : max_energy_after_repress) =
+                   std::max(start < repress_at ? max_energy_before_repress : max_energy_after_repress,
+                            string_energy(inst, 0));
                const InstrumentSnapshot snap = inst.snapshot();
                const double x = snap.strings[0].finger_position_m[0];
                const double force = snap.strings[0].finger_force_n[0];
@@ -1150,7 +1163,7 @@ void sweep_continuity() {
                    if (start < slide_at) {
                        max_force_step_static = std::max(max_force_step_static, df);
                        max_disp_step_static = std::max(max_disp_step_static, dd);
-                   } else {
+                   } else if (start < repress_at) {
                        max_force_step_slide = std::max(max_force_step_slide, df);
                        max_disp_step_slide = std::max(max_disp_step_slide, dd);
                    }
@@ -1167,6 +1180,14 @@ void sweep_continuity() {
           "pad force stays continuous during the slide (no jumps beyond the static vibration bound)");
     check(max_disp_step_slide <= 3.0 * max_disp_step_static + 1e-6, "string displacement stays continuous");
     check(worst <= 1.0e-9 * peak, "ledger closes during the slide");
+    const InstrumentSnapshot snap = inst.snapshot();
+    std::cout << "repress_final_x_m=" << snap.strings[0].finger_position_m[0]
+              << " energy_before_repress_j=" << max_energy_before_repress
+              << " energy_after_repress_j=" << max_energy_after_repress << '\n';
+    check(std::abs(snap.strings[0].finger_position_m[0] - repress.position_m) < 1e-12,
+          "re-pressed pad slides to its new position");
+    check(max_energy_after_repress < 2.0 * max_energy_before_repress,
+          "re-pressing an active pad does not inject a position-jump impulse");
 }
 
 } // namespace

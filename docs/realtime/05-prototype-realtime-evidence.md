@@ -35,9 +35,13 @@ jobs), revision under development:
 | Debug | pass, 16.5 s | pass, 12.9 s | pass, 16.7 s | **fail** (c), 1.8 s | pass, 11.4 s |
 | Debug + ASan/UBSan | pass, 45.7 s | pass, 33.7 s | pass, 49.6 s | **fail** (c), 4.9 s, no sanitizer report | pass, 32.8 s |
 
-Windows/MSVC and macOS have not been run by this work; the CI workflow is a
-configuration, not a result. MSVC Debug checked iterators may run the dense
-stress more slowly than the 120 s CTest limit; that has not been measured.
+The preceding failed-run table is historical evidence from the original local
+investigation. Subsequent headless Linux, Windows/MSVC, macOS, and Linux sanitizer
+jobs passed for the integrated prototype, including baseline commit `b4ae94e`
+in [run 41181544708](https://github.com/cheshmakzanoon-ops/setar/actions/runs/41181544708).
+Those jobs establish their executed test coverage, not a controlled cross-platform
+deadline benchmark. The original timing measurements below remain specific to
+their stated development container and revision context.
 
 ## Defects found by these tests
 
@@ -144,9 +148,11 @@ machine. No Newton failure, overflow, rejection or containment occurred.
 
 ## Next actions
 
-- Fix defect 1 at the float write and add a regression to the engine tests.
-- Decide the physical semantics of re-pressing an active slot (defect 2).
+- Retain the existing regressions for float-output containment and finite-speed
+  movement of an already active finger slot. The three historical defects above
+  are fixed in the baseline; reopening one requires a new failing reproducer.
 - Profile the channel-dependent cost (dense LU of the channel system and
   per-channel O(modes) gathers) before reducing it; any reduction needs
   `realtime.reference_parity` evidence against the unreduced engine.
-- Run the same CTests under MSVC and Apple Clang and record them separately.
+- Keep the headless MSVC and macOS test evidence attached to each candidate
+  revision, and separately acquire controlled platform/hardware deadline traces.

@@ -6,6 +6,13 @@ guarantee of future availability. Source publication dates and access dates are
 different fields; search-engine crawl dates are not publication dates. No external
 paper, photograph, CAD file, or raw laboratory dataset is redistributed here.
 
+For the subsequent 2026-11-10 inspection, targeted search queries, source
+extraction instructions, and additional numerical/official references, use the
+[source atlas](source-atlas.md). Its dated access statements supplement the
+historical records below; they do not imply acquisition of any underlying
+specimen data. The [research-to-model workflow](research-to-model-workflow.md)
+defines how a new reading becomes an admissible finding and a scoped model change.
+
 ## Initial source register
 
 ### R-SETAR-PEDRAMMEHR-2018

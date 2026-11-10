@@ -33,7 +33,8 @@ MIDI, and interfaces. None of those tools supplies missing acoustic evidence.
 
 ## First reading path
 
-Start with the [master roadmap](ROADMAP.md), then read the
+Start with the [master roadmap](ROADMAP.md) and its
+[execution guide](roadmap-execution-guide.md), then read the
 [quality contract](governance/quality-contract.md). Next choose the volume that
 matches your work. A contributor investigating nail release should read contact
 modeling and the relevant numerical energy interfaces. A contributor fixing state
@@ -86,9 +87,11 @@ documented state transition.
 
 Current state: `setar::instrument::Instrument::process()` is a first realtime-shaped
 engine with fixed capacities, bounded Newton iterations, reported faults and an
-allocation-hook test. It has no measured deadline profile, asset-publication path
-or host qualification, and its "reduced" model is not yet derived from or compared
-against an independent converged reference.
+allocation-hook test. A [development-container timing profile](realtime/05-prototype-realtime-evidence.md)
+exists and shows dense-gesture deadline misses; it is not controlled hardware or
+host qualification. The general asset-publication path remains proposed, and the
+"reduced" model is not yet derived from or compared against an independent
+converged reference.
 
 ### 3. Instrument application and plugin
 
@@ -174,11 +177,14 @@ responsibility, not a reason to reject all prior work.
 
 ## Documentation depth and word counts
 
-The user's intended scale is roughly 200,000 words of valuable engineering
-documentation. The audit reports actual prose counts and link integrity. This is
-a coverage target, not a correctness metric. Repeated boilerplate, generated
-enumerations, copied source material, and comments added only to inflate the count
-are unacceptable. Do not mark the handbook complete because a counter passes.
+The handbook's earlier approximate 200,000-word coverage target has already been
+exceeded; the [2026-11-10 baseline audit](engineering/2026-11-10-baseline-audit.md)
+records 252,788 prose words before this expansion. The current documentation
+priority is operational clarity in every phase: where to research, how to obtain
+and judge findings, how they change a physical model, and what evidence closes
+the task. The audit reports count and structural integrity, not correctness.
+Repeated boilerplate, copied material, or prose added only to inflate the count
+does not satisfy the task contract.
 
 The actionable unit is a work package with a physical question, a numerical or
 experimental method, artifacts, and an acceptance test. Long derivations are useful

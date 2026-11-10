@@ -6,6 +6,11 @@ reading-order index. Chapter order within a volume is not a project deadline.
 
 ## Evidence and instrument identity
 
+- [Roadmap execution guide: question, research, model, evidence, handoff](roadmap-execution-guide.md)
+- [Primary-source atlas and targeted search routes](research/source-atlas.md)
+- [Research findings translated into model changes](research/research-to-model-workflow.md)
+- [Worked decisions: decay, body response, observation and contact](research/model-decision-examples.md)
+- [Documentation expansion baseline and open evidence](engineering/2026-11-10-baseline-audit.md)
 - [Research and source audit](research/README.md)
 - [Measurement and acquisition](measurement/README.md)
 - [Ethnomusicology and practitioner review](ethnomusicology/README.md)
@@ -41,6 +46,7 @@ reading-order index. Chapter order within a volume is not a project deadline.
 - [Executable partial coverage registry](../roadmap/executable-test-coverage.json)
 - [CPU/latency/accuracy budget derivation](engineering/performance-budget.md)
 - [Specimen measurement completeness](measurement/specimen-completeness-matrix.md)
+- [Acquisition campaign and physical-model handoffs](measurement/13-acquisition-campaign-execution.md)
 
 ## Coordination and delivery
 
@@ -64,3 +70,5 @@ reading-order index. Chapter order within a volume is not a project deadline.
 - [Task prompts](../prompts/README.md)
 - [Data contracts](../data/README.md)
 - [Experiment handoffs](../experiments/README.md)
+- [Documentation expansion and delegation record](reviews/2026-11-10-documentation-expansion.md)
+- Independent final reviews: [integrity and traceability](reviews/2026-11-10-integrity-review.md), [research and mathematics](reviews/2026-11-10-research-review.md), [contributor walkthroughs](reviews/2026-11-10-contributor-walkthrough.md).

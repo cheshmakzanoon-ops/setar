@@ -94,16 +94,53 @@ For one mode with eigenvalue pair \(s=-\gamma\pm i\omega_d\) the amplification r
 Cayley images \(r=(1+s\Delta t/2)/(1-s\Delta t/2)\). With \(a=\gamma\Delta t/2\),
 \(b=\omega_d\Delta t/2\),
 \[
-|r|^2=1-\frac{4a}{(1+a)^2+b^2},\qquad \arg r=\arctan\frac{b}{1-a}+\arctan\frac{b}{1+a}.
+|r|^2=1-\frac{4a}{(1+a)^2+b^2},\qquad
+\arg r=\operatorname{atan2}(b,1-a)+\operatorname{atan2}(b,1+a).
 \]
-Hence \(d_{\text{num}}=-\ln|r|/\Delta t\approx\gamma/(1+b^2)\): the midpoint rule **under-damps**
-every resolved mode by a relative \(b^2/(1+b^2)\), never over-damps it, and adds *exactly zero*
-algorithmic damping when \(\gamma=0\). This is the "solver loss versus physical damping"
-separation that chapters 7 and 8 require: a fitted decay measured from this solver differs
-from the declared law by an amount that is known in closed form and shrinks as \(\Delta t^2\).
-If \(\gamma\ge\Omega\) the roots are real; `midpoint_damped_roots` then reports
-`oscillatory=false`, `frequency_hz=0` and the slowest root, and beyond critical damping a larger
-\(\gamma\) gives a *smaller* slow-root decay (a property of overdamped oscillators, tested).
+The two-argument arctangents preserve the quadrant when \(1-a\) is negative,
+matching the current `midpoint_damped_roots` implementation. The exact amplitude
+decay is
+\[
+d_{\text{num}}=-\frac{\ln|r|}{\Delta t}
+=\frac{1}{2\Delta t}\ln\frac{(1+a)^2+b^2}{(1-a)^2+b^2}.
+\]
+Keeping only terms first order in \(\gamma\) at fixed \(\omega_d\) and
+\(\Delta t\) gives the **light-damping approximation**
+\(d_{\text{num}}\approx\gamma/(1+b^2)\), with an approximate relative decay
+deficit \(b^2/(1+b^2)\). The under-damping shown in the loss-study plots applies
+to those fixtures; it is not a universal sign for the error. At fixed mode
+parameters, the small-step expansion is
+\[
+d_{\text{num}}=\gamma+
+\frac{\gamma^3-3\gamma\omega_d^2}{12}\Delta t^2+O(\Delta t^4).
+\]
+Near critical damping the leading correction can be positive. For example,
+the **synthetic** values \(\Omega=1\ {\rm rad/s}\),
+\(\gamma=0.99\ {\rm s^{-1}}\), and \(\Delta t=0.1\ {\rm s}\) give
+\(\omega_d=\sqrt{\Omega^2-\gamma^2}\) and
+\(d_{\text{num}}\approx0.990760281\ {\rm s^{-1}}>\gamma\).
+This counterexample is an independently evaluated analytic calculation, not a
+new solver execution or a changed result in the historical experiments below.
+
+When \(\gamma=0\), the modulus is exactly one in exact arithmetic, so the scheme
+adds no algorithmic damping. Stability and a correct work balance do not imply
+an exact physical decay rate. Use the exact roots when separating solver error
+from physical damping; their small-step decay error is second order and may have
+either sign outside the light-damping regime.
+
+If \(\gamma\ge\Omega\), the continuous roots are real.
+For a finite positive spectral radius, `midpoint_damped_roots` reports
+`oscillatory=false`, `frequency_hz=0`, and
+\(\max(|r_{\rm slow}|,|r_{\rm fast}|)\) from both mapped roots. At exact critical
+damping with \(\gamma=\Omega\) and \(\gamma\Delta t/2=1\), both mapped roots
+are zero. The oracle then rejects the result with
+`overdamped midpoint decay is not representable`, because a finite logarithmic
+decay cannot represent that radius. This oracle exception does not mean the
+midpoint state update is undefined.
+The continuous slow-pole decay \(\gamma-\sqrt{\gamma^2-\Omega^2}\) decreases
+as damping grows beyond critical. A coarse midpoint step can instead leave the
+mapped fast pole close to \(-1\); compare both discrete roots rather than
+assuming the continuous slow pole always controls the numerical tail.
 
 ## Test inventory and the independent comparator for each
 
@@ -160,11 +197,23 @@ claims in this chapter therefore apply to the 3-mode band, whose highest mode is
 mode count of the coarsest 16-interval grid; the 6-mode band (6/16) is outside the resolved domain
 there. A larger band needs a finer starting grid.
 
-**An identifiability limit, stated numerically.** For \(EI=1.5\times10^{-5}\) N m² the decay profiles
-of a pure \(\sigma_1\) law and a pure \(\sigma_2\) law, each calibrated at mode 1, differ by at most
-5.8×10⁻⁴ over modes 2–8, so measured partial decay cannot separate them; for a bending-dominated
-stress fixture (EI = 0.01) they differ by 28%. A calibration that reports both coefficients for
-a setar-scale string from decay data alone would be reporting noise.
+**A practical identifiability warning, stated numerically.** For
+\(EI=1.5\times10^{-5}\) N m² the decay profiles of a pure \(\sigma_1\) law and
+a pure \(\sigma_2\) law, each calibrated at mode 1, differ by at most 5.8×10⁻⁴
+over modes 2–8; for a bending-dominated stress fixture (EI = 0.01) they differ by
+28%. These historical synthetic comparisons demonstrate very different degrees
+of separation in the selected band. A small **nonzero** difference alone does
+not prove that measurements can never distinguish the laws.
+
+Compare that contrast with propagated calibration, decay-estimation, boundary/
+model and numerical uncertainty, including correlations. If the contrast lies
+below the justified error budget, report unresolved coefficient combinations or
+parameter profiles rather than unique values. Greater precision or an independent
+observable may change practical identifiability. The separate flexible-string
+case \(EI=0\) at fixed \(T/\mu\) has an exact proportionality of the two loss
+bases; that structural degeneracy cannot be removed by more precise versions of
+the same observations. Use [P12](../phases/P12-identification.md) to distinguish
+these cases before interpreting a fitted pair of coefficients.
 
 ## Figures
 
@@ -201,8 +250,10 @@ The graphs below are computed by the C++ study and the report tool, not drawn by
 - The loss magnitudes are arbitrary. No measured partial decay, no separation of string loss from
   bridge leakage (see strings/03), and no frequency-dependent loss richer than three
   nonnegative terms is covered.
-- Temporal decay error \(\approx\gamma b^2\) means a *fitted* \(\sigma\) from a coarse run is biased;
-  calibration must be repeated under refinement, as the handbook already requires.
+- Temporal decay error follows the exact Cayley roots above. Its light-damping,
+  small-\(b\) deficit is approximately \(\gamma b^2\); outside that regime even
+  the sign can change. A fitted \(\sigma\) from a coarse run can therefore be
+  biased, and calibration must be repeated under refinement.
 - Convergence orders are for joint refinement; spatial and temporal orders were not isolated
   separately in the waveform study.
 - Only Linux was run for this change. The Windows and macOS legs of the workflow are configured to

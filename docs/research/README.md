@@ -16,6 +16,10 @@ is artistic reference, not automatically calibration evidence.
 
 | Decision | Chapter | Required output |
 | --- | --- | --- |
+| Where and how should I search? | [Source atlas](source-atlas.md) | Primary sources, extraction targets, search log, access limits |
+| How does a finding change the instrument? | [Research-to-model workflow](research-to-model-workflow.md) | Admissibility decision, physical/model mapping, independent acceptance evidence |
+| What does a concrete model decision look like? | [Worked examples](model-decision-examples.md) | Synthetic calculations, competing explanations, current field mapping and an explicit disposition |
+| Which phase and handoff should I use? | [Roadmap execution guide](../roadmap-execution-guide.md) | A bounded original task and its engineering work order |
 | What does a source support? | [Evidence ledger](evidence-ledger.md) | Scoped claim and source records |
 | Can published numbers be imported? | [Parameter audit](published-parameter-audit.md) | Admissibility and provenance decision |
 | Which observations matter? | [Research questions](research-questions.md) | Falsifiable prediction matrix |
@@ -25,6 +29,12 @@ is artistic reference, not automatically calibration evidence.
 | How is musical context represented? | [Ethnomusicology volume](../ethnomusicology/README.md) | Player-reviewed performance specification |
 | How is work assigned? | [Research prompts](../../prompts/research/README.md) | Bounded developer work requests |
 | Where do data belong? | [Data contract](../../data/README.md) | Rights-aware asset organization |
+
+Record new findings with the [research-finding template](../../templates/research-finding.md).
+Before adopting a quantity into a prepared physical model, complete the
+[parameter-promotion record](../../templates/parameter-promotion.md), including
+units, uncertainty, applicability, code/asset destination, and the evidence that
+limits its use. A source being accessible does not make every value admissible.
 
 ## Evidence language
 

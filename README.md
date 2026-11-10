@@ -54,7 +54,11 @@ They are synthetic renders of an unvalidated model, not recordings.
 
 ### Appropriate next steps
 
-Work proceeds by evidence gate, not by date. In order:
+Work proceeds by evidence gate, not by date. The following work packages identify
+the current priorities. Specimen acquisition, independent numerical verification,
+realtime profiling, and host experiments can proceed in parallel where their
+inputs are available; their scientific gates retain the dependencies in the
+[execution guide](docs/roadmap-execution-guide.md).
 
 1. **Keep the baseline green.** The Linux, Windows, macOS and sanitizer jobs
    passed for the prototype merge; every later change must keep them passing,
@@ -106,6 +110,15 @@ spectrogram, energy ledger and pitch estimates. Write your own score with the
 
 1. [Read the orientation and capability boundaries](docs/START_HERE.md).
 2. [Follow the phase-by-phase engineering roadmap](docs/ROADMAP.md).
+   Each original scientific task has an execution recipe connecting its research
+   question, sources, procedure, model translation, checks, and next handoff.
+   Use the [roadmap execution guide](docs/roadmap-execution-guide.md),
+   [primary-source atlas](docs/research/source-atlas.md), and
+   [research-to-model workflow](docs/research/research-to-model-workflow.md)
+   to turn a selected task into a bounded, reviewable result.
+   The [worked model decisions](docs/research/model-decision-examples.md) show
+   concrete decay, body-response, radiation and contact findings with their
+   calculations, limits and next actions.
 3. [Use the evidence and acceptance rules](docs/governance/quality-contract.md).
 4. [Open the implementation-level engineering specification](docs/engineering/implementation-specification.md):
    [41 requirements](roadmap/requirements.json) and
@@ -183,6 +196,7 @@ score together with its diagnostics; see the
 | Path | Responsibility |
 | --- | --- |
 | `docs/phases/` | Ordered work packages, dependencies, evidence gates, and handoffs. |
+| `docs/roadmap-execution-guide.md`, `docs/research/source-atlas.md`, `docs/research/research-to-model-workflow.md` | Task selection, research routes, finding disposition, and translation into physical-model changes. |
 | `roadmap/requirements.json`, `roadmap/engineering-tasks.json` | Machine-checked requirements, 44 implementation work orders, named planned tests and exact procedures. |
 | `docs/engineering/implementation-specification.md`, `docs/architecture/` | Implementation contracts, proposed C++ ownership/interfaces, solver selection and signal-flow diagrams. |
 | `docs/research/`, `docs/measurement/` | Primary-source audit, specimen acquisition, measurement protocols, and uncertainty. |

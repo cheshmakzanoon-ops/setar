@@ -238,8 +238,11 @@ matrix, so no claim of real VST3 compatibility follows from this gate.
   this for its own reduced model; the signature is not frozen and nothing about
   it is measured.
 - `RealtimePlan` must bound contact iterations, solver complexity, event
-  storage, sample-rate factors, maximum block and asset reclamation. No
-  callback allocation/lock audit or measured deadline trace yet exists.
+  storage, sample-rate factors, maximum block and asset reclamation. The
+  [prototype realtime chapter](../realtime/05-prototype-realtime-evidence.md)
+  now records allocation-hook checks and a development-container timing trace;
+  neither establishes a complete allocation/lock audit, controlled deadline
+  qualification, or the proposed general asset-reclamation contract.
 - `HostAdapter` must preserve exact event offsets, tested state migrations,
   actual plugin binary identity and zero/variable-block lifecycle. A JUCE
   prototype is not a measured or qualified product.

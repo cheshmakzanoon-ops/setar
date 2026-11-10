@@ -4,6 +4,11 @@ Copy this template into the appropriate work record and replace prompts with
 task-specific content. Do not mark a field complete merely because the template
 contains an example. Remove irrelevant sections only with a brief explanation.
 
+Select the task through the [roadmap execution guide](../docs/roadmap-execution-guide.md).
+Keep its original `Pxx-Tyy` identifier and mapped `ENG-Pxx-Tyy` work order visible.
+Use the [finding record](research-finding.md) for research results and the
+[parameter-promotion record](parameter-promotion.md) when adopting physical inputs.
+
 ## Identity and question
 
 - Task identifier and short title:
@@ -24,6 +29,22 @@ without a defined comparison, participants, and listening conditions.
 - Required data, calibration, specimen, or permission records:
 - Authorized interventions or external actions:
 - Missing prerequisites and permitted work while blocked:
+
+## Research route and use of findings
+
+- Physical mechanism or competing explanations to distinguish:
+- Primary sources or official contracts, exact edition/section, and access level:
+- Search terms and repositories, including a record of unsuccessful searches:
+- Measurement or independent synthetic experiment needed beyond the reading:
+- Finding disposition: accepted for scope, rejected, inconclusive, or blocked:
+- Equation, parameter, contact/port, observation, event, or claim changed:
+- Existing code/asset destination versus proposed extension:
+- Validation data that must remain held out from this decision:
+
+For each quantity retain the original definition and units, the SI conversion,
+coordinate/sign mapping, uncertainty and applicable specimen/setup. Identify the
+observation that could reject the interpretation. A list of papers without a
+model decision or explicit acquisition gap is not a completed research handoff.
 
 Confirm the request authorizes the intended change. An analysis task should not
 quietly become a public release, participant contact, instrument modification,

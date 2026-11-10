@@ -13,6 +13,24 @@ work package, not a sprint length. There are no deadlines or delivery estimates.
 Some investigations run in parallel, but a downstream model cannot inherit
 credibility from an unverified upstream assumption.
 
+## How to execute a phase
+
+Open the [roadmap execution guide](roadmap-execution-guide.md) before assigning
+work. It maps the physical question to the phase, the exact next result, and the
+asset or interface that consumes it. Every original `Pxx-Tyy` task below retains
+its identifier and contains an **Execution recipe** with its own research route,
+ordered procedure, model consequences, acceptance evidence, failure rules, and
+handoff. These additions specify work; they do not mark any phase complete.
+
+Use the [source atlas](research/source-atlas.md) for primary-source locations,
+search strategies, exact extraction targets, and access limitations. Use the
+[research-to-model workflow](research/research-to-model-workflow.md) to record
+accepted, rejected, deferred, and inconclusive findings, translate admissible
+evidence into equations or parameters, and preserve independent validation.
+The [baseline audit](engineering/2026-11-10-baseline-audit.md) identifies what
+actually exists at the revision this expansion reviewed, including partial tests
+and proposed paths that must not be mistaken for implemented modules.
+
 ## The phase register
 
 Each detailed phase contains reading, prerequisites, tasks, outputs, tests, prompts,

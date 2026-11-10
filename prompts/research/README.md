@@ -12,6 +12,17 @@ run, observed results, unresolved inputs, and the next evidence gate. A proposed
 test is not a passed test. A synthetic fixture is not a setar measurement. Do not
 fill missing scientific inputs with plausible values to make a pipeline run.
 
+Before assigning a prompt, select its original phase task and engineering work
+order through the [roadmap execution guide](../../docs/roadmap-execution-guide.md).
+Attach the task's **Execution recipe**, the relevant entries from the
+[source atlas](../../docs/research/source-atlas.md), and the
+[research-to-model workflow](../../docs/research/research-to-model-workflow.md).
+The resulting handoff should use the [finding record](../../templates/research-finding.md)
+and, when adopting a quantity or model, the
+[promotion record](../../templates/parameter-promotion.md). A research assignment
+is incomplete if it returns citations without stating what they change in the
+physical model, what remains unresolved, and which test could reject the change.
+
 ## R-PROMPT-01: Verify one source-to-claim chain
 
 > Read `docs/research/evidence-ledger.md` and select the assigned claim, not a

@@ -19,6 +19,7 @@ folder of recordings.
 | [Uncertainty and calibration](uncertainty-and-calibration.md) | What the observations actually constrain | Complete uncertainty model |
 | [Independent validation](independent-validation.md) | Predictive tests outside calibration | Frozen model and groupwise partitions |
 | [Specimen completeness matrix](specimen-completeness-matrix.md) | All-domain digital-twin acquisition checklist and explicit unknowns | Actual specimen, rights and calibrated evidence |
+| [Acquisition campaign and model handoffs](13-acquisition-campaign-execution.md) | Seventeen acquisition packets, pilot sequence, reduction and physical-model destinations | Calibrated raw records, admissible inference and explicit promotion decision |
 
 Read the [research evidence ledger](../research/evidence-ledger.md) before treating
 published procedures as established project practice. Read

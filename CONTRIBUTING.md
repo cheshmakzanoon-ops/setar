@@ -14,6 +14,14 @@ failure response. A request to diagnose or review does not authorize unrelated
 implementation. A request to implement one mechanism does not authorize changing
 publication settings, credentials, dependency licensing, or repository history.
 
+The [roadmap execution guide](docs/roadmap-execution-guide.md) explains how to
+choose a task and its downstream handoff. For research-led changes, use the
+[source atlas](docs/research/source-atlas.md) and
+[research-to-model workflow](docs/research/research-to-model-workflow.md) to show
+where evidence came from, how it was checked, and exactly which physical model
+decision it changes. Keep the 119 original phase-task headings and their crosswalk
+identifiers stable when improving the instructions.
+
 Inspect `git status --short` and preserve unrelated work. In parallel work, agree
 on nonoverlapping ownership and communicate interface changes before editing a
 shared contract. Workers must not independently commit or push when a coordinator

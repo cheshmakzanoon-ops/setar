@@ -38,12 +38,18 @@ omission). Review JUCE's licence before building or distributing anything.
   the editor status. Nothing silently substitutes other physical parameters.
 - **`processBlock`** (audio thread): clears the buffer, converts MIDI to gestures
   into a fixed 256-entry queue in absolute sample time (stable sorted insertion;
-  overflow is counted as `dropped_gestures`), splits host blocks larger than the
+  a full queue rejects each incoming gesture and increments `dropped_gestures`,
+  without emergency-release priority), splits host blocks larger than the
   prepared maximum, renumbers event `sequence` per chunk, calls
   `Instrument::process`, applies the observation gain as a per-block ramp and
-  publishes telemetry through relaxed atomics. It performs no allocation, locks
-  or I/O in this source; that has **not** been verified with an allocation hook
-  inside a host (the engine itself is checked by `realtime.allocation_hook`).
+  publishes telemetry through relaxed atomics. Fixed queue capacity bounds the
+  stored gestures, but the callback still visits every incoming MIDI message.
+  The owning `metadata.getMessage()` construction and other transitive JUCE
+  calls require allocation/deallocation and work-bound review against the pinned
+  checkout, including variable-length messages. No complete adapter callback
+  allocation, lock or I/O audit has been executed in a host; the existing
+  `realtime.allocation_hook` covers its engine paths only. These are
+  source-inspection targets, not newly observed host failures.
 - **Tuning / fret-map changes** are polled by a 5 Hz message-thread timer, never
   handled on the audio thread. A change calls `suspendProcessing(true)`,
   re-prepares and resumes. JUCE's wrapper holds its callback lock during
@@ -116,10 +122,14 @@ result separately per OS, host and format.
   string (its slot 0 and slot 1); ornaments and course strokes are not
   reachable from plain MIDI.
 - Telemetry shows totals since load; there is no reset control or energy-ledger
-  display. The editor reads only atomics and the message-thread status string.
+  display. The editor reads separate atomic totals and the status string;
+  separate relaxed atomic reads do not constitute a coherent multi-field snapshot.
 - `engine_status_` is written in `prepareToPlay`; a host that calls it off the
   message thread while the editor is open would race on that string.
-- The adapter inherits the engine defects listed in
-  [the realtime evidence](../realtime/05-prototype-realtime-evidence.md),
-  including the non-finite sample under channel overflow and the cost of
-  dense contact passages exceeding real time on the measured container.
+- [The realtime evidence](../realtime/05-prototype-realtime-evidence.md) records
+  the earlier engine float-cast containment and active-finger defects as fixed,
+  with regression checks to retain. The current engine checks float
+  representability before returning its observation; this does not qualify the
+  adapter's subsequent gain stage or other host behavior. The recorded dense
+  contact workloads still miss deadlines on the development container, and
+  controlled hardware/host qualification remains open.
